@@ -49,7 +49,9 @@ const HELD = {
 };
 
 export function judge(id, facts) {
-  if (!Object.prototype.hasOwnProperty.call(HELD, id)) return { id, held: false, why: 'no such claim' };
+  if (typeof id !== 'string' || !Object.prototype.hasOwnProperty.call(HELD, id)) return { id: String(typeof id === 'string' ? id : ''), held: false, why: 'no such claim' };
   if (!isObj(facts)) return { id, held: false, why: 'not measured' };
-  return { id, held: HELD[id](facts) === true, why: RULES[id](facts) };
+  let why;
+  try { why = RULES[id](facts); } catch { why = 'facts that cannot be read'; }
+  return { id, held: HELD[id](facts) === true, why };
 }

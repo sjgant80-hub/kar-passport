@@ -20,7 +20,7 @@ import { canonical, sigOf, withSig, sealMessage, formatOf, validate62, validate3
 import { toModel62, toModel30 } from './render.mjs';
 
 const enc = new TextEncoder();
-export const shaOf = (text) => hex(sha256(enc.encode(text)));
+export const shaOf = (text) => hex(sha256(enc.encode(typeof text === 'string' ? text : '')));
 const no = (why) => ({ ok: false, why });
 
 export async function seal(text, identity) {

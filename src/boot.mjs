@@ -53,8 +53,9 @@ export function keysOf(m) {
 }
 
 export function bootPrompt(token, questions) {
-  return String(token) + '\n\nYou have just been given the SYMB-FER token above and nothing else. Answer each question from the token alone. ' +
-    'If the token does not say, answer exactly: not in the token.\n' + questions.map((q, i) => (i + 1) + '. ' + q).join('\n') +
+  const qs = Array.isArray(questions) ? questions.filter((q) => typeof q === 'string') : [];
+  return (typeof token === 'string' ? token : '') + '\n\nYou have just been given the SYMB-FER token above and nothing else. Answer each question from the token alone. ' +
+    'If the token does not say, answer exactly: not in the token.\n' + qs.map((q, i) => (i + 1) + '. ' + q).join('\n') +
     '\nReply as a numbered list, one line per answer, nothing else.';
 }
 

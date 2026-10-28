@@ -107,7 +107,8 @@ const blocks = (lines) => { const out = [[]]; for (const l of lines) { if (/^(SE
 const field = (b, k) => { const l = b.find((x) => x.startsWith(k + ': ')); return l ? words(l.slice(k.length + 2)) : ''; };
 
 /** The structured items of what a session added. Every added line is also kept verbatim in the entry. */
-export function itemsOf(added) {
+export function itemsOf(given) {
+  const added = given && typeof given === 'object' ? given : {};
   const sessions = blocks(added.session || []).map((b) => {
     const d = /^SESSION·(\d{4}-\d{2}-\d{2}) \{$/.exec(b[0] || '');
     if (!d) return null;
@@ -147,7 +148,8 @@ export function mergedOf(entries) {
 
 export function indexLine(entries) {
   const n = Array.isArray(entries) ? entries.length : 0;
-  const last = n ? entries[n - 1].at : 'never';
+  const lastEntry = n ? entries.at(-1) : null;
+  const last = lastEntry && typeof lastEntry.at === 'string' ? lastEntry.at : 'never';
   return '- [symbfer-handoff-log](symbfer-handoff-log.md) — SYMB-FER hand-overs merged back into memory by Kar\'s passport (' + n + ' so far, last ' + last + '); kar-passport repo';
 }
 
