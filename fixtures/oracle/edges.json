@@ -1,0 +1,232 @@
+{
+ "kind": "kar-passport.oracle.edges",
+ "rows": [
+  {
+   "kind": "v30",
+   "id": "edge-v30-sig-first-line",
+   "sha256": "e7cad0661f240766d580e6547bb54fe5d631762c0b3a5b84e29fa452714cdf01",
+   "status": "FAIL",
+   "passes": [
+    "UTF-8 decode clean",
+    "Delimiter integrity verified"
+   ],
+   "warnings": [
+    "SHA256 field empty: allowed, not verified"
+   ],
+   "failures": [
+    "missing required sections: TRANSFER·MODE, ARCHIVE·PRINCIPLE, META, PARSE·GUIDE, TIME·COLLAB, BOOT·FACTS, SESSION·STATE, BOOT·ETHOS, INTEGRITY, FINALIZATION, LESSONS·LEARNED, DRIFT·CHECK, TEST·TRACE",
+    "section order invalid: expected TRANSFER·MODE -> ARCHIVE·PRINCIPLE -> META -> PARSE·GUIDE -> TIME·COLLAB -> BOOT·FACTS -> SESSION·STATE -> BOOT·ETHOS -> INTEGRITY -> FINALIZATION -> LESSONS·LEARNED -> DRIFT·CHECK -> TEST·TRACE -> SIG",
+    "missing required rule lines: RULE: preserve·identity·fields·exactly·as·provided·no·abbreviation·no·normalization·no·formatting·changes; RULE: identity·fields·in·§META·are·immutable·after·initial·set·no·modification·or·regeneration·under·any·mode; RULE: identity·fields·override·all·generation·logic·and·must·never·be·derived·or·reconstructed ... (+11 more)"
+   ]
+  },
+  {
+   "kind": "v30",
+   "id": "edge-v30-sig-end-first",
+   "sha256": "bb1b1eaedec669c975ff0449eefe64a68d6cf9a099c4f18b683aa1e4f45fa02b",
+   "status": "FAIL",
+   "passes": [
+    "UTF-8 decode clean",
+    "Delimiter integrity verified"
+   ],
+   "warnings": [],
+   "failures": [
+    "Unmatched section end for SIG at line 1",
+    "missing required sections: TRANSFER·MODE, ARCHIVE·PRINCIPLE, META, PARSE·GUIDE, TIME·COLLAB, BOOT·FACTS, SESSION·STATE, BOOT·ETHOS, INTEGRITY, FINALIZATION, LESSONS·LEARNED, DRIFT·CHECK, TEST·TRACE",
+    "section order invalid: expected TRANSFER·MODE -> ARCHIVE·PRINCIPLE -> META -> PARSE·GUIDE -> TIME·COLLAB -> BOOT·FACTS -> SESSION·STATE -> BOOT·ETHOS -> INTEGRITY -> FINALIZATION -> LESSONS·LEARNED -> DRIFT·CHECK -> TEST·TRACE -> SIG",
+    "missing required rule lines: RULE: preserve·identity·fields·exactly·as·provided·no·abbreviation·no·normalization·no·formatting·changes; RULE: identity·fields·in·§META·are·immutable·after·initial·set·no·modification·or·regeneration·under·any·mode; RULE: identity·fields·override·all·generation·logic·and·must·never·be·derived·or·reconstructed ... (+11 more)",
+    "signature block ordering invalid"
+   ]
+  },
+  {
+   "kind": "v30",
+   "id": "edge-v30-signed",
+   "sha256": "3bf617101a5aea78f51db100d110775bd4844b5d969d4f7e11e00c406ccc2cb4",
+   "status": "PASS",
+   "passes": [
+    "UTF-8 decode clean",
+    "Required sections present",
+    "Section order canonical",
+    "Begin/end markers matched",
+    "Required rules present",
+    "Delimiter integrity verified",
+    "Signature block well-formed"
+   ],
+   "warnings": [],
+   "failures": []
+  },
+  {
+   "kind": "v30",
+   "id": "edge-v30-two-sig-last-blank",
+   "sha256": "b0bdd70087abbdb91c7a05d6489a336c9e8df952aad82ed00f53061509b4868d",
+   "status": "WARN",
+   "passes": [
+    "UTF-8 decode clean",
+    "Required sections present",
+    "Section order canonical",
+    "Begin/end markers matched",
+    "Required rules present",
+    "Delimiter integrity verified",
+    "Signature block well-formed"
+   ],
+   "warnings": [],
+   "failures": []
+  },
+  {
+   "kind": "v30",
+   "id": "edge-v30-odd-rule-line",
+   "sha256": "0f0b9f076beeba97636a222673c82903586e95465899a6c3082666a48635edb9",
+   "status": "WARN",
+   "passes": [
+    "UTF-8 decode clean",
+    "Required sections present",
+    "Section order canonical",
+    "Begin/end markers matched",
+    "Required rules present",
+    "Signature block well-formed"
+   ],
+   "warnings": [
+    "possible delimiter inconsistency on line(s): 83"
+   ],
+   "failures": []
+  },
+  {
+   "kind": "v30",
+   "id": "edge-v30-sha-above-sig",
+   "sha256": "49775547843ad9bd253cd4166ecf4d0a3111d1d0a06e7773752642ebcb08b139",
+   "status": "FAIL",
+   "passes": [
+    "UTF-8 decode clean",
+    "Required sections present",
+    "Section order canonical",
+    "Begin/end markers matched",
+    "Required rules present",
+    "Delimiter integrity verified"
+   ],
+   "warnings": [],
+   "failures": [
+    "signature block missing keys: SHA256"
+   ]
+  },
+  {
+   "kind": "v30",
+   "id": "edge-v30-colon-key",
+   "sha256": "9e39a116745b3ed7afcb82e8aee793ff1bc5242d25e0a95916936111df868d21",
+   "status": "PASS",
+   "passes": [
+    "UTF-8 decode clean",
+    "Required sections present",
+    "Section order canonical",
+    "Begin/end markers matched",
+    "Required rules present",
+    "Delimiter integrity verified",
+    "Signature block well-formed"
+   ],
+   "warnings": [],
+   "failures": []
+  },
+  {
+   "kind": "v30",
+   "id": "edge-v30-no-dots",
+   "sha256": "ed91fcd374684a902ea7490be32541c2101910dba978c18769dd64e81c73285b",
+   "status": "FAIL",
+   "passes": [
+    "UTF-8 decode clean"
+   ],
+   "warnings": [],
+   "failures": [
+    "missing required sections: TRANSFER·MODE, ARCHIVE·PRINCIPLE, META, PARSE·GUIDE, TIME·COLLAB, BOOT·FACTS, SESSION·STATE, BOOT·ETHOS, INTEGRITY, FINALIZATION, LESSONS·LEARNED, DRIFT·CHECK, TEST·TRACE, SIG",
+    "section order invalid: expected TRANSFER·MODE -> ARCHIVE·PRINCIPLE -> META -> PARSE·GUIDE -> TIME·COLLAB -> BOOT·FACTS -> SESSION·STATE -> BOOT·ETHOS -> INTEGRITY -> FINALIZATION -> LESSONS·LEARNED -> DRIFT·CHECK -> TEST·TRACE -> SIG",
+    "missing required rule lines: RULE: preserve·identity·fields·exactly·as·provided·no·abbreviation·no·normalization·no·formatting·changes; RULE: identity·fields·in·§META·are·immutable·after·initial·set·no·modification·or·regeneration·under·any·mode; RULE: identity·fields·override·all·generation·logic·and·must·never·be·derived·or·reconstructed ... (+11 more)",
+    "delimiter integrity failed: no middle-dot delimiters found",
+    "signature block missing"
+   ]
+  },
+  {
+   "kind": "v62",
+   "id": "edge-v62-no-dots",
+   "sha256": "ed91fcd374684a902ea7490be32541c2101910dba978c18769dd64e81c73285b",
+   "status": "FAIL",
+   "passes": [
+    "UTF-8 decode clean",
+    "Section structure valid",
+    "Section order matches template"
+   ],
+   "warnings": [],
+   "failures": [
+    "Missing required sections: TRANSFER·MODE, META, PARSE·GUIDE, SAFETY·INTERPRETATION, SYMB2·DOCTRINE, ETHOS, LEXICON, IDENTITY, KEY·RELATIONSHIPS, BOOT·FACTS, BOOT·ETHOS, BOOT·PROTOCOL, REFER·TRIGGER, TIMESTAMP·CALIBRATION, TIME·ANCHOR, SEARCH·PROTOCOL, RELATIONAL·RULES, REF·ENCODING, CORE·CONSTANTS, SACRED·DATES, COLLABORATORS·CREDITED, SCORING·KEY, LANE·STRUCTURE, CURRENT·REALITY, OPEN·THREADS, SESSION·LOG, RESOLVED, CLOSED·MILESTONES, LESSONS·LEARNED, DRIFT·CHECK, INTEGRITY, FINALIZATION, SIG",
+    "SHA256 field not found in §SIG",
+    "Version strings mismatch across header, META FORMAT, and TOKEN·TRACK",
+    "No delimiter (middle-dot) found"
+   ]
+  },
+  {
+   "kind": "v62",
+   "id": "edge-v62-sig-first",
+   "sha256": "94ebba9fa6afc6b416e3b3fe4a4d53a93bfbf1c079015e3320beed461b8454f3",
+   "status": "FAIL",
+   "passes": [
+    "UTF-8 decode clean",
+    "Section structure valid",
+    "Section order matches template",
+    "SHA256 field valid",
+    "Delimiter integrity verified"
+   ],
+   "warnings": [],
+   "failures": [
+    "Missing required sections: TRANSFER·MODE, META, PARSE·GUIDE, SAFETY·INTERPRETATION, SYMB2·DOCTRINE, ETHOS, LEXICON, IDENTITY, KEY·RELATIONSHIPS, BOOT·FACTS, BOOT·ETHOS, BOOT·PROTOCOL, REFER·TRIGGER, TIMESTAMP·CALIBRATION, TIME·ANCHOR, SEARCH·PROTOCOL, RELATIONAL·RULES, REF·ENCODING, CORE·CONSTANTS, SACRED·DATES, COLLABORATORS·CREDITED, SCORING·KEY, LANE·STRUCTURE, CURRENT·REALITY, OPEN·THREADS, SESSION·LOG, RESOLVED, CLOSED·MILESTONES, LESSONS·LEARNED, DRIFT·CHECK, INTEGRITY, FINALIZATION",
+    "Version strings mismatch across header, META FORMAT, and TOKEN·TRACK"
+   ]
+  },
+  {
+   "kind": "v62",
+   "id": "edge-v62-crlf",
+   "sha256": "5da6141f72179cba40ddfa2172b9bfb271aad822f9603a03515ecd8706cc8d07",
+   "status": "PASS",
+   "passes": [
+    "UTF-8 decode clean",
+    "Section structure valid",
+    "All required sections present",
+    "Section order matches template",
+    "SHA256 field valid",
+    "Version v6.2 consistent across header, META, and TOKEN·TRACK",
+    "Delimiter integrity verified"
+   ],
+   "warnings": [],
+   "failures": []
+  },
+  {
+   "kind": "v62",
+   "id": "edge-v62-tabs-around-sha",
+   "sha256": "77f1a7a8ec2370c8d7fa2bbb629eed29a482a4cd9a971304d1a6a02c4ace252e",
+   "status": "PASS",
+   "passes": [
+    "UTF-8 decode clean",
+    "Section structure valid",
+    "All required sections present",
+    "Section order matches template",
+    "SHA256 field valid",
+    "Version v6.2 consistent across header, META, and TOKEN·TRACK",
+    "Delimiter integrity verified"
+   ],
+   "warnings": [],
+   "failures": []
+  },
+  {
+   "kind": "v62",
+   "id": "edge-v62-unicode-break-in-meta",
+   "sha256": "aeb127bf69ac9d7f817de74ad2dcb3e4895cc44042a552f5e489a1f70f7e5168",
+   "status": "PASS",
+   "passes": [
+    "UTF-8 decode clean",
+    "Section structure valid",
+    "All required sections present",
+    "Section order matches template",
+    "SHA256 field valid",
+    "Version v6.2 consistent across header, META, and TOKEN·TRACK",
+    "Delimiter integrity verified"
+   ],
+   "warnings": [],
+   "failures": []
+  }
+ ]
+}

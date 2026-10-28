@@ -28,28 +28,20 @@ const PY_SPACE = new Set(['\t', '\n', '\x0b', '\x0c', '\r', '\x1c', '\x1d', '\x1
   ' ', ' ', ' ', ' ', '　']);
 
 /** str.splitlines() */
+const BREAK_RE = new RegExp('\\r\\n|[' + [...PY_BREAKS].map((c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).join('') + ']');
+const SPACE_CLASS = '[' + [...PY_SPACE].map((c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0')).join('') + ']+';
+const STRIP_RE = new RegExp('^' + SPACE_CLASS + '|' + SPACE_CLASS + '$', 'g');
+
 export function pySplitlines(s) {
   if (typeof s !== 'string') return [];
-  const out = [];
-  let start = 0;
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (!PY_BREAKS.has(c)) continue;
-    out.push(s.slice(start, i));
-    if (c === '\r' && s[i + 1] === '\n') i++;
-    start = i + 1;
-  }
-  if (start < s.length) out.push(s.slice(start));
-  return out;
+  const parts = s.split(BREAK_RE);
+  if (parts.at(-1) === '') parts.pop();
+  return parts;
 }
 
 /** str.strip() */
 export function pyStrip(s) {
-  if (typeof s !== 'string') return '';
-  let a = 0, b = s.length;
-  while (a < b && PY_SPACE.has(s[a])) a++;
-  while (b > a && PY_SPACE.has(s[b - 1])) b--;
-  return s.slice(a, b);
+  return typeof s === 'string' ? s.replace(STRIP_RE, '') : '';
 }
 
 /** bytes.decode('utf-8') in strict mode: the text, or null where Python raises */
@@ -83,8 +75,8 @@ function extract62(text) {
   const lines = pySplitlines(text);
   const sections = new Map(), errors = [], order = [], stack = [];
   let cur = null, curLines = [];
-  for (let k = 0; k < lines.length; k++) {
-    const line = lines[k], idx = k + 1;
+  for (const [k, line] of lines.entries()) {
+    const idx = k + 1;
     const b = BEGIN62.exec(line);
     if (b) {
       const name = b[1];
@@ -188,10 +180,8 @@ export const RULES30 = Object.freeze([
 function kv30(lines) {
   const data = new Map();
   for (const line of lines) {
-    let at = line.indexOf(': '), w = 2;
-    if (at < 0) { at = line.indexOf(':'); w = 1; }
-    if (at < 0) continue;
-    data.set(pyStrip(line.slice(0, at)), pyStrip(line.slice(at + w)));
+    const m = /^(.*?): (.*)$/s.exec(line) || /^(.*?):(.*)$/s.exec(line);
+    if (m) data.set(pyStrip(m[1]), pyStrip(m[2]));
   }
   return data;
 }
@@ -200,8 +190,7 @@ function extract30(text) {
   const lines = pySplitlines(text);
   const sections = new Map(), issues = [];
   let cur = null, curLines = [];
-  for (let k = 0; k < lines.length; k++) {
-    const line = lines[k];
+  for (const [k, line] of lines.entries()) {
     const b = BEGIN30.exec(line);
     if (b) {
       if (cur !== null) issues.push('Nested section begin encountered before closing ' + cur);
@@ -249,8 +238,8 @@ export function validate30(text, decoded) {
     else r.passes.push('Delimiter integrity verified');
   }
   const sb = lines.indexOf('§SIG·BEGIN'), se = lines.indexOf('§SIG·END');
-  if (sb < 0 || se < 0) r.failures.push('signature block missing');
-  else if (sb >= se) r.failures.push('signature block ordering invalid');
+  if (sb === -1 || se === -1) r.failures.push('signature block missing');
+  else if (Math.min(sb, se) === se) r.failures.push('signature block ordering invalid');
   else {
     const sig = kv30(lines.slice(sb + 1, se));
     const lack = ['MODE', 'STATUS', 'SHA256'].filter((k) => !sig.has(k));
@@ -333,16 +322,16 @@ export function formatOf(text) {
 export function parse(text) {
   if (typeof text !== 'string') return { ok: false, why: 'not text', lines: [], sections: [] };
   const lines = text.split('\n'), sections = [], open = [];
-  for (let i = 0; i < lines.length; i++) {
-    const b = BEGIN62.exec(lines[i]);
-    if (b) { open.push({ name: b[1], begin: i, parent: open.length ? open[open.length - 1].name : null }); continue; }
-    const e = END62.exec(lines[i]);
+  for (const [i, line] of lines.entries()) {
+    const b = BEGIN62.exec(line);
+    if (b) { open.push({ name: b[1], begin: i, parent: open.length ? open.at(-1).name : null }); continue; }
+    const e = END62.exec(line);
     if (!e) continue;
     const top = open.pop();
     if (!top || top.name !== e[1]) return { ok: false, why: 'section ' + e[1] + ' closes at line ' + (i + 1) + ' without its BEGIN', lines, sections: [] };
     sections.push({ name: top.name, begin: top.begin, end: i, parent: top.parent });
   }
-  if (open.length) return { ok: false, why: 'section ' + open[open.length - 1].name + ' is not closed', lines, sections: [] };
+  if (open.length) return { ok: false, why: 'section ' + open.at(-1).name + ' is not closed', lines, sections: [] };
   sections.sort((a, b) => a.begin - b.begin);
   return { ok: true, lines, sections };
 }
@@ -363,9 +352,9 @@ const HEX128 = /^[0-9a-f]{128}$/;
 
 function sigBlock(lines) {
   const b = lines.lastIndexOf('§SIG·BEGIN');
-  if (b < 0) return null;
+  if (b === -1) return null;
   const e = lines.indexOf('§SIG·END', b + 1);
-  return e < 0 ? null : { b, e };
+  return e === -1 ? null : { b, e };
 }
 
 /** Every line of the token but those strictly inside its last §SIG block, joined by LF: the bytes the SHA-256 covers. */
@@ -419,5 +408,5 @@ export const TIER_SIG = '\n\n§SIG·BEGIN\nMODE: STANDARD\nSTATUS: UNVERIFIED\nS
 export function tierBody(text) {
   if (typeof text !== 'string') return null;
   const at = text.lastIndexOf('\n\n§SIG·BEGIN\n');
-  return at < 0 ? null : text.slice(0, at);
+  return at === -1 ? null : text.slice(0, at);
 }

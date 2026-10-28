@@ -10,6 +10,7 @@ import {
   formatOf, parse, write, bodyOf, canonical, sigOf, withSig, sealMessage, SEAL_PREFIX, TIER_SIG, tierBody, REQUIRED62, ORDER62, CANON30, RULES30,
 } from './symbfer.mjs';
 import { corpus } from '../tools/oracle-corpus.mjs';
+import { edgeCases } from '../tools/corpus.mjs';
 
 const ROOT = join(import.meta.dirname, '..');
 const fx = (p) => JSON.parse(readFileSync(join(ROOT, 'fixtures', 'oracle', p), 'utf8'));
@@ -27,10 +28,25 @@ test('P2/P3: every corpus token gets the Python oracle\'s status, failures and w
     assert.equal(js.status, rows[i].status, it.id);
     assert.deepEqual(js.failures, rows[i].failures, it.id);
     assert.deepEqual(js.warnings, rows[i].warnings, it.id);
+    assert.deepEqual(js.passes, rows[i].passes, it.id);
     if (it.kind === 'v62') n62++; else n30++;
   });
   assert.equal(n62, 615);
   assert.equal(n30, 404);
+});
+
+test('edge tokens the fuzz did not reach get the Python oracle\'s verdict too', () => {
+  const rows = fx('edges.json').rows;
+  assert.equal(rows.length, 13);
+  return edgeCases().then((items) => {
+    assert.equal(items.length, rows.length);
+    items.forEach((it, i) => {
+      assert.equal(it.id, rows[i].id);
+      assert.equal(sha(it.bytes), rows[i].sha256, it.id);
+      const js = it.kind === 'v62' ? validate62Bytes(it.bytes) : validate30Bytes(it.bytes);
+      assert.deepEqual([js.status, js.passes, js.warnings, js.failures], [rows[i].status, rows[i].passes, rows[i].warnings, rows[i].failures], it.id);
+    });
+  });
 });
 
 test('P4: tierText is SYMBEYOND\'s generator, byte for byte', () => {
@@ -103,6 +119,8 @@ test('the readers refuse what is not text, and know their section lists', () => 
   assert.ok(validate62('').failures.includes('Version strings mismatch across header, META FORMAT, and TOKEN·TRACK'));
   assert.ok(validate62('').failures.includes('No delimiter (middle-dot) found'));
   assert.ok(validate62('x').failures.includes('SHA256 field not found in §SIG'));
+  assert.ok(validate62('x').failures.includes('No delimiter (middle-dot) found'));
+  assert.ok(validate62('x·').passes.includes('Delimiter integrity verified'));
 });
 
 test('formatOf reads the header', () => {
@@ -149,6 +167,8 @@ test('canonical drops exactly the lines inside the last §SIG block', () => {
   const two = '§SIG·BEGIN\na\n§SIG·END\n§SIG·BEGIN\nb\n§SIG·END';
   assert.equal(canonical(two), '§SIG·BEGIN\na\n§SIG·END\n§SIG·BEGIN\n§SIG·END');
   assert.equal(canonical('§SIG·BEGIN\nx'), null);
+  assert.equal(canonical('§SIG·BEGIN\nx\n§SIG·END'), '§SIG·BEGIN\n§SIG·END');
+  assert.equal(sigOf('§SIG·BEGIN\nMODE: STANDARD\nSTATUS: UNVERIFIED\nSHA256: PENDING\n§SIG·END').sealed, false);
   assert.equal(canonical('no sig'), null);
   assert.equal(canonical(3), null);
 });
@@ -196,6 +216,7 @@ test('the seal message and the tier §SIG block', () => {
   assert.equal(tierBody(body + TIER_SIG), body);
   assert.equal(tierBody(body + '\n\n§SIG·BEGIN\n' + TIER_SIG), body + '\n\n§SIG·BEGIN\n');
   assert.equal(tierBody(body), null);
+  assert.equal(tierBody('\n\n§SIG·BEGIN\nx'), '');
   assert.equal(tierBody(null), null);
   assert.equal(sigOf(body + TIER_SIG).sealed, false);
 });

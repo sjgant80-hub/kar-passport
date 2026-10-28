@@ -26,3 +26,28 @@ export async function tierCases() {
   states.forEach((state, i) => ['nano', 'core', 'state'].forEach((tier) => cases.push({ id: 'tier-' + i + '-' + tier, tier, ts: '2026-10-28_1600H', state })));
   return cases;
 }
+
+/** Edge tokens the seeded fuzz did not reach, each judged by the Python oracle (fixtures/oracle/edges.json). */
+export async function edgeCases() {
+  const enc = new TextEncoder();
+  const v30 = new TextDecoder().decode(readFileSync(join(ROOT, V30, 'test_valid_3_0.txt'))).replace(/\r\n/g, '\n');
+  const hex = 'ab'.repeat(32);
+  const signed = v30.replace('SHA256:\n§SIG·END', 'SHA256: ' + hex + '\n§SIG·END');
+  const v62 = new TextDecoder().decode(readFileSync(join(ROOT, V62, 'test_valid_v6_2.txt')));
+  const cases = [
+    ['v30', 'sig-first-line', '§SIG·BEGIN\nMODE: A\nSTATUS: B\nSHA256:\n§SIG·END\nx·y'],
+    ['v30', 'sig-end-first', '§SIG·END\nx·y\n§SIG·BEGIN\nMODE: A\nSTATUS: B\nSHA256:\n§SIG·END'],
+    ['v30', 'signed', signed],
+    ['v30', 'two-sig-last-blank', signed + '\n§SIG·BEGIN\nMODE: STANDARD\nSTATUS: TEST\nSHA256:\n§SIG·END\n'],
+    ['v30', 'odd-rule-line', signed.replace('§TEST·TRACE·END', 'RULE: no dots here\n§TEST·TRACE·END')],
+    ['v30', 'sha-above-sig', signed.replace('SHA256: ' + hex + '\n§SIG·END', '§SIG·END').replace('§SIG·BEGIN', 'SHA256: ' + hex + '\n§SIG·BEGIN')],
+    ['v30', 'colon-key', signed.replace('MODE: STANDARD\nSTATUS: TEST', ': x\nMODE:STANDARD\nSTATUS:  TEST ')],
+    ['v30', 'no-dots', 'plain\ntext'],
+    ['v62', 'no-dots', 'plain\ntext'],
+    ['v62', 'sig-first', '§SIG·BEGIN\nSHA256: ' + hex + '\n§SIG·END'],
+    ['v62', 'crlf', v62.replace(/\n/g, '\r\n')],
+    ['v62', 'tabs-around-sha', v62.replace(/SHA256: [0-9a-f]{64}/, 'SHA256:\t' + hex + ' \u3000')],
+    ['v62', 'unicode-break-in-meta', v62.replace('§META·END', 'x\u2028y\n§META·END')],
+  ];
+  return cases.map(([kind, id, text]) => ({ kind, id: 'edge-' + kind + '-' + id, bytes: enc.encode(text) }));
+}
