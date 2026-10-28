@@ -145,3 +145,80 @@ test('cut bounds a value at a middle dot, and slices refuse what they cannot rea
   assert.equal(bare.model62.meta.org, 'not·recorded');
   assert.equal(PLACES.length, 15);
 });
+
+test('cut keeps exactly MAX code points, and cuts at a middle dot only past half way', () => {
+  assert.equal(cut('x'.repeat(MAX)), 'x'.repeat(MAX));
+  assert.equal([...cut('x'.repeat(MAX + 1))].length, MAX);
+  const atHalf = cut('a'.repeat(MAX / 2) + '·' + 'b'.repeat(200));
+  assert.equal([...atHalf].length, MAX, 'a dot at exactly half way is not used');
+  const pastHalf = cut('a'.repeat(MAX / 2 + 1) + '·' + 'b'.repeat(200));
+  assert.equal(pastHalf, 'a'.repeat(MAX / 2 + 1) + '…');
+});
+
+test('every fallback of the slicer, exercised', () => {
+  const base = () => fixtureInputs({ clean: true });
+  const full = (inp) => buildSlice(inp, lists, 'full', {}).model62;
+  // the topics a full slice draws on, and only those with a name
+  let inp = base();
+  inp.topics = [null, 3, { description: 'nameless' }, { name: 'page-explains-itself', description: 'reads the live link' }, { name: 'gary-floyd-papers', description: 'credit in full' }];
+  let m = full(inp);
+  assert.equal(m.identity.communication, 'reads·the·live·link');
+  assert.deepEqual(m.relationships.find(([n]) => n === 'Gary·W.·Floyd'), ['Gary·W.·Floyd', 'credit·in·full']);
+  assert.equal(buildSlice(inp, lists, 'public', {}).model62.relationships.some(([n]) => n === 'Gary·W.·Floyd'), false);
+  inp.topics = [];
+  m = full(inp);
+  assert.equal(m.identity.communication, 'not·recorded');
+  assert.equal(m.relationships.some(([n]) => n === 'Gary·W.·Floyd'), false);
+  // working memory without its facts
+  inp = base();
+  inp.working = ['First real revenue goal'];
+  const pub = buildSlice(inp, lists, 'public', {}).model62;
+  assert.equal(pub.meta.org, 'not·recorded');
+  assert.equal(pub.identity.role, 'not·recorded');
+  assert.equal(pub.relationships.some(([n]) => n === 'Kar' || n === 'Grok'), false);
+  assert.equal(pub.lanes[0].primary.status, 'in·progress');
+  assert.deepEqual(pub.lexicon, []);
+  assert.deepEqual(buildSlice(base(), lists, 'public', {}).model62.lexicon.map(([t]) => t), ['business·door', 'agent·door', 'pitch']);
+  // the estate line, a build with no date, a next build with no detail, the operator unnamed
+  inp = base();
+  inp.estate = { ...inp.estate, public: 'many' };
+  assert.equal(buildSlice(inp, lists, 'public', {}).model62.bootFacts.some(([k]) => k === 'estate'), false);
+  inp = base();
+  inp.digest = inp.digest.replace('KITCHEN 2026-10-28: carcasses built', 'KITCHEN: carcasses built');
+  assert.equal(buildSlice(inp, lists, 'public', {}).model62.milestones[0].date, '2026-10-28');
+  inp = base();
+  inp.digest = inp.digest.replace('door sheet — cut the door sheet', 'door sheet');
+  assert.deepEqual(full(inp).lanes[1].primary.next, ['door·sheet']);
+  inp = base(); inp.operator = { first: '' };
+  assert.equal(buildSlice(inp, lists, 'shareable', {}).model62.identity.callname, 'the·operator');
+  // the v3.0 next step: the next build, else lane 1's thread, else ask
+  inp = base();
+  assert.equal(buildSlice(inp, lists, 'full', {}).model30.session.nextStep, 'door·sheet');
+  inp.digest = inp.digest.replace(/^NEXT BUILD.*$/m, '');
+  assert.equal(buildSlice(inp, lists, 'full', {}).model30.session.nextStep, '2·fitting·day');
+  inp.digest = inp.digest.replace(/^· master-vision-build.*$/m, '');
+  assert.equal(buildSlice(inp, lists, 'full', {}).model30.session.nextStep, 'ask·the·operator');
+  // a hand-over resolved item missing any field is not carried
+  for (const k of ['name', 'what', 'outcome', 'lesson']) {
+    inp = base();
+    const r = { name: 'n', date: '2026-10-27', what: 'w', outcome: 'o', lesson: 'l' }; delete r[k];
+    inp.handoff = { resolved: [r] };
+    assert.deepEqual(full(inp).resolved, [], k);
+  }
+  // a not-pushed thread that would leak is not carried in a shareable slice
+  inp = fixtureInputs();
+  assert.equal(buildSlice(inp, lists, 'shareable', {}).model62.threads.some((t) => /hushbox|κ/.test(t.name)), false);
+});
+
+test('the digest reader: counts of zero, empty and placeholder lines, and items under each heading', () => {
+  assert.deepEqual(parseDigest('CHANGED SINCE THE LAST LOOK (0): something').changed, []);
+  assert.deepEqual(parseDigest('CHANGED SINCE THE LAST LOOK (2): nothing').changed, []);
+  assert.deepEqual(parseDigest('CHANGED SINCE THE LAST LOOK (1):').changed, []);
+  assert.deepEqual(parseDigest('DECISIONS ONLY ROWAN MAKES (0): sign').decisions, []);
+  assert.deepEqual(parseDigest('DECISIONS ONLY ROWAN MAKES (3): none waiting').decisions, []);
+  assert.deepEqual(parseDigest('DECISIONS ONLY ROWAN MAKES (1):\nnot an item\n· an item').decisions, ['an item']);
+  assert.deepEqual(parseDigest('NEXT BUILD: x\n· stray').changed, []);
+  assert.deepEqual(liveUrl('LIVE vale-site', { repos: 'no' }), null);
+  assert.deepEqual(liveUrl('LIVE vale-site', null), null);
+  assert.deepEqual(liveUrl('LIVE vale-site', { repos: [null, { name: 'vale-site', private: false, live: false }] }), null);
+});

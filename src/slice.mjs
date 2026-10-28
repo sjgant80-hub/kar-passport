@@ -85,10 +85,10 @@ export function checksOf(text) {
 }
 
 export function liveUrl(desc, estate) {
-  if (typeof desc !== 'string' || !isObj(estate) || !Array.isArray(estate.repos)) return null;
-  const m = /LIVE\s+(?:https:\/\/sjgant80-hub\.github\.io\/)?([A-Za-z0-9._-]+)(\/[^\s;,)·]*)?/.exec(desc);
+  const m = /LIVE\s+(?:https:\/\/sjgant80-hub\.github\.io\/)?([A-Za-z0-9._-]+)(\/[^\s;,)·]*)?/.exec(typeof desc === 'string' ? desc : '');
   if (!m) return null;
-  const repo = estate.repos.find((r) => isObj(r) && r.name === m[1]);
+  const repos = isObj(estate) && Array.isArray(estate.repos) ? estate.repos : [];
+  const repo = repos.find((r) => isObj(r) && r.name === m[1]);
   if (!repo || repo.private !== false || repo.live !== true) return null;
   return 'https://sjgant80-hub.github.io/' + m[1] + (m[2] || '/');
 }
@@ -131,7 +131,7 @@ export function buildSlice(inputs, lists, target, refs) {
   const first = typeof op.first === 'string' && op.first ? op.first : 'the operator';
   const handoff = isObj(inputs.handoff) ? inputs.handoff : {};
 
-  const org = put(kv.get('Name') || 'not recorded') || 'not·recorded';
+  const org = put(kv.get('Name') || 'not recorded');
   const site = kv.get('Business door (humans)') || '';
   const agentDoor = kv.get('Agent door (machines)') || '';
   const opName = pub ? 'REF-P-001' : dot(first);
@@ -156,11 +156,11 @@ export function buildSlice(inputs, lists, target, refs) {
       contact: put(site) || 'not·recorded', website: put(site) || 'not·recorded', origin: 'not·recorded·in·this·slice' },
     ethos: many(rulesOf(inputs.working).filter((l) => /proof|fake|Verify/.test(l)), 4),
     lexicon: pub || !how.length
-      ? pairs([['business door', site], ['agent door', agentDoor + ' catalog.json and agents.md'], ['pitch', kv.get('Pitch') || '']].filter(([, v]) => v.trim()), 6)
+      ? pairs([['business door', site], ['agent door', agentDoor ? agentDoor + ' catalog.json and agents.md' : ''], ['pitch', kv.get('Pitch') || '']].filter(([, v]) => v.trim()), 6)
       : pairs(how.slice(0, 10).map((e) => [e.name, e.desc]), 10),
     identity: {
       fullName: pub ? 'REF-P-001' : dot(full && op.fullName ? op.fullName : first), callname: pub ? 'the·operator' : dot(first),
-      role: put(statementsOf(inputs.working).find((l) => /signs off/i.test(l)) || 'not recorded') || 'not·recorded',
+      role: put(statementsOf(inputs.working).find((l) => /signs off/i.test(l)) || 'not recorded'),
       function: 'oversees·the·estate·and·is·the·final·gate', nature: 'not·recorded·in·this·slice',
       communication: full ? (put((topic('page-explains-itself') || {}).description || '') || 'not·recorded') : 'not·recorded·in·this·slice',
       location: 'not·recorded·in·this·slice',
@@ -213,7 +213,7 @@ export function buildSlice(inputs, lists, target, refs) {
   if (pub) {
     const goal = statementsOf(inputs.working).find((l) => /revenue/i.test(l));
     const p = goal && put(goal);
-    if (p) m.lanes.push({ name: 'Revenue', primary: { thread: p, score: 'unscored', status: put(pending[0] || 'in·progress') || 'in·progress', next: many(pending, 2) },
+    if (p) m.lanes.push({ name: 'Revenue', primary: { thread: p, score: 'unscored', status: put(pending[0] || 'in progress'), next: many(pending, 2) },
       queued: goods.map((g) => put(g.split(' — ')[0])).filter(Boolean).slice(0, 6).map((t) => ({ thread: t, score: 'unscored', first: 'link·its·proof' })) });
   } else {
     const t1 = openStep && put(openStep);
