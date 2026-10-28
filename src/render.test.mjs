@@ -174,3 +174,34 @@ test('tierState carries nothing personal; tierFit holds each tier\'s limit or re
   assert.equal(tierFit(m, 'nano', 5).ok, false);
   assert.equal(tierFit({}, 'nano', m.generated).ok, false);
 });
+
+test('the writer numbers lanes, threads and resolved items from one, and the readers survive a missing section', () => {
+  const t = render62(syntheticModel());
+  for (const s of ['LANE·1·NAME: Client·work', 'LANE·2·NAME: The·shop', '\nLANE·1·BEGIN\n', '\nLANE·1·END\n', '\nLANE·2·BEGIN\n', '\nLANE·2·END\n', 'THREAD·01: a·second·van', 'RESOLVED·01: the·warped·panel', '    1. cut·the·door·sheet']) assert.ok(t.includes(s), s);
+  for (const name of ['IDENTITY', 'LANE·STRUCTURE', 'SESSION·LOG', 'CLOSED·MILESTONES', 'FINALIZATION']) {
+    assert.equal(toModel62(t.replace('§' + name + '·BEGIN\n', '')).ok, false, name);
+    assert.equal(toModel62(t.replace('§' + name + '·END\n', '')).ok, false, name);
+  }
+  const m30 = render30(model30());
+  for (const name of ['META', 'SESSION·STATE', 'TEST·TRACE']) assert.equal(toModel30(m30.replace('§' + name + '·BEGIN\n', '')).ok, false, name);
+});
+
+test('tierFit holds a tier at exactly its limit, and refuses one character past it', () => {
+  const m = clone(syntheticModel());
+  m.lanes = [{ ...m.lanes[0], primary: { ...m.lanes[0].primary, next: [] } }];
+  const len = (k) => { m.lanes[0].primary.thread = 'x'.repeat(k); return codePoints(tierText(tierState(m), 'nano', m.generated)); };
+  let k = 1; while (len(k) < 300) k++;
+  assert.equal(len(k), 300);
+  assert.equal(tierFit(m, 'nano', m.generated).ok, true);
+  m.lanes[0].primary.thread = 'x'.repeat(k + 1);
+  assert.match(tierFit(m, 'nano', m.generated).why, /does not fit nano \(301 > 300\)/);
+  assert.equal(tierFit(m, 'nano', null).why, 'time is not YYYY-MM-DD_HHMMH');
+  assert.equal(tierFit(m, 'hasOwnProperty', m.generated).why, 'no such tier');
+  assert.equal(tierFit(null, 'nano', m.generated).why, 'not a model');
+});
+
+test('checkModel30 refuses session lists that are not lists of values', () => {
+  for (const f of [(m) => { m.session.activePaths = 'x'; }, (m) => { m.session.recentActions = [1]; }, (m) => { m.session.activePaths = ['a b']; }, (m) => { delete m.session.notes; }]) {
+    const m = model30(); f(m); assert.equal(checkModel30(m).ok, false);
+  }
+});
