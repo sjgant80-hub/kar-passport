@@ -100,7 +100,7 @@ test('the readers refuse what is not text, and know their section lists', () => 
   assert.equal(CANON30.length, 14);
   assert.equal(RULES30.length, 14);
   // a v6.2 header that says v6.2 only after the first line, an empty text
-  assert.ok(validate62('').failures.includes('Version strings mismatch across header, META, and TOKEN·TRACK'));
+  assert.ok(validate62('').failures.includes('Version strings mismatch across header, META FORMAT, and TOKEN·TRACK'));
   assert.ok(validate62('').failures.includes('No delimiter (middle-dot) found'));
   assert.ok(validate62('x').failures.includes('SHA256 field not found in §SIG'));
 });
@@ -185,7 +185,7 @@ test('withSig writes the sealed or the unsealed form, and nothing else', () => {
   assert.equal(withSig(t, 'x'), '');
   assert.equal(withSig('no sig', SEALED), '');
   assert.equal(withSig(5, SEALED), '');
-  assert.equal(withSig(tok(['MODE: VERIFIED'], '∴SYMB-FER·v3.0·TOKEN'), null).split('\n')[4], 'SHA256:');
+  assert.equal(withSig(tok(['MODE: VERIFIED'], '∴SYMB-FER·v3.0·TOKEN'), null).split('\n')[5], 'SHA256:');
 });
 
 test('the seal message and the tier §SIG block', () => {

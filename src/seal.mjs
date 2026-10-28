@@ -4,8 +4,8 @@
 //   seal(text, identity)          → the token with its §SIG block sealed: SHA-256 of canonical(text), and Ed25519 (the
 //                                   identity's key, fall-kit's identity.mjs) over sealMessage(sha); '' if it has no §SIG
 //   verify(text, { trust })       → { ok: true, format, key, sha } | { ok: false, why }. In order: a SYMB-FER shape this
-//                                   codec reads; LF only; the shape's own validator says PASS (SYMBEYOND's for v6.2,
-//                                   teslasolar's engine for v3.0, the generator's limit for a tier); the §SIG block sealed;
+//                                   codec reads; the §SIG block sealed; LF only; the shape's own validator says PASS
+//                                   (SYMBEYOND's for v6.2, teslasolar's engine for v3.0, the generator's limit for a tier);
 //                                   the SHA-256 matches; the key is on the trust list; the signature verifies
 //   verifyBytes(u8, opts)         → the same, on raw bytes (not UTF-8 is a refusal)
 //   parseToken(text, { trust })   → verify first; a refused token gives { ok: false, refused, context: null } and nothing
@@ -55,11 +55,12 @@ export function shapeOf(text) {
 export async function verify(text, opts) {
   try {
     if (typeof text !== 'string') return no('not text');
-    const shape = shapeOf(text);
-    if (!shape.ok) return shape;
+    if (!formatOf(text)) return shapeOf(text);
     const s = sigOf(text);
     if (!s.ok) return no(s.why);
     if (!s.sealed) return no('unsealed: SHA256 PENDING and no signature');
+    const shape = shapeOf(text);
+    if (!shape.ok) return shape;
     const sha = shaOf(canonical(text));
     if (sha !== s.sha) return no('changed: the token\'s SHA-256 is ' + sha.slice(0, 12) + '…, its seal says ' + s.sha.slice(0, 12) + '…');
     const trust = opts && Array.isArray(opts.trust) ? opts.trust : [];

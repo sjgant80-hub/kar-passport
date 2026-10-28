@@ -108,7 +108,7 @@ const S62 = [
     'DATE: ' + r.date, 'WHAT: ' + r.what, 'OUTCOME: ' + r.outcome, 'LESSON: ' + r.lesson]))],
   ['CLOSED·MILESTONES', T(448, 456), [], (m) => orNone(m.milestones.flatMap((r, i) => [...(i ? [''] : []), 'MILESTONE·' + r.id + ': ' + r.name,
     'DATE: ' + r.date, 'WHAT: ' + r.what, 'OUTCOME: ' + r.outcome, 'SOURCE: ' + r.source]))],
-  ['LESSONS·LEARNED', T(473, 475), T(479, 490), (m) => m.lessons.map(([k, t]) => k + ': ' + t)],
+  ['LESSONS·LEARNED', T(473, 474), T(479, 490), (m) => m.lessons.map(([k, t]) => k + ': ' + t)],
   ['DRIFT·CHECK', T(494, 495), T(497, 498), (m) => ['SOVEREIGNTY: ' + m.sovereign + '·decides·whether·to·continue·or·redirect']],
   ['INTEGRITY', T(523, 527), [], () => []],
   ['FINALIZATION', [], [T(533)[0], 'NOTE: sealed·by·Kar\'s·passport·SHA-256·of·every·line·outside·§SIG·and·Ed25519·see·§SIG'],
