@@ -192,16 +192,19 @@ async function refusals(text, trustList) {
   const mods = await Promise.all(['symbfer', 'render', 'seal', 'slice', 'leak', 'drift', 'boot', 'judge'].map((m) => import('./src/' + m + '.mjs')));
   const r = rng(77), pick = (a) => a[Math.floor(r() * a.length)];
   const garbage = [null, undefined, 0, -1, NaN, 1e309, '', ' ', '§', '∴SYMB-FER·v6.2·LIVING·TOKEN·[x]', '§SIG·BEGIN\n§SIG·END', [], [null], {}, { lines: 3 }, () => 1, Symbol.iterator, new Uint8Array([0xff, 0xfe]), 'a'.repeat(5000), Object.create(null)];
-  let inputs = 0, throws = 0;
-  for (const m of mods) for (const [name, fn] of Object.entries(m)) {
+  // 2,000 garbage inputs to every exported function, as claims.json G1 says (each input: four arguments drawn from the list)
+  const PER = 2000;
+  let inputs = 0, throws = 0, functions = 0;
+  for (const m of mods) for (const fn of Object.values(m)) {
     if (typeof fn !== 'function') continue;
-    for (let k = 0; k < 2000 / 40; k++) {
+    functions++;
+    for (let k = 0; k < PER; k++) {
       inputs++;
       try { const out = fn(pick(garbage), pick(garbage), pick(garbage), pick(garbage)); if (out && typeof out.then === 'function') await out.catch(() => { throws++; }); } catch { throws++; }
     }
   }
   const g1 = local('g1.json');
-  facts.G1 = { clean: g1 ? g1.modules.map((x) => x.clean) : [], modules: g1 ? g1.modules : [], fuzzInputs: inputs, fuzzThrows: throws };
+  facts.G1 = { clean: g1 ? g1.modules.map((x) => x.clean) : [], modules: g1 ? g1.modules : [], fuzzFunctions: functions, fuzzPerFunction: PER, fuzzInputs: inputs, fuzzThrows: throws };
 }
 
 // G2: the live page in a real tab (local/g2.json)
