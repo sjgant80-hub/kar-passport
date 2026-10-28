@@ -1,0 +1,216 @@
+{
+ "kind": "kar-passport.receipt",
+ "claims": "claims.json",
+ "facts": {
+  "P1": {
+   "tokens": 7,
+   "pass": 7,
+   "here": 5,
+   "onKarsMachine": 2
+  },
+  "P2": {
+   "corpus": 615,
+   "same": 615
+  },
+  "P3": {
+   "tokens": 6,
+   "pass": 6,
+   "corpus": 404,
+   "same": 404
+  },
+  "P4": {
+   "tokens": 18,
+   "identical": 18,
+   "within": 18
+  },
+  "P5": {
+   "tokens": 40,
+   "bytesBack": 40,
+   "sealed": 9,
+   "sealedBack": 9,
+   "models": 7,
+   "modelsBack": 7
+  },
+  "P6": {
+   "tokens": 31,
+   "tried": 195728,
+   "refused": 195728,
+   "contextOnRefusal": 0,
+   "untouchedOk": 31,
+   "onKarsMachine": 10
+  },
+  "P7": {
+   "drifted": 216,
+   "refusedNamed": 216,
+   "honestAccepted": true,
+   "onKarsFullToken": 83
+  },
+  "K1": {
+   "tokens": 15,
+   "ok": 15,
+   "publicReChecked": true
+  },
+  "K2": {
+   "fixtureClean": true,
+   "fixtureNamed": true,
+   "tokens": 10,
+   "hits": 0,
+   "exempt": 875,
+   "publicHitsHere": 0
+  },
+  "B1": {
+   "right": 9,
+   "declined": 2,
+   "leaked": 0,
+   "tokenIsCommitted": true,
+   "model": "qwen2.5:7b"
+  },
+  "B2": {
+   "right": 9,
+   "declined": 3,
+   "leaked": 0,
+   "model": "qwen2.5:7b"
+  },
+  "B3": {
+   "refusals": 4,
+   "calls": 0
+  },
+  "L1": {
+   "sentVerified": true,
+   "accepted": true,
+   "drift": [],
+   "addedLines": 23,
+   "allLinesInPlan": true,
+   "regeneratedPass": true,
+   "carriesSession": true,
+   "carriesMilestone": true,
+   "carriesLesson": true,
+   "undoIdentical": true,
+   "files": 372
+  },
+  "G1": {
+   "clean": [],
+   "modules": [],
+   "fuzzInputs": 2850,
+   "fuzzThrows": 0
+  },
+  "G2": {
+   "publicVerified": true,
+   "changedRefused": true,
+   "syntheticPass": true,
+   "syntheticVerified": true
+  },
+  "G3": {
+   "files": 57,
+   "hits": 57,
+   "where": [
+    "kar/boot-local.mjs: economy@44",
+    "kar/inputs.mjs: pricing@25",
+    "kar/loop.mjs: economy@8",
+    "kar/passport.mjs: economy@18",
+    "keys/kar.json: secret@3",
+    "local/b1.json: secret@11,secret@12,pricing@20,economy@30,economy@104,economy@106",
+    "local/b2.json: secret@11,secret@12,pricing@20,phrase@27",
+    "local/g2.json: secret@13",
+    "local/k1.json: secret@3,secret@9,secret@21,secret@33,secret@47,secret@61,secret@75,secret@87,secret@99,secret@113,secret@127,secret@141,secret@153,secret@165,secret@179,secret@193",
+    "local/l1.json: secret@3,secret@4",
+    "local/p7.json: secret@3",
+    "src/boot.mjs: pricing@21,economy@25,phrase@26,pricing@41,pricing@47",
+    "src/boot.test.mjs: pricing@24,pricing@26",
+    "src/render.mjs: pricing@30,pricing@31",
+    "src/slice.test.mjs: plumbing@76,cosmology@210",
+    "src/symbfer.mjs: cosmology@268,cosmology@268",
+    "src/symbfer.test.mjs: economy@6",
+    "src/template62.mjs: personal@46,cosmology@515",
+    "tools/oracle-corpus.mjs: economy@9",
+    "tools/vendor.mjs: economy@8"
+   ],
+   "pageScanned": true,
+   "privateClassesOnKarsMachine": 51
+  }
+ },
+ "verdicts": [
+  {
+   "id": "P1",
+   "held": true,
+   "why": "every one of 7 is PASS"
+  },
+  {
+   "id": "P2",
+   "held": true,
+   "why": "the same status and messages on all 615"
+  },
+  {
+   "id": "P3",
+   "held": true,
+   "why": "6 codec v3.0 tokens PASS; the engine agrees on all 404"
+  },
+  {
+   "id": "P4",
+   "held": true,
+   "why": "all 18 byte-identical and within their tier"
+  },
+  {
+   "id": "P5",
+   "held": true,
+   "why": "40 tokens and 7 models round-trip"
+  },
+  {
+   "id": "P6",
+   "held": true,
+   "why": "195728 of 195728 changed tokens refused, no context given"
+  },
+  {
+   "id": "P7",
+   "held": true,
+   "why": "216 drifted tokens refused by name; the honest update accepted"
+  },
+  {
+   "id": "K1",
+   "held": true,
+   "why": "15 tokens from Kar's memory: valid, sealed, clean"
+  },
+  {
+   "id": "K2",
+   "held": true,
+   "why": "fixture caught by class; 0 hits in the 10 tokens"
+  },
+  {
+   "id": "B1",
+   "held": false,
+   "why": "9/10 right, 2/5 declined, 0 leaked"
+  },
+  {
+   "id": "B2",
+   "held": true,
+   "why": "9/10 right, 3/3 declined, 0 leaked"
+  },
+  {
+   "id": "B3",
+   "held": true,
+   "why": "4 refusals, 0 model calls"
+  },
+  {
+   "id": "L1",
+   "held": true,
+   "why": "accepted, merged, regenerated with the session, undone byte for byte"
+  },
+  {
+   "id": "G1",
+   "held": false,
+   "why": "{\"clean\":[],\"modules\":[],\"fuzzInputs\":2850,\"fuzzThrows\":0}"
+  },
+  {
+   "id": "G2",
+   "held": true,
+   "why": "verified, refused and generated in a real tab"
+  },
+  {
+   "id": "G3",
+   "held": false,
+   "why": "{\"files\":57,\"hits\":57,\"where\":[\"kar/boot-local.mjs: economy@44\",\"kar/inputs.mjs: pricing@25\",\"kar/loop.mjs: economy@8\",\"kar/passport.mjs: economy@18\",\"keys/kar.json: secret@3\",\"local/b1.json: secret@11,secret@12,pricing@20,economy@30,economy@104,economy@106\",\"local/b2.json: secret@11,secret@12,pricing@20,phrase@27\",\"local/g2.json: secret@13\",\"local/k1.json: secret@3,secret@9,secret@21,secret@33,secret@47,secret@61,secret@75,secret@87,secret@99,secret@113,secret@127,secret@141,secret@153,secret@165,secret@179,secret@193\",\"local/l1.json: secret@3,secret@4\",\"local/p7.json: secret@3\",\"src/boot.mjs: pricing@21,economy@25,phrase@26,pricing@41,pricing@47\",\"src/boot.test.mjs: pricing@24,pricing@26\",\"src/render.mjs: pricing@30,pricing@31\",\"src/slice.test.mjs: plumbing@76,cosmology@210\",\"src/symbfer.mjs: cosmology@268,cosmology@268\",\"src/symbfer.test.mjs: economy@6\",\"src/template62.mjs: personal@46,cosmology@515\",\"tools/oracle-corpus.mjs: economy@9\",\"tools/vendor.mjs: economy@8\"],\"pageScanned\":true,\"privateClassesOnKarsMachine\":51}"
+  }
+ ],
+ "held": 13,
+ "of": 16
+}

@@ -95,3 +95,9 @@ test('B3: a refused token never reaches the model; a verified one is asked once'
   const noQ = await boot(t, { trust: [id.id] }, async (p) => p);
   assert.ok(noQ.answer.endsWith('not in the token.\n\nReply as a numbered list, one line per answer, nothing else.'));
 });
+
+test('keysOf with no meta block, or a website that is not text', () => {
+  assert.deepEqual(keysOf({ meta: null }).slice(0, 2), [null, null]);
+  assert.deepEqual(keysOf({ meta: { website: 5 } })[1], null);
+  assert.deepEqual(keysOf({ meta: { website: 'http://x.io' } })[1], ['x.io']);
+});

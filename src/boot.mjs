@@ -88,7 +88,7 @@ export function judgeBoot(answers, keys, withheld, rule) {
 export async function boot(token, opts, ask) {
   const p = await parseToken(token, opts);
   if (!p.ok) return { ok: false, refused: p.refused, answer: null, calls: 0 };
-  const questions = isObj(opts) && Array.isArray(opts.questions) ? opts.questions : [];
+  const questions = isObj(opts) ? opts.questions : [];   // bootPrompt keeps only a list of strings
   const answer = await ask(bootPrompt(token, questions));
   return { ok: true, format: p.context.format, answer, calls: 1 };
 }
