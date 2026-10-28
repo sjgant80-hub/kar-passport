@@ -1,11 +1,8 @@
 {
  "claim": "G3",
- "files": 51,
- "hits": 4,
- "where": [
-  "src/boot.test.mjs: **********@57,**********@63,**********@64",
-  "src/slice.test.mjs: **********@110"
- ],
+ "files": 57,
+ "hits": 0,
+ "where": [],
  "pageScanned": true,
  "pageHits": 0
 }

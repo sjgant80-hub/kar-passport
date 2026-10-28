@@ -207,15 +207,18 @@ async function refusals(text, trustList) {
 // G2: the live page in a real tab (local/g2.json)
 { const g2 = local('g2.json'); if (g2) facts.G2 = g2.facts; }
 
-// G3: every committed file but vendor/, fixtures, claims.json and the gate's own lists; the live page's text (local/g2.json)
+// G3: every committed file but vendor/, fixtures, claims.json and the gate's own lists; the live page's text (local/g2.json).
+// The receipt this script writes is left out too: it is this measurement's own output (it lists these hits), so scanning
+// it measures the measurement and never settles; said in the facts as `excluded`.
 {
+  const OWN = 'receipts/passport.json';
   const tracked = execFileSync('git', ['ls-files'], { cwd: ROOT }).toString().split('\n').filter(Boolean)
-    .filter((f) => !/^(vendor|fixtures)\//.test(f) && !['claims.json', 'src/leak.mjs', 'src/leak.test.mjs'].includes(f));
+    .filter((f) => !/^(vendor|fixtures)\//.test(f) && !['claims.json', 'src/leak.mjs', 'src/leak.test.mjs', OWN].includes(f));
   const L = { privateNames: [], surnames: [], firstNames: [], canaries: [] };
   let hits = 0; const where = [];
   for (const f of tracked) { const h = scan(rd(f), L, 'shareable', protocolLines()).hits; hits += h.length; if (h.length) where.push(f + ': ' + h.map((x) => x.cls + '@' + x.n).join(',')); }
   const g3 = local('g3.json');
-  facts.G3 = { files: tracked.length, hits: hits + (g3 ? g3.hits : 0), where, pageScanned: !!(g3 && g3.pageScanned), privateClassesOnKarsMachine: g3 ? g3.files : 0 };
+  facts.G3 = { files: tracked.length, hits: hits + (g3 ? g3.hits : 0), where, pageScanned: !!(g3 && g3.pageScanned), privateClassesOnKarsMachine: g3 ? g3.files : 0, excluded: [OWN + ' (this measure\'s own output)'] };
 }
 
 const verdicts = CLAIM_IDS.map((id) => judge(id, facts[id]));
