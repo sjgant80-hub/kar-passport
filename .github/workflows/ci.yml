@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  passport:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: the kernels' tests and the page gate
+        run: node --test src/*.test.mjs page.test.mjs
+      - name: the vendored oracles are byte-identical to SYMBEYOND/SYMB-FER, teslasolar/SYMB-FER and fall-kit at their pinned commits
+        run: node tools/vendor.mjs --check
+      - name: the template module is the vendored v6.2 template
+        run: node tools/template.mjs --check
+      - name: SYMBEYOND's and teslasolar's own Python, re-run over the whole corpus, still say what the fixtures say
+        run: node tools/oracle-corpus.mjs --check
+      - name: the receipt reproduces (every claim re-derived here; the local records re-judged)
+        run: node measure.mjs --check
+
+  witness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: mutation gate (witness v0.6) on every module of src/; a survivor is killed, or baselined with a written reason in witness.baseline.json
+        run: |
+          git clone --depth 1 --branch v0.6 https://github.com/sjgant80-hub/witness.git .witness6
+          for k in symbfer render seal leak slice drift boot judge; do
+            node .witness6/witness.mjs mutate src/$k.mjs --timeout 120000 --cap 1000 --test timeout -k 5 110 node --test src/symbfer.test.mjs src/render.test.mjs src/seal.test.mjs src/leak.test.mjs src/slice.test.mjs src/drift.test.mjs src/boot.test.mjs src/judge.test.mjs | tee /tmp/w.txt
+            grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in src/$k.mjs"; exit 1; }
+            grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on src/$k.mjs was capped"; exit 1; }
+          done

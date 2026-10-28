@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kar's passport · carry your AI's context to any AI, checked</title>
+<meta name="description" content="Your AI's memory stays home. The passport carries a slice of it to any other AI as one pasteable, signed SYMB-FER token, checked before it is read, with private things kept out. Built on SYMB-FER by SYMBEYOND AI LLC.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#14532d">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#fbfaf7;--fg:#1c1b19;--muted:#5d5a53;--line:#e2ded5;--card:#ffffff;--accent:#14532d;--accent-2:#166534;--ok:#15803d;--bad:#b91c1c;--warn:#a16207;--code:#f3f1ec;--chip:#ecfdf3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121411;--fg:#ecebe7;--muted:#a8a59c;--line:#2c2f2a;--card:#1a1d19;--accent:#4ade80;--accent-2:#86efac;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--code:#1f231e;--chip:#163220}}
+:root[data-theme="dark"]{--bg:#121411;--fg:#ecebe7;--muted:#a8a59c;--line:#2c2f2a;--card:#1a1d19;--accent:#4ade80;--accent-2:#86efac;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--code:#1f231e;--chip:#163220}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent-2)}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:14px}
+nav b{font-size:16px;margin-right:auto}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--fg)}
+main{max-width:1080px;margin:0 auto;padding:0 16px 64px}
+section{padding:36px 0;border-bottom:1px solid var(--line)}
+h1{font-size:clamp(28px,5vw,44px);line-height:1.15;margin:28px 0 12px}
+h2{font-size:clamp(22px,3.4vw,30px);margin:0 0 12px}
+h3{font-size:18px;margin:22px 0 8px}
+.lede{font-size:clamp(17px,2.2vw,20px);color:var(--fg);max-width:780px}
+.muted{color:var(--muted)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin-top:0}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+button{font:inherit;font-size:15px;padding:9px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}
+button.ghost{background:transparent;color:var(--accent-2)}
+button:disabled{opacity:.5;cursor:default}
+label{display:block;font-size:14px;color:var(--muted);margin:10px 0 4px}
+input,textarea{width:100%;font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
+textarea{min-height:120px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;max-height:420px;font-size:12.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.tabs button{background:transparent;color:var(--fg);border-color:var(--line);padding:6px 10px;font-size:14px}
+.tabs button[aria-selected="true"]{border-color:var(--accent);color:var(--accent-2);font-weight:600}
+.verdict{padding:10px 12px;border-radius:8px;border:1px solid var(--line);margin:10px 0;font-weight:600}
+.verdict.ok{border-color:var(--ok);color:var(--ok)}
+.verdict.bad{border-color:var(--bad);color:var(--bad)}
+.chip{display:inline-block;background:var(--chip);border-radius:999px;padding:2px 10px;font-size:13px;margin:2px 4px 2px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;border-bottom:1px solid var(--line);padding:8px 6px;vertical-align:top}
+.held{color:var(--ok);font-weight:700}.failed{color:var(--bad);font-weight:700}
+ol.steps li{margin:6px 0}
+svg text{fill:var(--fg);font:13px system-ui,sans-serif}
+svg .box{fill:var(--card);stroke:var(--accent);stroke-width:1.5}
+svg .home{fill:var(--chip);stroke:var(--accent);stroke-width:1.5}
+svg .arrow{stroke:var(--muted);stroke-width:1.5;fill:none;marker-end:url(#arr)}
+svg .stop{fill:none;stroke:var(--bad);stroke-width:1.5;stroke-dasharray:4 3}
+.num{font-variant-numeric:tabular-nums;font-weight:700}
+footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--muted);font-size:14px}
+#boot-note{display:none;margin:12px 0;padding:10px;border:1px solid var(--warn);border-radius:8px;color:var(--warn)}
+.two{display:grid;gap:16px;grid-template-columns:1fr}
+@media (min-width:860px){.two{grid-template-columns:1fr 1fr}}
+details summary{cursor:pointer;color:var(--accent-2)}
+</style>
+</head>
+<body>
+<header class="top"><nav aria-label="Sections">
+<b>Kar's passport</b>
+<a href="#start">Start here</a><a href="#try">Try it</a><a href="#how">How it works</a><a href="#blueprint">Blueprint</a>
+<a href="#proof">The proof</a><a href="#business">For your business</a><a href="#paper">White paper</a><a href="#faq">FAQ</a>
+</nav></header>
+<main>
+<section id="what">
+<h1>Your AI's memory stays home. Its passport travels.</h1>
+<p class="lede">Every new AI session starts cold. This tool takes the context your own AI holds and writes a slice of it as one block of plain text: a <b>passport</b>. You paste it into any AI, whether a fresh session, Grok, a colleague's assistant or a local model, and that AI starts up knowing what you are working on. The passport is <b>signed</b> and <b>checked before anything reads it</b>, so a changed or forged one is refused. It comes in <b>three slices</b>: private, shareable and public. Private things never travel in the two that leave.</p>
+<p class="muted">The passport follows <a href="https://github.com/SYMBEYOND/SYMB-FER">SYMB-FER</a>, the open context-continuity protocol by SYMBEYOND AI LLC (v6.2, MIT). This page runs the same tested code the tool runs, in your browser, offline once loaded. Nothing you type here leaves this tab.</p>
+<div class="btns"><button onclick="location.hash='#try'">Check Kar's real passport</button><button class="ghost" onclick="location.hash='#make'">Make one for yourself</button></div>
+<div id="boot-note">The page's scripts did not start. Reload the page; if that does not help, your browser may not support the signing it uses (Ed25519 in WebCrypto: Chrome 137+, Safari 17+, Firefox 129+).</div>
+</section>
+
+<section id="start">
+<h2>Start here</h2>
+<ol class="steps">
+<li><b>Check a real passport.</b> In <a href="#try">Try it</a>, press <i>Verify</i>. The page fetches the public passport made from Kar's memory and checks it against Kar's published key. You should see <b>VERIFIED</b> and the order a receiving AI reads it in.</li>
+<li><b>Break it.</b> Press <i>Change one character</i>. Any change anywhere, even one bit, is refused, and the page says why.</li>
+<li><b>Make your own.</b> In <a href="#make">Make one</a>, type a few facts about your work and press <i>Make my passport</i>. It is written in SYMB-FER v6.2, checked by the same rules as SYMBEYOND's own validator, and signed with a key that lives only in this tab.</li>
+<li><b>Hand it back.</b> In <a href="#handback">Hand-back</a>, simulate what a session returns at the end of its work. An honest update is accepted and listed line by line; a drifted one is refused, naming the rule it broke.</li>
+<li><b>Use it.</b> Copy the public passport and paste it as the first message to any AI. It reads the passport, then starts work in context.</li>
+</ol>
+</section>
+
+<section id="try">
+<h2>Try it: Kar's public passport</h2>
+<p>This is the public slice Kar made from its own memory today. It is the one meant for Grok and anyone. It carries only facts that are already public: the company, its doors, its live pages and its rules. The operator appears only as a reference code, <code>REF-P-001</code>. Five shapes come from one slice: the full v6.2 living token, the v3.0 shape teslasolar's fork checks, and SYMBEYOND's three size tiers.</p>
+<div class="tabs" role="tablist" id="shape-tabs"></div>
+<div class="btns"><button id="b-verify">Verify</button><button class="ghost" id="b-tamper">Change one character</button><button class="ghost" id="b-copy">Copy</button><button class="ghost" id="b-reset">Put it back</button></div>
+<div id="v-out" class="verdict" aria-live="polite">Press Verify.</div>
+<div id="v-boot"></div>
+<pre id="tok" aria-label="the token">loading…</pre>
+<p class="muted" id="tok-facts"></p>
+</section>
+
+<section id="make">
+<h2>Make one for yourself</h2>
+<p>Fill in what a new AI should know about you. Leave anything blank to keep the example (a made-up joinery workshop). The passport is made in this tab, by the same code, and signed with a key made in this tab that disappears when you close it.</p>
+<div class="two">
+<div>
+<label for="f-name">Your name</label><input id="f-name" placeholder="Rowan Vale">
+<label for="f-org">Company</label><input id="f-org" placeholder="Vale Joinery Ltd">
+<label for="f-site">Website</label><input id="f-site" placeholder="https://example.com/vale-joinery">
+<label for="f-thread">What you are working on now</label><input id="f-thread" placeholder="kitchen for a client">
+<label for="f-next">Its next step</label><input id="f-next" placeholder="cut the door sheet">
+<label for="f-rule">One rule the AI must keep</label><input id="f-rule" placeholder="quote in writing before any cut">
+<div class="btns"><button id="b-make">Make my passport</button><button class="ghost" id="b-dl" disabled>Download</button></div>
+</div>
+<div>
+<div id="m-out" class="verdict" aria-live="polite">Nothing made yet.</div>
+<pre id="m-tok" aria-label="your token">—</pre>
+</div>
+</div>
+</section>
+
+<section id="handback">
+<h2>Hand-back: what comes back at the end of a session</h2>
+<p>At the end of its work, the receiving AI returns an updated passport. The protocol allows exactly this: <b>§CURRENT·REALITY</b> is replaced; <b>§SESSION·LOG</b> is appended to and never rewritten; milestones, lessons and resolved items are only ever added; an open thread may leave only into §RESOLVED or §CLOSED·MILESTONES. Anything else is drift. Make a passport above first, then:</p>
+<div class="btns"><button id="b-honest" disabled>Simulate an honest update</button><button class="ghost" id="b-drift" disabled>Simulate drift</button><button class="ghost" id="b-check" disabled>Check what came back</button></div>
+<label for="h-back">The returned passport (paste one, or simulate)</label>
+<textarea id="h-back" placeholder="the updated token a session handed back"></textarea>
+<div id="h-out" class="verdict" aria-live="polite">Nothing checked yet.</div>
+<div id="h-added"></div>
+</section>
+
+<section id="leaks">
+<h2>Nothing private travels: watch the gate work</h2>
+<p>The slicer reads a memory, then a gate checks every line of a public or shareable passport against eight kinds of leak: private repository names, keys and secrets, passphrases, personal details (emails, phone numbers, names), our own pricing, internal economy terms, private jargon, and machine plumbing (local paths and internal tool names). Press the button to plant one of each kind in every place a made-up memory is read from, then slice it.</p>
+<div class="btns"><button id="b-leak">Plant leaks and slice</button></div>
+<div id="l-out"></div>
+</section>
+
+<section id="how">
+<h2>How it works</h2>
+<p>Memory holds; the passport transfers. The loop below is what runs, and the numbers under it are read from the real public passport on this page and from the proof file.</p>
+<svg viewBox="0 0 960 330" width="100%" role="img" aria-labelledby="dia-t">
+<title id="dia-t">From Kar's memory, through the slicer, gate, writer and seal, to a fresh AI, and back through the drift check into memory</title>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+<rect class="home" x="10" y="20" width="150" height="70" rx="10"/><text x="85" y="50" text-anchor="middle">Kar's memory</text><text x="85" y="70" text-anchor="middle" class="muted">holds everything</text>
+<rect class="box" x="200" y="20" width="140" height="70" rx="10"/><text x="270" y="50" text-anchor="middle">Slicer</text><text x="270" y="70" text-anchor="middle">full · shareable · public</text>
+<rect class="box" x="380" y="20" width="120" height="70" rx="10"/><text x="440" y="50" text-anchor="middle">Leak gate</text><text x="440" y="70" text-anchor="middle">8 kinds of leak</text>
+<rect class="box" x="540" y="20" width="140" height="70" rx="10"/><text x="610" y="50" text-anchor="middle">Writer</text><text x="610" y="70" text-anchor="middle">SYMB-FER v6.2</text>
+<rect class="box" x="720" y="20" width="220" height="70" rx="10"/><text x="830" y="50" text-anchor="middle">Seal</text><text x="830" y="70" text-anchor="middle">SHA-256 + Ed25519 signature</text>
+<path class="arrow" d="M160 55H198"/><path class="arrow" d="M340 55H378"/><path class="arrow" d="M500 55H538"/><path class="arrow" d="M680 55H718"/>
+<rect class="box" x="720" y="140" width="220" height="70" rx="10"/><text x="830" y="170" text-anchor="middle">Verify before reading</text><text x="830" y="190" text-anchor="middle">changed or forged: refused</text>
+<path class="arrow" d="M830 90V138"/>
+<rect class="box" x="460" y="140" width="210" height="70" rx="10"/><text x="565" y="170" text-anchor="middle">A fresh AI</text><text x="565" y="190" text-anchor="middle">new Kar · Grok · any model</text>
+<path class="arrow" d="M720 175H672"/>
+<rect class="box" x="200" y="140" width="210" height="70" rx="10"/><text x="305" y="170" text-anchor="middle">Drift check</text><text x="305" y="190" text-anchor="middle">the protocol's own rules</text>
+<path class="arrow" d="M460 175H412"/>
+<rect class="box" x="10" y="250" width="290" height="60" rx="10"/><text x="155" y="276" text-anchor="middle">Reviewed plan, applied, undoable</text><text x="155" y="296" text-anchor="middle">the hand-over log only grows</text>
+<path class="arrow" d="M305 210V248"/><path class="arrow" d="M85 248V92"/>
+<rect class="stop" x="715" y="225" width="230" height="40" rx="8"/><text x="830" y="250" text-anchor="middle">refused: never reaches a model</text>
+<path class="arrow" d="M830 210V223"/>
+</svg>
+<h3>One real run, step by step</h3>
+<ol class="steps" id="trace"><li>Loading the real numbers…</li></ol>
+</section>
+
+<section id="blueprint">
+<h2>Blueprint: how it is built, organ by organ</h2>
+<div class="grid">
+<div class="card"><h3>1 · The codec</h3><p>Readers that port SYMBEYOND's v6.2 validator and teslasolar's v3.0 engine line for line, so their verdicts can be compared on a thousand tokens. Writers that build tokens from the template's own lines. A seal: SHA-256 over every line outside §SIG, and an Ed25519 signature carried in §SIG.</p><p class="muted">src/symbfer.mjs · render.mjs · seal.mjs</p></div>
+<div class="card"><h3>2 · The leak gate</h3><p>Eight kinds of leak, proven first on a planted fixture. It ignores the protocol's own public text, which it has byte for byte, and the signature block. The lists of private names and the operator's names are read on Kar's machine and never stored with the code.</p><p class="muted">src/leak.mjs</p></div>
+<div class="card"><h3>3 · The slicer</h3><p>Reads Kar's memory index, its topic files, the brain's working memory and the estate index. Writes three slices. Public means only facts that are already public. Shareable means memory's threads with private names turned into reference codes. Full means everything selected, and it stays private.</p><p class="muted">src/slice.mjs</p></div>
+<div class="card"><h3>4 · The hand-back</h3><p>Checks a returned passport against the one sent, using v6.2's own words, then turns an honest update into a reviewed plan for memory. The plan only adds, keeps the bytes it replaces and can be undone.</p><p class="muted">src/drift.mjs</p></div>
+<div class="card"><h3>5 · The boot</h3><p>Verifies first and only then asks a model. A refused passport makes zero model calls. A sealed question set and its answer key, read from the passport, measure what a cold model knows after reading it.</p><p class="muted">src/boot.mjs</p></div>
+<div class="card"><h3>The proof</h3><p>Claims written and committed before any code; a receipt that CI re-derives on every push, with SYMBEYOND's and teslasolar's own Python as the judges; a mutation gate (witness) over every module.</p><p class="muted">claims.json · measure.mjs · receipts/passport.json</p></div>
+</div>
+</section>
+
+<section id="proof">
+<h2>The proof</h2>
+<p>Every claim below was sealed in <a href="claims.json">claims.json</a> before the first line of code. Each one is HELD or FAILED by its sealed rule. A failed claim stays failed, with its numbers. CI re-derives every part it can run from the repository on each push.</p>
+<div id="receipt">Loading the receipt…</div>
+</section>
+
+<section id="business">
+<h2>For your business</h2>
+<p class="lede">Your people already brief AI tools all day. Each new chat starts cold, so someone re-types the context: the client, the job, the rules, where things stand. A passport carries that brief once, checked, to whichever AI they use. You own it, it is in plain text, and it is not locked to any vendor.</p>
+<div class="grid">
+<div class="card"><h3>Owner or CEO</h3><p>Continuity that does not belong to an AI vendor. Your context lives in your files, travels to whichever model is best this month, and comes back with the session's work merged in.</p></div>
+<div class="card"><h3>Finance</h3><p>The time people spend re-explaining context to AI, counted below from your own numbers. No new subscription is needed: the tool is MIT-licensed and runs on your machines.</p></div>
+<div class="card"><h3>Operations</h3><p>A handover between people, shifts or AI sessions that cannot silently lose or rewrite history. The session log only grows, milestones are never reopened, and every change is listed.</p></div>
+<div class="card"><h3>CTO / CISO</h3><p>The receiving AI checks a signature before reading. Tampering is refused. The slices keep personal data and private names out of anything sent to a hosted model. There is no server, and keys stay on your devices.</p></div>
+<div class="card"><h3>The teams</h3><p>Paste one block at the start of a chat instead of re-typing a brief. At the end, ask the AI for the updated passport.</p></div>
+</div>
+<h3>The time it gives back (your numbers)</h3>
+<div class="grid">
+<div><label for="c-people">People who use AI at work</label><input id="c-people" type="number" min="0" value="10"></div>
+<div><label for="c-sessions">New AI chats per person per week</label><input id="c-sessions" type="number" min="0" value="10"></div>
+<div><label for="c-weeks">Working weeks a year</label><input id="c-weeks" type="number" min="0" step="0.1" value="46.4"></div>
+<div><label for="c-cost">Your loaded hourly staff cost (in your own currency, optional)</label><input id="c-cost" type="number" min="0" value=""></div>
+</div>
+<p id="c-out" class="lede"></p>
+<p class="muted" id="c-basis"></p>
+<h3>Against what you use now</h3>
+<table><thead><tr><th>Today</th><th>The gap</th><th>The passport</th></tr></thead><tbody>
+<tr><td>A vendor's built-in AI memory</td><td>Held by the vendor, stays with that one product, and you cannot see or sign it</td><td>Yours, in plain text, works with any model, signed and checked</td></tr>
+<tr><td>A saved system prompt</td><td>Static: it never learns what happened in the session</td><td>Living: the session hands back an update, merged into memory</td></tr>
+<tr><td>Notes pasted by hand</td><td>Unstructured, they drift, and nothing checks them</td><td>A fixed section order, drift refused by rule, a tamper-evident seal</td></tr>
+</tbody></table>
+<h3>Security, data protection and compliance</h3>
+<ul>
+<li><b>Data minimisation (UK GDPR Article 5(1)(c)).</b> Each target gets only its slice. The public slice holds only facts that are already public, and personal data becomes reference codes whose lookup stays on your machine.</li>
+<li><b>Hosted AI is a processor.</b> Pasting a passport into a hosted AI sends its contents to that provider; SYMBEYOND's own security notes say the same. Send hosted AIs only the public or shareable slice, and keep the full slice for your own sessions.</li>
+<li><b>Integrity.</b> SHA-256 over every line outside the seal, plus an Ed25519 signature. The receiving side refuses a token signed by a key it does not trust.</li>
+<li><b>No server, no telemetry.</b> This page and the tool run locally. Signing keys never leave the device that made them.</li>
+<li><b>Audit.</b> Every hand-back is written to a log that only grows, with the before-bytes kept so it can be undone.</li>
+</ul>
+<h3>Deployment and roll-out</h3>
+<ol class="steps">
+<li>Week 1: one person makes a passport from their own notes. Paste it into the AI you already use and compare the first answer with a cold start.</li>
+<li>Week 2: use the shareable slice for one handover between two people or two tools, and the hand-back for one session's update.</li>
+<li>Week 3 onward: the team keeps its context in memory files; passports are made at session end and checked at session start.</li>
+</ol>
+<h3>Supplier, support and ownership</h3>
+<p>Supplied by <a href="https://www.ai-nativesolutions.com">AI Native Solutions</a>. Start through the website. Support terms are agreed per deployment, in each deployment's agreement. The software is MIT-licensed, has no licence fee, and keeps running without us.</p>
+<h3>Risks, answered straight</h3>
+<ul>
+<li><b>A model can still misread a passport.</b> The proof section shows how a small local model did when booted cold from Kar's passports. A signature shows who sealed the passport and that it has not changed since. It does not show that its contents are true, so the passport is context for the AI, not evidence.</li>
+<li><b>The leak gate catches what it is taught.</b> Each of its eight kinds of leak is proven on planted examples before it is trusted, and anything it does not recognise never enters a public slice, because that slice is built only from facts already public.</li>
+<li><b>Grok:</b> the public slice is built for it. A live run against Grok waits on its API key being set on this machine.</li>
+</ul>
+<h3>The case for the board</h3>
+<p>AI use is spreading faster than anyone's context can follow it. A passport makes context a company asset: written once, owned, portable across vendors, checked on arrival and merged back after use. It costs a few minutes of set-up and no subscription, and every claim made for it is re-checked by an open test anyone can run.</p>
+</section>
+
+<section id="paper">
+<h2>White paper: a checked passport for AI context</h2>
+<h3>The problem</h3>
+<p>Language models are stateless between sessions. Vendor memory features fill part of the gap, but the memory belongs to the vendor and stays inside one product. A team that uses several AIs, or that changes AI, keeps rebuilding the same brief.</p>
+<h3>The protocol</h3>
+<p>SYMB-FER (SYMBEYOND AI LLC; cite as <i>SYMB-FER, SYMBEYOND AI LLC, 2026</i>) is an open, plain-text format for carrying context across sessions: identity, posture, current reality, threads, a session log, milestones and lessons, in a strict section order with its own drift rules. Version 6.2 has 33 sections, and SYMBEYOND publishes a validator for it. Kar's passport builds every token to v6.2, and SYMBEYOND's own validator passes it.</p>
+<h3>What the passport adds</h3>
+<p><b>A seal</b> that the receiving side checks before reading. <b>Slices</b>, so each target gets only what it should. A <b>drift check</b> that enforces the protocol's own rules on a returned token. And a <b>hand-back</b> that merges a session's work into memory without dropping anything, in a way that can be undone.</p>
+<h3>Where v6.2 is silent, and what was chosen</h3>
+<ul id="silent"><li>Loading…</li></ul>
+<h3>Alignment with teslasolar's fork</h3>
+<p>teslasolar/SYMB-FER was forked on 2026-04-15, before v6.0. Its own commits add an audit and page routers and do not change the format, so its format is v3.0 as its engine checks it. The passport also writes v3.0 tokens, and that engine passes them.</p>
+<h3>Credits</h3>
+<p>SYMB-FER is by SYMBEYOND AI LLC (John DuCrest), MIT. teslasolar's fork is the v3.0 alignment target. Powered by the Konomi architecture, created by Thomas Frumkin.</p>
+</section>
+
+<section id="faq">
+<h2>FAQ</h2>
+<details><summary>Does the AI I paste it into need to understand SYMB-FER?</summary><p>No. The passport explains itself in its first sections, including a symbol legend and a reading order. Any model that reads plain text can use it.</p></details>
+<details><summary>Can I paste the full slice into a hosted AI?</summary><p>You can, but it then goes to that provider. Use the public or shareable slice for hosted AIs and keep the full one for your own sessions.</p></details>
+<details><summary>What stops someone editing a passport and passing it off as yours?</summary><p>The signature. Change one character anywhere and the SHA-256 no longer matches. Sign it with another key and that key is not on the trust list. Either way it is refused before any model reads it.</p></details>
+<details><summary>Why are some answers in the passport "unscored" or "not recorded"?</summary><p>Because the memory holds no value for them, and nothing is invented. The six-question thread score, for example, is the operator's judgement.</p></details>
+<details><summary>Does this replace AI memory?</summary><p>No. Memory holds; the passport transfers. You need both: a home to keep context in, and a passport to carry a slice of it to another session.</p></details>
+</section>
+</main>
+<footer>
+Kar's passport · <a href="https://github.com/sjgant80-hub/kar-passport">source</a> (MIT) · built on <a href="https://github.com/SYMBEYOND/SYMB-FER">SYMB-FER</a> by SYMBEYOND AI LLC (MIT) · supplied by <a href="https://www.ai-nativesolutions.com">AI Native Solutions</a> · Powered by the Konomi architecture, created by Thomas Frumkin.
+</footer>
+<script>setTimeout(function(){ if(!window.__kpStarted){ var n=document.getElementById('boot-note'); if(n) n.style.display='block'; } }, 6000);</script>
+<script type="module" src="page.mjs"></script>
+</body>
+</html>

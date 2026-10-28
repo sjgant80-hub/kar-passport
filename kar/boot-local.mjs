@@ -15,12 +15,21 @@ import { trustList } from './passport.mjs';
 const REPO = join(import.meta.dirname, '..');
 const MODEL = 'qwen2.5:7b', OPTIONS = { temperature: 0, seed: 7, num_ctx: 16384 };
 
+// streamed, because a long prompt on a laptop CPU takes longer than fetch waits for a first header
 async function ollama(prompt) {
-  const r = await fetch('http://localhost:11434/api/generate', { method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model: MODEL, prompt, stream: false, options: OPTIONS, keep_alive: '10m' }) });
-  if (!r.ok) throw new Error('ollama ' + r.status);
-  const j = await r.json();
-  return { text: j.response, evalCount: j.eval_count, promptCount: j.prompt_eval_count, ms: Math.round((j.total_duration || 0) / 1e6) };
+  const http = await import('node:http');
+  return new Promise((resolve, reject) => {
+    const req = http.request({ host: '127.0.0.1', port: 11434, path: '/api/generate', method: 'POST', headers: { 'content-type': 'application/json' } }, (res) => {
+      let buf = '', text = '', last = {};
+      res.setEncoding('utf8');
+      res.on('data', (d) => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const line = buf.slice(0, i); buf = buf.slice(i + 1); if (!line.trim()) continue; const j = JSON.parse(line); text += j.response || ''; if (j.done) last = j; } });
+      res.on('end', () => resolve({ text, evalCount: last.eval_count, promptCount: last.prompt_eval_count, ms: Math.round((last.total_duration || 0) / 1e6) }));
+      res.on('error', reject);
+    });
+    req.setTimeout(0);
+    req.on('error', reject);
+    req.end(JSON.stringify({ model: MODEL, prompt, stream: true, options: OPTIONS, keep_alive: '30m' }));
+  });
 }
 
 const [which, file] = process.argv.slice(2);
