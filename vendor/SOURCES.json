@@ -1,0 +1,188 @@
+{
+ "kind": "kar-passport.vendor",
+ "note": "Byte-for-byte copies of committed blobs. Never edit; re-vendor and re-pin.",
+ "files": [
+  {
+   "local": "vendor/symbfer/symbeyond/LICENSE",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "LICENSE",
+   "sha256": "f3ead39996aef9c382b85065801cd5ab7677c3d55ae6db89ff6b4a5105144b81"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_bad_sha.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_bad_sha.txt",
+   "sha256": "1fbe4789189b37126d03e969050e59ad76b4e45378bb4dcf6987467699427667"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_missing_refer_trigger.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_missing_refer_trigger.txt",
+   "sha256": "921d9f4610df1fb48040f5b21ecbe9b00f412b8195f8bcb88bb4647ab211fcd4"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_missing_section.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_missing_section.txt",
+   "sha256": "c3810d7656d7316d1631a6cb1828f1870dbd86a5e4ab3b31731b022095e9e66e"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_missing_time_anchor.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_missing_time_anchor.txt",
+   "sha256": "28a17a40b1f95db6c127ce2537dc760a8fbb07561db4890e20eee6b7e55dfae2"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_missing_timestamp_calibration.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_missing_timestamp_calibration.txt",
+   "sha256": "17b6a66bdcadd2d31d6de174356b3f7ae89dafa1349cc5ba6aef08ce8432071e"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_nested_top_level.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_nested_top_level.txt",
+   "sha256": "fe51c195737990e17df87f2f5ca0b6fc5b2d2a99d2607a1caf9fefcd11155921"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_notation_optional.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_notation_optional.txt",
+   "sha256": "6ae3a9c3ba671a4286d1eed8fb024685d080efe5300d2f48fbd72f9de410c2f2"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_section_order.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_section_order.txt",
+   "sha256": "c3422dbd91df973feb0b31b25f9903651497bc31abbe872ee70752f41de969d6"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_sha_in_sig_only.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_sha_in_sig_only.txt",
+   "sha256": "7293b9d7fe2ef33f72f0450ad5d515ff3071791ad203db1b48e7f4381fa39e39"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_sha_pending.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_sha_pending.txt",
+   "sha256": "ac0c2a223ea6a6e02c94b4bd60907ade466305939285a6d516cabad20ff6fdae"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_unmatched_end.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_unmatched_end.txt",
+   "sha256": "3b302a685ee7f56e874e495cb3dfc4a7fbd83054e428fa68a8d286ae0ddb4a27"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_valid_v6_2.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_valid_v6_2.txt",
+   "sha256": "561e3a8f4e83d056fe6c6854fcee0111cf9c0b28099cf36b14be6cb4f36557a6"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_version_6_20.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_version_6_20.txt",
+   "sha256": "0946df3c13b75f787349bfd829b6227cf37907dc38105d2c809b4f3d791e8279"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/tests/test_version_mismatch.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/tests/test_version_mismatch.txt",
+   "sha256": "85fd8d24bc260d57327b43e5c356ffb19879bd52dcb5d77dc1344fccc4fbae53"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_6_2/validate_v6_2.py",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_6_2/validate_v6_2.py",
+   "sha256": "0c88ef9cdf60eaff737929ea712e6a2a2df3d0a65e96fc3c301c8da4bb70bd02"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/SYMB-FER_v6.2_PROTOCOL_2026-06-01_1015H.txt",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "SYMB-FER_v6.2_PROTOCOL_2026-06-01_1015H.txt",
+   "sha256": "d056ddf9fcb411d46b14dcb5b2fcd65fa0cd5c42b1e185419b54450f53ec2786"
+  },
+  {
+   "local": "vendor/symbfer/symbeyond/symb_fer_generator.py",
+   "repo": "SYMBEYOND/SYMB-FER",
+   "commit": "7370e7debfba410dd21f99f046dbdcc93070175d",
+   "path": "symb_fer_generator.py",
+   "sha256": "3f9eeb5ccf47c4c84ce07498a5a0b88b1ad0cb8f97ecc36856582548ddee69b1"
+  },
+  {
+   "local": "vendor/symbfer/teslasolar/source/LICENSE",
+   "repo": "teslasolar/SYMB-FER",
+   "commit": "67054648fb642cf76c0cbf656a1244899658ce44",
+   "path": "source/LICENSE",
+   "sha256": "f3ead39996aef9c382b85065801cd5ab7677c3d55ae6db89ff6b4a5105144b81"
+  },
+  {
+   "local": "vendor/symbfer/teslasolar/source/SYMB-FER_3_0/symbfer_engine.py",
+   "repo": "teslasolar/SYMB-FER",
+   "commit": "67054648fb642cf76c0cbf656a1244899658ce44",
+   "path": "source/SYMB-FER_3_0/symbfer_engine.py",
+   "sha256": "4372f8a177394ec2d5587a38ebbbf4ec2130f7a24b3119af0f696d8a5adb88a8"
+  },
+  {
+   "local": "vendor/symbfer/teslasolar/source/SYMB-FER_3_0/tests/test_bad_order.txt",
+   "repo": "teslasolar/SYMB-FER",
+   "commit": "67054648fb642cf76c0cbf656a1244899658ce44",
+   "path": "source/SYMB-FER_3_0/tests/test_bad_order.txt",
+   "sha256": "12f06741e4542d1f315a94ada4e421422a000c5daa33c3189c110b091c7caf71"
+  },
+  {
+   "local": "vendor/symbfer/teslasolar/source/SYMB-FER_3_0/tests/test_bad_sha.txt",
+   "repo": "teslasolar/SYMB-FER",
+   "commit": "67054648fb642cf76c0cbf656a1244899658ce44",
+   "path": "source/SYMB-FER_3_0/tests/test_bad_sha.txt",
+   "sha256": "579872dec38a4941c54ba63bbec81a9afc198a8eaaafaafeff0e96afe91e84ae"
+  },
+  {
+   "local": "vendor/symbfer/teslasolar/source/SYMB-FER_3_0/tests/test_missing_section.txt",
+   "repo": "teslasolar/SYMB-FER",
+   "commit": "67054648fb642cf76c0cbf656a1244899658ce44",
+   "path": "source/SYMB-FER_3_0/tests/test_missing_section.txt",
+   "sha256": "1348661cda01aa36775d108f18b202c6856096db30148e1b54ee8a32b7039d98"
+  },
+  {
+   "local": "vendor/symbfer/teslasolar/source/SYMB-FER_3_0/tests/test_valid_3_0.txt",
+   "repo": "teslasolar/SYMB-FER",
+   "commit": "67054648fb642cf76c0cbf656a1244899658ce44",
+   "path": "source/SYMB-FER_3_0/tests/test_valid_3_0.txt",
+   "sha256": "fd2fd293d6f388eeee4e27c1d5acbe72ab105fa223c0fcacdca6a28e42613237"
+  },
+  {
+   "local": "vendor/fall-kit-core/identity.mjs",
+   "repo": "sjgant80-hub/fall-kit",
+   "commit": "9244d6128c7be0094c9d800acac0a9ee70ecdd97",
+   "path": "core/identity.mjs",
+   "sha256": "429caa25bf0e104f6a664224d81fd8215d2f6c79aad3323a8acb476f85a3856e"
+  },
+  {
+   "local": "vendor/fall-kit-core/vendor/light/sha256.mjs",
+   "repo": "sjgant80-hub/fall-kit",
+   "commit": "9244d6128c7be0094c9d800acac0a9ee70ecdd97",
+   "path": "core/vendor/light/sha256.mjs",
+   "sha256": "cf60afffd36df071b277da214ed61a7b3f4923e443bfadb06656bb7da4756bc1"
+  }
+ ]
+}

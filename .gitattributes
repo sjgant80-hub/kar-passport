@@ -1,0 +1,4 @@
+vendor/** -text
+fixtures/** -text
+tokens/** -text
+*.txt -text
