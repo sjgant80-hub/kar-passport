@@ -32,7 +32,7 @@ const RULE = {
   threads: 'nothing discarded without intention: a thread leaves §OPEN·THREADS only into §RESOLVED or §CLOSED·MILESTONES',
   shape: 'a returned token is still a SYMB-FER v6.2 token',
 };
-const trimEnd = (lines) => { const a = lines.slice(); while (a.length && a[a.length - 1] === '') a.pop(); return a; };
+const trimEnd = (lines) => { const a = lines.slice(); while (a.at(-1) === '') a.pop(); return a; };
 const content = (lines) => lines.filter((l) => l !== '' && l !== NONE);
 const topLevel = (doc) => doc.sections.filter((s) => s.parent === null).map((s) => s.name);
 const threadNames = (lines) => lines.map((l) => /^THREAD·\d+: (.*)$/.exec(l)).filter(Boolean).map((m) => m[1]);
@@ -40,19 +40,17 @@ const afterSig = (doc) => { const s = doc.sections.find((x) => x.name === 'SIG')
 
 function isSubsequence(small, big) {
   let j = 0;
-  for (const x of big) if (j < small.length && x === small[j]) j++;
+  for (const x of big) if (x === small[j]) j++;
   return j === small.length;
 }
 
 export function driftCheck(sent, back) {
-  if (typeof sent !== 'string' || typeof back !== 'string') return fail('not text');
   if (formatOf(sent) !== 'v6.2') return fail('the sent token is not v6.2');
   const drift = [];
   if (formatOf(back) !== 'v6.2' || back.includes('\r') || validate62(back).status === 'FAIL') {
     return { ok: false, drift: [{ section: 'TOKEN', rule: RULE.shape, detail: formatOf(back) !== 'v6.2' ? 'not a v6.2 header' : back.includes('\r') ? 'carriage return' : validate62(back).failures.join('; ') }], added: null };
   }
   const a = parse(sent), b = parse(back);
-  if (!a.ok || !b.ok) return { ok: false, drift: [{ section: 'TOKEN', rule: RULE.shape, detail: (a.ok ? b : a).why }], added: null };
   const ta = topLevel(a), tb = topLevel(b);
   if (ta.join('|') !== tb.join('|')) drift.push({ section: 'TOKEN', rule: RULE.fixed, detail: 'the sections are not the ones sent, in the order sent' });
   const stamp = /^(∴SYMB-FER·v6\.2·LIVING·TOKEN·)\[\d{4}-\d{2}-\d{2}_\d{4}H\]$/;
@@ -82,13 +80,13 @@ export function driftCheck(sent, back) {
       const x = content(sa), y = content(sb);
       if (!isSubsequence(x, y)) { drift.push({ section: name, rule: RULE.onlyAdd, detail: 'a line that was sent is changed or gone' }); continue; }
       const extra = []; let j = 0;
-      for (const l of y) { if (j < x.length && l === x[j]) j++; else extra.push(l); }
+      for (const l of y) { if (l === x[j]) j++; else extra.push(l); }
       if (name === 'CLOSED·MILESTONES') added.milestones = extra; else if (name === 'LESSONS·LEARNED') added.lessons = extra; else added.resolved = extra;
       continue;
     }
     if (name === 'OPEN·THREADS') {
       const kept = new Set(threadNames(sb));
-      const closedText = [...(bodyOf(b, 'RESOLVED') || []), ...(bodyOf(b, 'CLOSED·MILESTONES') || [])].join('\n');
+      const closedText = [...(bodyOf(b, 'RESOLVED') ?? []), ...(bodyOf(b, 'CLOSED·MILESTONES') ?? [])].join('\n');
       for (const t of threadNames(sa)) {
         if (kept.has(t)) continue;
         if (closedText.includes(t)) added.threadsClosed.push(t);
@@ -108,21 +106,21 @@ const field = (b, k) => { const l = b.find((x) => x.startsWith(k + ': ')); retur
 
 /** The structured items of what a session added. Every added line is also kept verbatim in the entry. */
 export function itemsOf(given) {
-  const added = given && typeof given === 'object' ? given : {};
+  const added = { ...given };
   const sessions = blocks(added.session || []).map((b) => {
-    const d = /^SESSION·(\d{4}-\d{2}-\d{2}) \{$/.exec(b[0] || '');
+    const d = /^SESSION·(\d{4}-\d{2}-\d{2}) \{$/.exec(b[0] ?? '');
     if (!d) return null;
     const q = b.indexOf('  QUEUED·FOR·NEXT·SESSION {');
     const items = (from, to) => b.slice(from, to).filter((l) => /^ {4}\S/.test(l)).map((l) => words(l.trim()));
-    return { date: d[1], accomplished: items(1, q < 0 ? b.length : q), queued: q < 0 ? [] : items(q, b.length) };
+    return { date: d[1], accomplished: items(1, q === -1 ? b.length : q), queued: q === -1 ? [] : items(q, b.length) };
   }).filter(Boolean);
   const milestones = blocks(added.milestones || []).map((b) => {
-    const h = /^MILESTONE·(\S+?): (.*)$/.exec(b[0] || '');
+    const h = /^MILESTONE·(\S+?): (.*)$/.exec(b[0] ?? '');
     return h ? { id: h[1], name: words(h[2]), date: field(b, 'DATE'), what: field(b, 'WHAT'), outcome: field(b, 'OUTCOME'), source: field(b, 'SOURCE') } : null;
   }).filter(Boolean);
   const lessons = (added.lessons || []).map((l) => /^L[^:\s]*: (.*)$/.exec(l)).filter(Boolean).map((m) => words(m[1]));
   const resolved = blocks(added.resolved || []).map((b) => {
-    const h = /^RESOLVED·\d+: (.*)$/.exec(b[0] || '');
+    const h = /^RESOLVED·\d+: (.*)$/.exec(b[0] ?? '');
     return h ? { name: words(h[1]), date: field(b, 'DATE'), what: field(b, 'WHAT'), outcome: field(b, 'OUTCOME'), lesson: field(b, 'LESSON') } : null;
   }).filter(Boolean);
   return { sessions, milestones, lessons, resolved, threadsClosed: (added.threadsClosed || []).map(words), current: (added.current || []).map(words) };

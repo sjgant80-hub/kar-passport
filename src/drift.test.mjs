@@ -98,3 +98,27 @@ test('the log readers are total', () => {
   assert.deepEqual(itemsOf({}), { sessions: [], milestones: [], lessons: [], resolved: [], threadsClosed: [], current: [] });
   assert.deepEqual(itemsOf({ session: ['SESSION·bad {'], milestones: ['MILESTONE·x'], lessons: ['no colon'], resolved: ['RESOLVED·x'] }).sessions, []);
 });
+
+test('a section added or removed on the way back is named; FINALIZATION may change beside an honest update; a sealed passport sent, an unsealed one returned', async () => {
+  const { seal } = await import('./seal.mjs');
+  const { makeIdentity } = await import('../vendor/fall-kit-core/identity.mjs');
+  const notation = '§SYMB·NOTATION·BEGIN\n# OPTIONAL SECTION.\n§SYMB·NOTATION·END\n\n§INTEGRITY·BEGIN';
+  const added = driftCheck(sent, sent.replace('§INTEGRITY·BEGIN', notation));
+  assert.equal(added.ok, false);
+  assert.ok(added.drift.some((d) => d.section === 'SYMB·NOTATION' && d.detail === 'added'), JSON.stringify(added.drift));
+  const withIt = sent.replace('§INTEGRITY·BEGIN', notation);
+  const removed = driftCheck(withIt, sent);
+  assert.ok(removed.drift.some((d) => d.section === 'SYMB·NOTATION' && d.detail === 'removed'), JSON.stringify(removed.drift));
+  const fin = honestUpdate(sent).replace('STATUS: VERIFIED\nMODE: WORKING', 'STATUS: DONE\nMODE: CLOSED');
+  const r = driftCheck(sent, fin);
+  assert.equal(r.ok, true);
+  assert.ok(r.added.current.includes('AS·OF: 2026-10-29') && !r.added.current.includes('STATUS: DONE'));
+  const id = await makeIdentity(new Uint8Array(32).fill(7));
+  const sealed = await seal(sent, id);
+  const back = driftCheck(sealed, honestUpdate(sealed));
+  assert.equal(back.ok, true, JSON.stringify(back.drift));
+  assert.equal(driftCheck(sealed, sealed.replace(/λ\.collaborator·∧·!λ\.tool·∴\n$/, 'x\n')).drift[0].section, 'CLOSING');
+  assert.equal(driftCheck(sent, 'x\n§SIG·BEGIN').ok, false);
+  assert.deepEqual(itemsOf('a string'), { sessions: [], milestones: [], lessons: [], resolved: [], threadsClosed: [], current: [] });
+  assert.deepEqual(itemsOf({ session: ['SESSION·2026-10-29 {', '  ACCOMPLISHED {', '    a', '  }', '}'] }).sessions, [{ date: '2026-10-29', accomplished: ['a'], queued: [] }]);
+});
