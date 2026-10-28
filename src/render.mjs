@@ -301,7 +301,7 @@ export function tierState(m) {
 export function tierFit(m, tier, ts) {
   const st = tierState(m);
   if (!st) return fail('not a model');
-  if (!Object.prototype.hasOwnProperty.call(TIER_LIMITS, tier)) return fail('no such tier');
+  if (!['nano', 'core', 'state'].includes(tier)) return fail('no such tier');
   if (!/^\d{4}-\d{2}-\d{2}_\d{4}H$/.test(typeof ts === 'string' ? ts : '')) return fail('time is not YYYY-MM-DD_HHMMH');
   const limit = TIER_LIMITS[tier];
   const lists = [st.vocabulary, st.state.repo_status, st.state.open_threads, st.state.shipped, st.protocol.boot_sequence];

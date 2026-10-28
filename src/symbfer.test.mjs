@@ -60,6 +60,7 @@ test('tierText refuses what is not a state, a tier or a time', () => {
   assert.equal(tierText([], 'nano', 't'), '');
   assert.equal(tierText({}, 'huge', 't'), '');
   assert.equal(tierText({}, 'toString', 't'), '');
+  assert.equal(tierText({}, Object.create(null), 't'), '');
   assert.equal(tierText({}, 'nano', 5), '');
   assert.equal(TIER_LIMITS.nano, 300);
   assert.equal(TIER_LIMITS.core, 800);
