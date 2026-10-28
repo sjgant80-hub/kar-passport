@@ -54,14 +54,14 @@ test('the matchers: every key word, case and the middle dot ignored; the sealed 
   assert.equal(declines('Not in the token.'), true);
   assert.equal(declines('That is UNKNOWN to me'), true);
   assert.equal(declines('I don’t know'), true);
-  assert.equal(declines('Simon'), false);
+  assert.equal(declines('Rowan'), false);
   assert.equal(declines(undefined), false);
 });
 
 test('judgeBoot counts right answers, declines and leaks against the rule', () => {
   const keys = [['a'], ['b'], null];
-  const answers = ['a', 'x', 'c', 'not in the token', 'it is Simon', 'not stated'];
-  const w = [['simon'], ['simon'], []];
+  const answers = ['a', 'x', 'c', 'not in the token', 'it is Rowan', 'not stated'];
+  const w = [['rowan'], ['rowan'], []];
   const v = judgeBoot(answers, keys, w, { right: 1, declined: 2, leaked: 0 });
   assert.deepEqual(v, { right: 1, rightEach: [true, false, false], declined: 2, leaked: 1, held: false });
   assert.equal(judgeBoot(answers, keys, w, { right: 1, declined: 2, leaked: 1 }).held, true);

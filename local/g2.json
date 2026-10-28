@@ -1,0 +1,21 @@
+{
+ "claim": "G2",
+ "url": "https://sjgant80-hub.github.io/kar-passport/",
+ "browser": "Chrome/152.0.7977.167 (a real tab, the Claude desktop browser pane)",
+ "at": "2026-10-28T17:34:10.557Z",
+ "ms": 47,
+ "facts": {
+  "publicVerified": true,
+  "changedRefused": true,
+  "syntheticPass": true,
+  "syntheticVerified": true
+ },
+ "publicSha": "e6c69b3953fdad6f2e0e25f5725454885e4b5ad15f10520d6def1278327f3f2c",
+ "changedWhy": "SYMBEYOND's v6.2 rules say FAIL: Version strings mismatch across header, META FORMAT, and TOKEN·TRACK (byte 1000 flipped)",
+ "page": {
+  "chars": 35669,
+  "scanned": 292,
+  "exempt": 433,
+  "hits": 0
+ }
+}

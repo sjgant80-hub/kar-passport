@@ -107,7 +107,7 @@ test('the readers of the digest, the index and the retrospectives', () => {
   assert.deepEqual(d.changed, []);
   assert.deepEqual(d.decisions, []);
   assert.equal(d.next, 'door sheet — cut the door sheet');
-  const d2 = parseDigest('CHANGED SINCE THE LAST LOOK (2): one\n· two\nDECISIONS ONLY SIMON MAKES (1): sign it\n· and this');
+  const d2 = parseDigest('CHANGED SINCE THE LAST LOOK (2): one\n· two\nDECISIONS ONLY ROWAN MAKES (1): sign it\n· and this');
   assert.deepEqual(d2.changed, ['one', 'two']);
   assert.deepEqual(d2.decisions, ['sign it', 'and this']);
   assert.deepEqual(parseDigest(null), { estate: '', builds: [], changed: [], next: '', decisions: [] });
