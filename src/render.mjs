@@ -17,7 +17,7 @@
 // Pure and total. Powered by the Konomi architecture, created by Thomas Frumkin.
 // ════════════════════════════════════════════════════════════════
 import { T62 } from './template62.mjs';
-import { RULES30, tierText, codePoints, TIER_LIMITS } from './symbfer.mjs';
+import { RULES30, tierText, codePoints, TIER_LIMITS, withSig } from './symbfer.mjs';
 
 const T = (a, b) => T62.slice(a - 1, b === undefined ? a : b);
 export const NONE = 'NONE·IN·THIS·SLICE';
@@ -136,156 +136,83 @@ export function render62(m) {
   return [...out, ...TAIL62].join('\n');
 }
 
-// ── reading a v6.2 token back into its model ───────────────────────
+// ── reading a token back into its model ────────────────────────────
+// The readers extract leniently and never throw; what makes them exact is the last step: the model read back must render
+// to the very text it came from (the §SIG block aside). Any line out of place fails that comparison.
 const after = (line, prefix) => (typeof line === 'string' && line.startsWith(prefix) ? line.slice(prefix.length) : null);
-const split2 = (line, sep) => { const i = typeof line === 'string' ? line.indexOf(sep) : -1; return i < 0 ? null : [line.slice(0, i), line.slice(i + sep.length)]; };
+const split2 = (line, sep) => { const i = typeof line === 'string' ? line.indexOf(sep) : -1; return i === -1 ? null : [line.slice(0, i), line.slice(i + sep.length)]; };
 const noneOr = (lines) => (lines.length === 1 && lines[0] === NONE ? [] : lines);
-const blocks = (lines) => { const out = [[]]; for (const l of lines) { if (l === '') out.push([]); else out[out.length - 1].push(l); } return out.filter((b) => b.length); };
-
-function sectionBodies(text) {
-  const lines = text.split('\n');
-  const head = lines.slice(0, 6), bodies = new Map();
-  let i = 6;
-  for (const [name] of S62) {
-    if (lines[i] !== '§' + name + '·BEGIN') return null;
-    const end = lines.indexOf('§' + name + '·END', i + 1);
-    if (end < 0 || lines[end + 1] !== '') return null;
-    bodies.set(name, lines.slice(i + 1, end));
-    i = end + 2;
-  }
-  const tail = lines.slice(i);
-  return { head, bodies, tail };
-}
+const blocks = (lines) => { const out = [[]]; for (const l of lines) { if (l === '') out.push([]); else out.at(-1).push(l); } return out.filter((b) => b.length); };
+const untilBlank = (v, from) => { const end = v.indexOf('', from); return v.slice(from, end === -1 ? v.length : end); };
+const strip = (line, re) => (typeof line === 'string' && re.test(line) ? line.replace(re, '') : null);
 
 const GETS = {
-  'TRANSFER·MODE': (v, m) => { const x = after(v[0], 'MODE: '); if (v.length !== 1 || x === null) return false; m.mode = x; return true; },
-  'META': (v, m) => {
-    if (v.length !== 7) return false;
-    m.generated = after(v[0], 'GENERATED: '); m.meta = {};
-    return m.generated !== null && META_KEYS.every(([k, K], j) => (m.meta[k] = after(v[j + 1], K + ': ')) !== null);
-  },
-  'PARSE·GUIDE': (v) => v.length === 0, 'SAFETY·INTERPRETATION': (v) => v.length === 0, 'SYMB2·DOCTRINE': (v) => v.length === 0,
-  'SCORING·KEY': (v) => v.length === 0, 'INTEGRITY': (v) => v.length === 0,
-  'ETHOS': (v, m) => { m.ethos = noneOr(v); return true; },
-  'LEXICON': (v, m) => { m.lexicon = v.map((l) => split2(l, ' :: ')); return m.lexicon.every(Boolean); },
-  'IDENTITY': (v, m) => { m.identity = {}; return v.length === ID_KEYS.length && ID_KEYS.every(([k, K], j) => (m.identity[k] = after(v[j], K + ': ')) !== null); },
-  'KEY·RELATIONSHIPS': (v, m) => { m.relationships = noneOr(v).map((l) => split2(l, ': ')); return m.relationships.every(Boolean); },
-  'BOOT·FACTS': (v, m) => { m.bootFacts = noneOr(v).map((l) => split2(l, ': ')); return m.bootFacts.every(Boolean); },
-  'BOOT·ETHOS': (v, m) => { m.bootEthos = v; return true; },
-  'BOOT·PROTOCOL': (v, m) => {
-    const x = v.length === 1 ? after(v[0], 'SOVEREIGNTY: ') : null, s = '·can·invoke·ReFer·at·any·time·to·force·full·orientation';
-    if (x === null || !x.endsWith(s)) return false; m.sovereign = x.slice(0, -s.length); return true;
-  },
-  'SEARCH·PROTOCOL': (v, m) => {
-    if (!v.length) { m.retrieve = []; return true; }
-    if (v[0] !== '' || v[1] !== 'RETRIEVE·FOR·THIS·SLICE {' || v[v.length - 1] !== '}') return false;
-    m.retrieve = v.slice(2, -1).map((l) => after(l, '  '));
-    return m.retrieve.every((x) => x !== null);
-  },
-  'RELATIONAL·RULES': (v, m) => { m.rules = v.map((l) => after(l, 'RULE: ')); return m.rules.every((x) => x !== null); },
-  'REF·ENCODING': (v, m) => { m.refs = noneOr(v).map((l) => split2(l, ' :: ')); return m.refs.every(Boolean); },
-  'CORE·CONSTANTS': (v, m) => { m.constants = noneOr(v).map((l) => split2(l, ': ')); return m.constants.every(Boolean); },
-  'SACRED·DATES': (v, m) => { m.dates = noneOr(v).map((l) => split2(l, ': ')); return m.dates.every(Boolean); },
-  'COLLABORATORS·CREDITED': (v, m) => { m.credits = noneOr(v).map((l) => split2(l, ': ')); return m.credits.every(Boolean); },
-  'LANE·STRUCTURE': (v, m) => { m.lanes = readLanes(noneOr(v)); return m.lanes !== null; },
+  'TRANSFER·MODE': (v, m) => { m.mode = after(v[0], 'MODE: '); },
+  'META': (v, m) => { m.generated = after(v[0], 'GENERATED: '); m.meta = Object.fromEntries(META_KEYS.map(([k, K], j) => [k, after(v[j + 1], K + ': ')])); },
+  'ETHOS': (v, m) => { m.ethos = noneOr(v); },
+  'LEXICON': (v, m) => { m.lexicon = v.map((l) => split2(l, ' :: ')); },
+  'IDENTITY': (v, m) => { m.identity = Object.fromEntries(ID_KEYS.map(([k, K], j) => [k, after(v[j], K + ': ')])); },
+  'KEY·RELATIONSHIPS': (v, m) => { m.relationships = noneOr(v).map((l) => split2(l, ': ')); },
+  'BOOT·FACTS': (v, m) => { m.bootFacts = noneOr(v).map((l) => split2(l, ': ')); },
+  'BOOT·ETHOS': (v, m) => { m.bootEthos = v; },
+  'BOOT·PROTOCOL': (v, m) => { m.sovereign = strip(after(v[0], 'SOVEREIGNTY: '), /·can·invoke·ReFer·at·any·time·to·force·full·orientation$/); },
+  'SEARCH·PROTOCOL': (v, m) => { m.retrieve = v.slice(2, -1).map((l) => after(l, '  ')); },
+  'RELATIONAL·RULES': (v, m) => { m.rules = v.map((l) => after(l, 'RULE: ')); },
+  'REF·ENCODING': (v, m) => { m.refs = noneOr(v).map((l) => split2(l, ' :: ')); },
+  'CORE·CONSTANTS': (v, m) => { m.constants = noneOr(v).map((l) => split2(l, ': ')); },
+  'SACRED·DATES': (v, m) => { m.dates = noneOr(v).map((l) => split2(l, ': ')); },
+  'COLLABORATORS·CREDITED': (v, m) => { m.credits = noneOr(v).map((l) => split2(l, ': ')); },
+  'LANE·STRUCTURE': (v, m) => { m.lanes = readLanes(noneOr(v)); },
   'CURRENT·REALITY': (v, m) => {
-    const asOf = after(v[0], 'AS·OF: ');
-    if (asOf === null) return false;
-    m.current = { asOf };
-    let i = 1;
-    for (const [k, K] of CUR_KEYS) {
-      if (v[i] !== '' || v[i + 1] !== K) return false;
-      let j = i + 2; while (j < v.length && v[j] !== '') j++;
-      m.current[k] = noneOr(v.slice(i + 2, j)); i = j;
-    }
-    return i === v.length;
+    m.current = { asOf: after(v[0], 'AS·OF: ') };
+    for (const [k, K] of CUR_KEYS) m.current[k] = noneOr(untilBlank(v, v.indexOf(K) + 1));
   },
   'OPEN·THREADS': (v, m) => {
-    m.threads = blocks(noneOr(v)).map((b, i) => {
-      const name = after(b[0], 'THREAD·' + pad2(i) + ': ');
-      const t = { name, status: after(b[1], 'STATUS: '), nature: after(b[2], 'NATURE: '), action: after(b[3], 'ACTION: ') };
-      return b.length === 4 && Object.values(t).every((x) => x !== null) ? t : null;
-    });
-    return m.threads.every(Boolean);
+    m.threads = blocks(noneOr(v)).map((b) => ({ name: strip(b[0], /^THREAD·\d+: /), status: after(b[1], 'STATUS: '), nature: after(b[2], 'NATURE: '), action: after(b[3], 'ACTION: ') }));
   },
   'SESSION·LOG': (v, m) => {
     m.sessions = blocks(noneOr(v)).map((b) => {
-      const d = /^SESSION·(\d{4}-\d{2}-\d{2}) \{$/.exec(b[0] || '');
       const q = b.indexOf('  QUEUED·FOR·NEXT·SESSION {');
-      if (!d || b[1] !== '  ACCOMPLISHED {' || q < 3 || b[q - 1] !== '  }' || b[b.length - 2] !== '  }' || b[b.length - 1] !== '}') return null;
-      const acc = b.slice(2, q - 1).map((l) => after(l, '    ')), qd = b.slice(q + 1, -2).map((l) => after(l, '    '));
-      return acc.every((x) => x !== null) && qd.every((x) => x !== null) ? { date: d[1], accomplished: acc, queued: qd } : null;
+      return { date: strip(strip(b[0], /^SESSION·/), / \{$/), accomplished: b.slice(2, q - 1).map((l) => after(l, '    ')), queued: b.slice(q + 1, -2).map((l) => after(l, '    ')) };
     });
-    return m.sessions.every(Boolean);
   },
   'RESOLVED': (v, m) => {
-    m.resolved = blocks(noneOr(v)).map((b, i) => {
-      const r = { name: after(b[0], 'RESOLVED·' + pad2(i) + ': '), date: after(b[1], 'DATE: '), what: after(b[2], 'WHAT: '), outcome: after(b[3], 'OUTCOME: '), lesson: after(b[4], 'LESSON: ') };
-      return b.length === 5 && Object.values(r).every((x) => x !== null) ? r : null;
-    });
-    return m.resolved.every(Boolean);
+    m.resolved = blocks(noneOr(v)).map((b) => ({ name: strip(b[0], /^RESOLVED·\d+: /), date: after(b[1], 'DATE: '), what: after(b[2], 'WHAT: '), outcome: after(b[3], 'OUTCOME: '), lesson: after(b[4], 'LESSON: ') }));
   },
   'CLOSED·MILESTONES': (v, m) => {
     m.milestones = blocks(noneOr(v)).map((b) => {
-      const h = /^MILESTONE·(\S+?): (.*)$/.exec(b[0] || '');
-      const r = h && { id: h[1], name: h[2], date: after(b[1], 'DATE: '), what: after(b[2], 'WHAT: '), outcome: after(b[3], 'OUTCOME: '), source: after(b[4], 'SOURCE: ') };
-      return r && b.length === 5 && Object.values(r).every((x) => x !== null) ? r : null;
+      const h = split2(strip(b[0], /^MILESTONE·/), ': ') || [null, null];
+      return { id: h[0], name: h[1], date: after(b[1], 'DATE: '), what: after(b[2], 'WHAT: '), outcome: after(b[3], 'OUTCOME: '), source: after(b[4], 'SOURCE: ') };
     });
-    return m.milestones.every(Boolean);
   },
-  'LESSONS·LEARNED': (v, m) => { m.lessons = v.map((l) => split2(l, ': ')); return m.lessons.every(Boolean); },
-  'DRIFT·CHECK': (v, m) => {
-    const x = v.length === 1 ? after(v[0], 'SOVEREIGNTY: ') : null, s = '·decides·whether·to·continue·or·redirect';
-    return x !== null && x.endsWith(s) && x.slice(0, -s.length) === m.sovereign;
-  },
-  'FINALIZATION': (v, m) => {
-    m.finalization = { status: after(v[0], 'STATUS: '), mode: after(v[1], 'MODE: ') };
-    return v.length === 2 && m.finalization.status !== null && m.finalization.mode !== null;
-  },
+  'LESSONS·LEARNED': (v, m) => { m.lessons = v.map((l) => split2(l, ': ')); },
+  'FINALIZATION': (v, m) => { m.finalization = { status: after(v[0], 'STATUS: '), mode: after(v[1], 'MODE: ') }; },
 };
 
 function readLanes(v) {
   if (!v.length) return [];
-  let n = 0; while (n < v.length && v[n] !== '') n++;
-  const names = v.slice(0, n).map((l, i) => after(l, 'LANE·' + (i + 1) + '·NAME: '));
-  if (names.some((x) => x === null)) return null;
-  const lanes = [];
-  let i = n;
-  for (let k = 0; k < names.length; k++) {
-    if (v[i] !== '' || v[i + 1] !== 'LANE·' + (k + 1) + '·BEGIN' || v[i + 2] !== 'PRIMARY {') return null;
-    const thread = after(v[i + 3], '  thread: '), score = after(v[i + 4], '  score: '), status = after(v[i + 5], '  status: ');
-    if (thread === null || score === null || status === null || v[i + 6] !== '  next·actions {') return null;
-    let j = i + 7; const next = [];
-    while (j < v.length && v[j] !== '  }') { const a = /^ {4}(\d+)\. (.*)$/.exec(v[j]); if (!a || Number(a[1]) !== next.length + 1) return null; next.push(a[2]); j++; }
-    if (v[j + 1] !== '}' || v[j + 2] !== 'QUEUED {') return null;
-    j += 3; const queued = [];
-    while (j < v.length && v[j] !== '}') { const q = /^ {2}(\S+) score:(\S+) first·action:(\S+)$/.exec(v[j]); if (!q) return null; queued.push({ thread: q[1], score: q[2], first: q[3] }); j++; }
-    if (v[j + 1] !== 'LANE·' + (k + 1) + '·END') return null;
-    lanes.push({ name: names[k], primary: { thread, score, status, next }, queued });
-    i = j + 2;
-  }
-  return i === v.length ? lanes : null;
+  const names = untilBlank(v, 0).map((l) => strip(l, /^LANE·\d+·NAME: /));
+  return blocks(v.slice(names.length)).map((b, k) => {
+    const close = b.indexOf('  }'), queued = b.indexOf('QUEUED {');
+    return {
+      name: names[k] === undefined ? null : names[k],
+      primary: { thread: after(b[2], '  thread: '), score: after(b[3], '  score: '), status: after(b[4], '  status: '), next: b.slice(6, close).map((l) => strip(l, /^ {4}\d+\. /)) },
+      queued: b.slice(queued + 1, -2).map((l) => { const q = /^ {2}(\S+) score:(\S+) first·action:(\S+)$/.exec(l) || []; return { thread: q[1], score: q[2], first: q[3] }; }),
+    };
+  });
 }
 
 export function toModel62(text) {
   if (typeof text !== 'string') return fail('not text');
-  const parts = sectionBodies(text);
-  if (!parts) return fail('not the section layout render62 writes');
-  const m = {};
+  const lines = text.split('\n'), m = {};
   for (const [name, head, tail] of S62) {
-    const body = parts.bodies.get(name);
-    if (body.length < head.length + tail.length || head.some((l, j) => body[j] !== l) || tail.some((l, j) => body[body.length - tail.length + j] !== l)) {
-      return fail('§' + name + ' does not carry the template\'s fixed lines where render62 puts them');
-    }
-    if (!GETS[name](body.slice(head.length, body.length - tail.length), m)) return fail('§' + name + ' cannot be read back');
+    const b = lines.indexOf('§' + name + '·BEGIN'), e = lines.indexOf('§' + name + '·END');
+    if (b === -1 || e === -1) return fail('§' + name + ' is missing');
+    if (GETS[name]) GETS[name](lines.slice(b + 1 + head.length, e - tail.length), m);
   }
-  if (!checkModel62(m).ok) return fail('the values read back are not a model: ' + checkModel62(m).why);
-  const again = render62(m).split('\n');
-  const lines = text.split('\n');
-  const sb = lines.lastIndexOf('§SIG·BEGIN'), se = lines.indexOf('§SIG·END', sb + 1);
-  const bare = sb < 0 || se < 0 ? lines : [...lines.slice(0, sb + 1), 'MODE: STANDARD', 'STATUS: UNVERIFIED', 'SHA256: PENDING', ...lines.slice(se)];
-  if (again.join('\n') !== bare.join('\n')) return fail('a line outside the sections differs from what render62 writes');
-  return { ok: true, model: m };
+  const check = checkModel62(m);
+  if (!check.ok) return fail('the values read back are not a model: ' + check.why);
+  return render62(m) === (withSig(text, null) || text) ? { ok: true, model: m } : fail('a line differs from what render62 writes');
 }
 
 // ── v3.0: the shape teslasolar's fork checks ───────────────────────
@@ -332,27 +259,19 @@ export function render30(m) {
 export function toModel30(text) {
   if (typeof text !== 'string') return fail('not text');
   const lines = text.split('\n');
-  const g = /^∴SYMB-FER·v3\.0·TOKEN·\[(\d{4}-\d{2}-\d{2}_\d{4}H)\]$/.exec(lines[0]);
-  if (!g) return fail('not a v3.0 header render30 writes');
-  const body = (name) => { const b = lines.indexOf('§' + name + '·BEGIN'), e = lines.indexOf('§' + name + '·END'); return b < 0 || e < b ? null : lines.slice(b + 1, e); };
-  const tm = body('TRANSFER·MODE'), meta = body('META'), facts = body('BOOT·FACTS'), ss = body('SESSION·STATE'), eth = body('BOOT·ETHOS'),
-    les = body('LESSONS·LEARNED'), tr = body('TEST·TRACE');
-  if (![tm, meta, facts, ss, eth, les, tr].every(Boolean) || ss.length !== 5 || meta.length !== 6 || tr.length !== 1) return fail('sections');
+  const body = (name) => { const b = lines.indexOf('§' + name + '·BEGIN'); return b === -1 ? [] : lines.slice(b + 1, lines.indexOf('§' + name + '·END')); };
+  const meta = body('META'), ss = body('SESSION·STATE'), list = (l) => (l === null ? null : l.split('|').filter((x) => x !== ''));
   const m = {
-    generated: g[1], mode: after(tm[0], 'MODE: '),
+    generated: strip(strip(lines[0], /^∴SYMB-FER·v3\.0·TOKEN·\[/), /\]$/), mode: after(body('TRANSFER·MODE')[0], 'MODE: '),
     meta: { purpose: after(meta[1], 'PURPOSE: '), human: after(meta[3], 'HUMAN: '), org: after(meta[4], 'ORG: '), contact: after(meta[5], 'CONTACT: ') },
-    facts: facts.slice(2).map((l) => split2(l, ': ')),
-    session: {
-      workingDirectory: after(ss[0], 'working·directory: '), activePaths: (after(ss[1], 'active·paths: ') || '').split('|').filter((x) => x !== ''),
-      recentActions: (after(ss[2], 'recent·actions: ') || '').split('|').filter((x) => x !== ''), nextStep: after(ss[3], 'next·step: '), notes: after(ss[4], 'notes: '),
-    },
-    ethos: eth.map((l) => after(l, 'principle: ')), lessons: les.map((l) => split2(l, ': ')), trace: after(tr[0], 'trace: '),
+    facts: body('BOOT·FACTS').slice(2).map((l) => split2(l, ': ')),
+    session: { workingDirectory: after(ss[0], 'working·directory: '), activePaths: list(after(ss[1], 'active·paths: ')), recentActions: list(after(ss[2], 'recent·actions: ')),
+      nextStep: after(ss[3], 'next·step: '), notes: after(ss[4], 'notes: ') },
+    ethos: body('BOOT·ETHOS').map((l) => after(l, 'principle: ')), lessons: body('LESSONS·LEARNED').map((l) => split2(l, ': ')), trace: after(body('TEST·TRACE')[0], 'trace: '),
   };
-  if (!checkModel30(m).ok || !m.facts.every(Boolean)) return fail('values');
-  const lines2 = render30(m).split('\n');
-  const sb = lines.lastIndexOf('§SIG·BEGIN'), se = lines.indexOf('§SIG·END', sb + 1);
-  const bare = sb < 0 || se < 0 ? lines : [...lines.slice(0, sb + 1), 'MODE: STANDARD', 'STATUS: UNVERIFIED', 'SHA256:', ...lines.slice(se)];
-  return lines2.join('\n') === bare.join('\n') ? { ok: true, model: m } : fail('a line differs from what render30 writes');
+  const check = checkModel30(m);
+  if (!check.ok) return fail('the values read back are not a model: ' + check.why);
+  return render30(m) === (withSig(text, null) || text) ? { ok: true, model: m } : fail('a line differs from what render30 writes');
 }
 
 // ── the tiers' state, from a v6.2 model ────────────────────────────

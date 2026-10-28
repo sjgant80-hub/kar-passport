@@ -1,0 +1,12 @@
+{
+ "claim": "G3",
+ "files": 30,
+ "hits": 6,
+ "where": [
+  "kar/inputs.mjs: *******@13,*******@14,*******@16",
+  "kar/passport.mjs: *******@4,*******@8",
+  "src/slice.mjs: **********@214"
+ ],
+ "pageScanned": false,
+ "pageHits": 0
+}

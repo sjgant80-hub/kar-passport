@@ -9,14 +9,14 @@ import { homedir, userInfo } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { readLog, mergedOf } from '../src/drift.mjs';
 
-export const PATHS = {
-  memory: process.env.KAR_MEMORY_DIR || join(homedir(), '.claude', 'projects', 'C--Users-sjgan--claude', 'memory'),
-  brain: process.env.KAR_BRAIN_DIR || join(homedir(), '.si-didy', 'brain'),
-  brainCli: join(homedir(), 'kar-mind', 'brain-cli.mjs'),
-  keys: process.env.KAR_PASSPORT_DIR || join(homedir(), '.si-didy', 'passport'),
-};
-
 const read = (p, fb = '') => { try { return readFileSync(p, 'utf8'); } catch { return fb; } };
+
+// This machine's paths live in ~/.kar-passport/config.json (never committed): where the memory, the brain and its CLI
+// are, and the full slice's private retrieval lines. The passport's own state (the key seed, the REF lookup, the tokens
+// it made, the ingest plans) lives beside it.
+export const HOME_DIR = process.env.KAR_PASSPORT_DIR || join(homedir(), '.kar-passport');
+export const CONFIG = JSON.parse(read(join(HOME_DIR, 'config.json'), '{}'));
+export const PATHS = { memory: CONFIG.memory || '', brain: CONFIG.brain || '', brainCli: CONFIG.brainCli || '', keys: HOME_DIR };
 
 /** A topic file's frontmatter: name, description, type (and the body, for the retrospectives). */
 export function topicOf(file, text) {
@@ -46,7 +46,8 @@ export function readInputs(now, memoryDir = PATHS.memory) {
     estate: { total: ix.total, public: ix.public, private: ix.private, live: ix.live, repos: (ix.nodes || []).map((r) => ({ name: r.name, desc: r.desc, live: r.live, private: r.private })) },
     operator: { first: name.split(' ')[0] || '', fullName: name },
     handoff: log ? mergedOf(readLog(log.body)) : {},
-    workingDirectory: join(homedir(), '.claude'),
+    workingDirectory: CONFIG.workingDirectory || '',
+    retrieve: Array.isArray(CONFIG.retrieveFull) ? CONFIG.retrieveFull : [],
   };
 }
 

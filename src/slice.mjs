@@ -179,10 +179,8 @@ export function buildSlice(inputs, lists, target, refs) {
     ].filter(([, v]) => v), 8),
     bootEthos: many(rulesOf(inputs.working).filter((l) => !/proof|fake|Verify/.test(l)), 6),
     sovereign: opName,
-    retrieve: full
-      ? many(['read the memory index MEMORY.md, then the topic files it names (Kar\'s memory directory)', 'run the brain digest: node ~/kar-mind/brain-cli.mjs digest (or mcp__kar__brain)',
-        'query the whole estate in estate-index.json before any build question', 'the hand-over notes of linked sessions in the side-session notes folder'], 6)
-      : many([site, agentDoor, ...publicBuilds.map((b) => b.url)].filter(Boolean), 8),
+    // a full slice's retrieval lines name Kar's own tools and folders: they come from the machine (inputs.retrieve), not from here
+    retrieve: full ? many(strs(inputs.retrieve), 6) : many([site, agentDoor, ...publicBuilds.map((b) => b.url)].filter(Boolean), 8),
     rules: full ? many(how.slice(0, 8).map((e) => e.desc), 8) : many(rulesOf(inputs.working), 10),
     refs: [], constants: [], dates: [],
     credits: pairs([
@@ -211,7 +209,7 @@ export function buildSlice(inputs, lists, target, refs) {
     finalization: { status: 'VERIFIED', mode: 'WORKING' },
   };
 
-  // the lanes: what is in flight, and what Simon's order says comes next
+  // the lanes: what is in flight, and what the operator's approved order says comes next
   if (pub) {
     const goal = statementsOf(inputs.working).find((l) => /revenue/i.test(l));
     const p = goal && put(goal);

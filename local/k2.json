@@ -1,0 +1,13 @@
+{
+ "claim": "K2",
+ "tokens": 10,
+ "hits": 0,
+ "byClass": {},
+ "scanned": 496,
+ "exempt": 875,
+ "lists": {
+  "privateNames": 49,
+  "surnames": 2,
+  "firstNames": 1
+ }
+}

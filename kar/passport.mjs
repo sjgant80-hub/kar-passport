@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // kar/passport.mjs: Kar's passport on this machine. Thin I/O around the gated organs; it never sends a token anywhere.
 //
-//   node kar/passport.mjs key                         make Kar's passport key once (seed kept in ~/.si-didy/passport/,
+//   node kar/passport.mjs key                         make Kar's passport key once (seed kept in ~/.kar-passport/,
 //                                                     never in the repo); print its public key (keys/kar.json pins it)
 //   node kar/passport.mjs generate [--target t] [--out dir] [--now YYYY-MM-DD_HHMMH]
 //                                                     the slice(s) from Kar's memory, in every shape, sealed. Default out:
-//                                                     ~/.si-didy/passport/tokens/<now>/. A public or shareable token that
+//                                                     ~/.kar-passport/tokens/<now>/. A public or shareable token that
 //                                                     the leak gate flags is NOT written.
 //   node kar/passport.mjs publish <public.v6.2.txt>   copy a public token into the repo's tokens/ after re-running the gate
 //   node kar/passport.mjs verify <file>               verify-before-parse against keys/kar.json; print the boot order
