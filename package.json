@@ -4,7 +4,7 @@
   "description": "Kar's passport: SYMB-FER v6.2 tokens from Kar's memory, sealed, verified before they are read, sliced so nothing private travels, and taken back into memory. SYMB-FER by SYMBEYOND AI LLC (MIT).",
   "type": "module",
   "scripts": {
-    "test": "node --test src/"
+    "test": "node --test src/*.test.mjs"
   },
   "license": "MIT"
 }

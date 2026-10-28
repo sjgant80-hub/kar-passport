@@ -87,7 +87,8 @@ test('a hand-over merged into memory comes back in the next slice', () => {
     milestones: [{ id: 'H1', name: 'loop closed', date: '2026-10-28', what: 'a fresh session worked', outcome: 'merged', source: 'the returned token' }],
     lessons: ['tokens travel, memory stays'], resolved: [{ name: 'old item', date: '2026-10-27', what: 'w', outcome: 'o', lesson: 'l' }] };
   const m = buildSlice(inp, lists, 'full', {}).model62;
-  assert.deepEqual(m.sessions, [{ date: '2026-10-28', accomplished: ['booted·from·the·token'], queued: ['next·job'] }]);
+  assert.deepEqual(m.sessions[0], { date: '2026-10-28', accomplished: ['booted·from·the·token'], queued: ['next·job'] });
+  assert.equal(m.sessions.length, 2, 'the hand-over\'s session, then this generation\'s own');
   assert.deepEqual(m.milestones.at(-1), { id: 'H1', name: 'loop·closed', date: '2026-10-28', what: 'a·fresh·session·worked', outcome: 'merged', source: 'the·returned·token' });
   assert.deepEqual(m.lessons.at(-1), ['L2', 'tokens·travel,·memory·stays']);
   assert.deepEqual(m.resolved, [{ name: 'old·item', date: '2026-10-27', what: 'w', outcome: 'o', lesson: 'l' }]);

@@ -231,7 +231,7 @@ export function buildSlice(inputs, lists, target, refs) {
   const inFlight = pub ? [] : builds.filter((b) => b.date === today && !b.url).map((b) => b.name + ' — ' + b.desc);
   const sessions = Array.isArray(handoff.sessions) ? handoff.sessions.filter((s) => isObj(s) && DATE.test(s.date)) : [];
   for (const s of sessions) m.sessions.push({ date: s.date, accomplished: many(strs(s.accomplished), 12), queued: many(strs(s.queued), 12) });
-  if (!sessions.some((s) => s.date === today)) m.sessions.push({ date: today, accomplished: many(todays, 6), queued: many([...inFlight, digest.next.split(' — ')[0]].filter(Boolean), 6) });
+  m.sessions.push({ date: today, accomplished: many(todays, 6), queued: many([...inFlight, digest.next.split(' — ')[0]].filter(Boolean), 6) });
   for (const x of Array.isArray(handoff.milestones) ? handoff.milestones : []) {
     const r = isObj(x) ? { id: put(x.id), name: put(x.name), date: DATE.test(x.date) ? x.date : today, what: put(x.what), outcome: put(x.outcome), source: put(x.source) } : null;
     if (r && r.id && r.name && r.what && r.outcome && r.source) m.milestones.push(r);

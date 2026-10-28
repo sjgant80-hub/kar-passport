@@ -7,6 +7,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir, userInfo } from 'node:os';
 import { execFileSync } from 'node:child_process';
+import { readLog, mergedOf } from '../src/drift.mjs';
 
 export const PATHS = {
   memory: process.env.KAR_MEMORY_DIR || join(homedir(), '.claude', 'projects', 'C--Users-sjgan--claude', 'memory'),
@@ -44,14 +45,9 @@ export function readInputs(now, memoryDir = PATHS.memory) {
     working: read(join(PATHS.brain, 'kar-working-memory.txt')).split('\n'),
     estate: { total: ix.total, public: ix.public, private: ix.private, live: ix.live, repos: (ix.nodes || []).map((r) => ({ name: r.name, desc: r.desc, live: r.live, private: r.private })) },
     operator: { first: name.split(' ')[0] || '', fullName: name },
-    handoff: log ? handoffOf(log.body) : {},
+    handoff: log ? mergedOf(readLog(log.body)) : {},
     workingDirectory: join(homedir(), '.claude'),
   };
-}
-
-/** The hand-over log (organ 4 writes it): every returned token's session blocks, milestones, lessons and resolved items. */
-export function handoffOf(body) {
-  try { const m = /```json\n([\s\S]*?)\n```/.exec(body); return m ? JSON.parse(m[1]) : {}; } catch { return {}; }
 }
 
 export function readLists() {

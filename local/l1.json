@@ -1,0 +1,19 @@
+{
+ "claim": "L1",
+ "sent": "2a64082b168e12c2850d174d2e43f5fe784ca49d76453825dfa3a4204f6649cf",
+ "returned": "a008377a71bde46134334511a775d480dcdb009204f423710434f6b5bff9a439",
+ "session": "a fresh Claude session (a new Kar), given only the token file and the written task",
+ "facts": {
+  "sentVerified": true,
+  "accepted": true,
+  "drift": [],
+  "addedLines": 23,
+  "allLinesInPlan": true,
+  "regeneratedPass": true,
+  "carriesSession": true,
+  "carriesMilestone": true,
+  "carriesLesson": true,
+  "undoIdentical": true,
+  "files": 372
+ }
+}
