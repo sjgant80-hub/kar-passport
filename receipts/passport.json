@@ -106,7 +106,7 @@
      "total": 114,
      "clean": true,
      "capped": false,
-     "also": "CI run 40754253072 on GitHub's runner: 114/114"
+     "also": "CI run 40754253072 on GitHub's runner: 114/114; re-gated after the tier-list change (54bf285): 114/114"
     },
     {
      "name": "src/render.mjs",
@@ -114,7 +114,7 @@
      "total": 103,
      "clean": true,
      "capped": false,
-     "also": "CI run 40754253072: 103/103"
+     "also": "CI run 40754253072: 103/103; re-gated after the tier-list change (54bf285): 103/103"
     },
     {
      "name": "src/seal.mjs",
@@ -168,7 +168,7 @@
    "fuzzFunctions": 57,
    "fuzzPerFunction": 2000,
    "fuzzInputs": 114000,
-   "fuzzThrows": 4
+   "fuzzThrows": 0
   },
   "G2": {
    "publicVerified": true,
@@ -277,8 +277,8 @@
   },
   {
    "id": "G1",
-   "held": false,
-   "why": "{\"clean\":[true,true,true,true,true,true,true,true],\"modules\":[{\"name\":\"src/symbfer.mjs\",\"killed\":114,\"total\":114,\"clean\":true,\"capped\":false,\"also\":\"CI run 40754253072 on GitHub's runner: 114/114\"},{\"name\":\"src/render.mjs\",\"killed\":103,\"total\":103,\"clean\":true,\"capped\":false,\"also\":\"CI run 40754253072: 103/103\"},{\"name\":\"src/seal.mjs\",\"killed\":17,\"total\":17,\"clean\":true,\"capped\":false,\"also\":\"CI run 40754253072: 17/17\"},{\"name\":\"src/leak.mjs\",\"killed\":26,\"total\":26,\"clean\":true,\"capped\":false,\"also\":\"CI run 40754253072: 26/26\"},{\"name\":\"src/slice.mjs\",\"killed\":116,\"total\":116,\"clean\":true,\"capped\":false,\"also\":\"CI run 40754253072: 116/116\"},{\"name\":\"src/drift.mjs\",\"killed\":80,\"total\":80,\"clean\":true,\"capped\":false,\"also\":\"CI run 40754253072: 80/80\"},{\"name\":\"src/boot.mjs\",\"killed\":43,\"total\":43,\"clean\":true,\"capped\":false,\"also\":\"CI run 40754253072: 43/43\"},{\"name\":\"src/judge.mjs\",\"killed\":86,\"total\":86,\"clean\":true,\"capped\":false,\"also\":\"after its fix (ce6dd09): the first run had 50 survivors, all in messages that repeated each rule's condition; CI re-gates it on every push\"}],\"fuzzFunctions\":57,\"fuzzPerFunction\":2000,\"fuzzInputs\":114000,\"fuzzThrows\":4}"
+   "held": true,
+   "why": "every module clean; 114000 fuzz inputs, 0 throws"
   },
   {
    "id": "G2",
@@ -291,6 +291,6 @@
    "why": "54 hits: kar/boot-local.mjs: economy@44; kar/inputs.mjs: pricing@25; kar/loop.mjs: economy@8; kar/passport.mjs: economy@18; keys/kar.json: secret@3; local/b1.json: secret@11,secret@12,pricing@20,economy@30,economy@104,economy@106; local/b2.json: secret@11,secret@12,pricing@20,phrase@27; local/g2.json: secret@13; local/k1.json: secret@3,secret@9,secret@21,secret@33,secret@47,secret@61,secret@75,secret@87,secret@99,secret@113,secret@127,secret@141,secret@153,secret@165,secret@179,secret@193; local/l1.json: secret@3,secret@4; local/p7.json: secret@3; src/boot.mjs: pricing@21,economy@25,phrase@26,pricing@41,pricing@47; src/boot.test.mjs: pricing@24,pricing@26; src/judge.test.mjs: pricing@77; src/render.mjs: pricing@30,pricing@31; src/slice.test.mjs: plumbing@76,cosmology@210; src/symbfer.mjs: cosmology@268,cosmology@268; src/symbfer.test.mjs: economy@6; src/template62.mjs: personal@46,cosmology@515; tools/oracle-corpus.mjs: economy@9; tools/vendor.mjs: economy@8"
   }
  ],
- "held": 13,
+ "held": 14,
  "of": 16
 }
