@@ -166,8 +166,8 @@ export function buildSlice(inputs, lists, target, refs) {
       location: 'not·recorded·in·this·slice',
     },
     relationships: pairs([
-      ['Kar', statementsOf(inputs.working).find((l) => /^Kar builds/.test(l)) || ''],
-      ['Grok', statementsOf(inputs.working).find((l) => /^Grok sells/.test(l)) || ''],
+      ['Kar', statementsOf(inputs.working).find((l) => /^Kar builds/.test(l))],
+      ['Grok', statementsOf(inputs.working).find((l) => /^Grok sells/.test(l))],
       ['Thomas Frumkin', 'creator of the Konomi architecture; every product carries the credit Powered by the Konomi architecture, created by Thomas Frumkin'],
       ['SYMBEYOND AI LLC', 'origin of the SYMB-FER protocol this token follows (John DuCrest; MIT)'],
       ...(pub ? [] : [['Gary W. Floyd', (topic('gary-floyd-papers') || {}).description || '']]),
@@ -196,7 +196,7 @@ export function buildSlice(inputs, lists, target, refs) {
       waiting: many([...digest.decisions, ...pending], 4),
       hands: digest.next ? many([digest.next.split(' — ')[0]], 1) : [],
     },
-    threads: pub ? [] : index.notPushed.slice(0, 6).map((n) => ({ name: put(n), status: 'not·pushed', nature: 'build', action: put('see memory topic ' + n) })).filter((t) => t.name && t.action),
+    threads: pub ? [] : index.notPushed.slice(0, 6).map(put).filter(Boolean).map((name) => ({ name, status: 'not·pushed', nature: 'build', action: 'see·memory·topic·' + name })),
     sessions: [],
     resolved: [],
     // a milestone is confirmed closed (§CLOSED·MILESTONES): here, a build whose page is live on a public repository

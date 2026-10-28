@@ -87,6 +87,8 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <li><b>Hand it back.</b> In <a href="#handback">Hand-back</a>, simulate what a session returns at the end of its work. An honest update is accepted and listed line by line; a drifted one is refused, naming the rule it broke.</li>
 <li><b>Use it.</b> Copy the public passport and paste it as the first message to any AI. It reads the passport, then starts work in context.</li>
 </ol>
+<h3>Status today</h3>
+<p>Working, and in use on its first deployment: Kar's own memory, the AI that built this. The passports on this page were made from that memory today. A fresh session booted from one and handed back an update, which was merged and undone, and a cold local model was questioned on two of them. Every number in <a href="#proof">The proof</a> comes from those runs. Nothing here is a mock-up.</p>
 </section>
 
 <section id="try">
@@ -213,8 +215,27 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <li><b>Hosted AI is a processor.</b> Pasting a passport into a hosted AI sends its contents to that provider; SYMBEYOND's own security notes say the same. Send hosted AIs only the public or shareable slice, and keep the full slice for your own sessions.</li>
 <li><b>Integrity.</b> SHA-256 over every line outside the seal, plus an Ed25519 signature. The receiving side refuses a token signed by a key it does not trust.</li>
 <li><b>No server, no telemetry.</b> This page and the tool run locally. Signing keys never leave the device that made them.</li>
+<li><b>The signing key.</b> Its seed is one file on your machine, written readable by your user only. It is never in the code, a passport, or any page. Your checks trust only the public half you pin. The key this page makes for you lives in the tab's memory and is gone when you close it.</li>
 <li><b>Audit.</b> Every hand-back is written to a log that only grows, with the before-bytes kept so it can be undone.</li>
 </ul>
+<h3>Security questions, answered</h3>
+<ul>
+<li><b>Where is the drift check enforced?</b> On your side, when a passport comes back, against the copy you sent. The receiving AI needs nothing and is trusted with nothing: whatever it returns is checked line by line before any of it reaches your memory.</li>
+<li><b>What about a leak the gate was not taught?</b> Two layers. The public slice is built only from facts that are already public: your public pages, their public descriptions, and the business facts you publish. A private note is never a candidate, so nothing private is there to be missed. The gate then checks every line for eight kinds of leak, each proven on planted examples. The shareable slice draws on memory's threads, so for that one the gate is the line of defence: send it only to people you would show those threads.</li>
+<li><b>Can a model infer what is not in the passport?</b> It can guess, but it cannot learn private facts from a slice that does not hold them. In the cold boots, the model was asked for an email address, a private repository and a person's name that were withheld. None of them appeared in any answer.</li>
+<li><b>What if a session does work the protocol does not cover?</b> The session records it where the protocol says: in the new §CURRENT·REALITY and an appended §SESSION·LOG block. Any change anywhere else is drift and is refused, however the session did its work and whatever tools it used.</li>
+<li><b>What if a session's work holds sensitive data?</b> The hand-back is merged into your private memory, which never travels. The next public or shareable passport is sliced and gated again from scratch.</li>
+<li><b>Regulation.</b> The passport is a document you control. When you paste it into a hosted AI, that provider processes it under your agreement with them. Choose the slice for the recipient as you would for any document.</li>
+</ul>
+<h3>How you make passports on your own machine</h3>
+<ol class="steps">
+<li>Get the tool: <code>git clone https://github.com/sjgant80-hub/kar-passport</code> (needs Node.js 22 or later).</li>
+<li>Write <code>~/.kar-passport/config.json</code>, saying where your memory notes live. Then run <code>node kar/passport.mjs key</code> once to make your signing key; its seed never leaves your machine.</li>
+<li>At the end of a session, run <code>node kar/passport.mjs generate</code>. It makes the full, shareable and public slices, each in five shapes, all sealed. A public or shareable one that the leak gate flags is not written.</li>
+<li>Paste a slice into the AI you are using. The full slice is for your own sessions. Hosted AIs get the public or shareable slice.</li>
+<li>When the session hands back an updated passport, run <code>node kar/passport.mjs in &lt;sent&gt; &lt;returned&gt;</code> to see the plan, then <code>apply</code> it (and <code>undo</code> if you change your mind).</li>
+</ol>
+<p class="muted">Tested with: a cold local qwen2.5:7b (two boots, scored in The proof) and a fresh Claude session (the hand-back loop). Any model that reads plain text can take it. A live Grok run waits on its API key. Sizes: a v6.2 passport here is about 20 to 26 KB (33 sections, every value capped at 220 characters); the NANO, CORE and STATE tiers are 300, 800 and 2,000 characters. One memory per team or project gives each its own passports and its own key.</p>
 <h3>Deployment and roll-out</h3>
 <ol class="steps">
 <li>Week 1: one person makes a passport from their own notes. Paste it into the AI you already use and compare the first answer with a cold start.</li>
@@ -251,10 +272,19 @@ details summary{cursor:pointer;color:var(--accent-2)}
 
 <section id="faq">
 <h2>FAQ</h2>
+<details><summary>Who is SYMBEYOND AI LLC?</summary><p>The company that created and publishes SYMB-FER, an open protocol for carrying context across AI sessions (author John DuCrest; <a href="https://github.com/SYMBEYOND/SYMB-FER">github.com/SYMBEYOND/SYMB-FER</a>, MIT). This tool follows their v6.2 format, and their own validator passes every passport it makes. They are credited, not the supplier: the supplier is AI Native Solutions.</p></details>
+<details><summary>What support comes with it?</summary><p>Support, service levels and warranty are agreed per deployment, in each deployment's agreement with AI Native Solutions; start through <a href="https://www.ai-nativesolutions.com">the website</a>. The software is MIT-licensed and keeps running without us: nothing calls home.</p></details>
+<details><summary>Can it plug into our existing systems?</summary><p>Yes, through plain files and one command. Notes go in; passports come out as text files; a check is one command that exits zero or not. Anything that can run a command or move a file can use it: a scheduler, a CI job, a document store or an intranet page. There is no server to host and no API to keep alive.</p></details>
+<details><summary>How are problems or disputes resolved?</summary><p>Technically, the record decides: every passport is signed, every hand-back is logged with what changed, and any merge can be undone. Commercially, under each deployment's agreement with AI Native Solutions.</p></details>
 <details><summary>Does the AI I paste it into need to understand SYMB-FER?</summary><p>No. The passport explains itself in its first sections, including a symbol legend and a reading order. Any model that reads plain text can use it.</p></details>
 <details><summary>Can I paste the full slice into a hosted AI?</summary><p>You can, but it then goes to that provider. Use the public or shareable slice for hosted AIs and keep the full one for your own sessions.</p></details>
 <details><summary>What stops someone editing a passport and passing it off as yours?</summary><p>The signature. Change one character anywhere and the SHA-256 no longer matches. Sign it with another key and that key is not on the trust list. Either way it is refused before any model reads it.</p></details>
 <details><summary>Why are some answers in the passport "unscored" or "not recorded"?</summary><p>Because the memory holds no value for them, and nothing is invented. The six-question thread score, for example, is the operator's judgement.</p></details>
+<details><summary>What does it take to run, and to keep running?</summary><p>No licence fee: it is MIT-licensed. It runs on the machines you already have: Node.js for the command line, and any modern browser for this page. Setting up is one config file that says where your notes live, plus one command to make a key. After that, one command at the end of a session makes the passport, and one at the start checks it. Support terms, if you want any, are agreed per deployment.</p></details>
+<details><summary>What happens when a model misreads a passport?</summary><p>A passport is provided context, not established fact: its own §SAFETY·INTERPRETATION section says so. The operator stays the authority, and SYMB-FER's §DRIFT·CHECK gives the operator the call on whether to continue or redirect. A correction goes into the next session, the session log keeps the record, and a model cannot quietly rewrite what it was given, because a returned passport that changes anything outside the parts the protocol lets a session change is refused.</p></details>
+<details><summary>What if the AI cannot take a long passport?</summary><p>Use a tier. The same slice also comes as SYMBEYOND's NANO (300 characters), CORE (800) and STATE (2,000) tokens, each sealed and checked the same way.</p></details>
+<details><summary>Several people, one company?</summary><p>Each person or team keeps its own memory, its own key and its own reference lookup. A shareable passport carries project context with private names replaced by codes. Trust is by key: you choose whose keys your checks accept.</p></details>
+<details><summary>Are there limits on slices or versions?</summary><p>No. A passport is a text file. Each session end makes a new one, and the hand-over log in memory only grows.</p></details>
 <details><summary>Does this replace AI memory?</summary><p>No. Memory holds; the passport transfers. You need both: a home to keep context in, and a passport to carry a slice of it to another session.</p></details>
 </section>
 </main>

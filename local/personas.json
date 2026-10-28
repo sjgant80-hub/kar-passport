@@ -1,0 +1,33 @@
+{
+ "url": "https://sjgant80-hub.github.io/kar-passport/",
+ "model": "qwen2.5:7b",
+ "at": "2026-10-28T19:03:24.118Z",
+ "pageChars": 14056,
+ "walks": [
+  {
+   "role": "CFO",
+   "seconds": 383,
+   "answer": "1. What is the current implementation status of the tool?\n2. How does the tool handle edge cases in context transfer?\n3. Are there any case studies or testimonials from existing users?\n4. What is the expected cost for implementation and maintenance?\n5. How does the tool ensure data privacy and security in multi-user environments?\n6. Is there a limit to the number of slices or passport versions that can be created?\n7. How does the tool handle language models that do not support SYMB-FER?\n8. What is the process for resolving disputes if a model misinterprets the passport?\n\nVERDICT: Need more information on implementation details and costs before proceeding."
+  },
+  {
+   "role": "CTO/CISO",
+   "seconds": 682,
+   "answer": "1. How is the \"drift check\" mechanism enforced if the receiving AI does not have access to the original memory files?\n2. What happens if the \"leak gate\" fails to catch a leak that the protocol does not explicitly define?\n3. How is the \"drift check\" performed if the session's work includes changes that are not explicitly covered by the protocol's rules?\n4. Is the \"drift check\" mechanism robust against AI models that can infer information from the context even if it is not explicitly stated?\n5. How is the \"hand-back\" process verified if the session's work is complex and involves multiple steps or tools?\n6. Are there any legal or regulatory implications if a passport is used in a way that is not explicitly covered by the protocol?\n7. How is the \"drift check\" enforced if the session's work involves sensitive or private data that is not explicitly covered by the protocol's rules?\n8. What is the process for resolving disputes if a model's response is inconsistent with the context provided by the passport?\n\nVERDICT: I would need more detailed information on the enforcement mechanisms and potential edge cases before proceeding. The protocol seems promising but requires clarification on several points to ensure robustness and compliance."
+  },
+  {
+   "role": "COO",
+   "seconds": 408,
+   "answer": "1. How are the \"private\" slices actually kept private if they are sent to a hosted AI?\n2. What is the exact process for generating the private, shareable, and public slices?\n3. How does the tool ensure that the context is not altered during the hand-back process?\n4. Are there any known compatibility issues with different AI models or platforms?\n5. How does the tool handle large volumes of context data?\n6. Is there a limit to the number of characters or sections in a passport?\n7. How does the tool handle multiple passports for different projects or clients?\n8. What happens if the AI model does not follow the protocol rules during the drift check?\n\nVERDICT: Need more details on privacy and compatibility; these gaps need to be addressed before proceeding."
+  },
+  {
+   "role": "Owner-manager",
+   "seconds": 840,
+   "answer": "1. What is SYMBEYOND AI LLC?\n2. How does the tool ensure the integrity of the context being transferred?\n3. What is the exact process for making and using a passport in a team setting?\n4. Are there any costs associated with using this tool beyond the initial setup?\n5. How does the tool handle edge cases where the context might be sensitive or confidential?\n6. What happens if the receiving AI does not support SYMB-FER v6.2?\n7. How does the tool ensure the security of the private key used for signing?\n8. What is the level of support provided by AI Native Solutions?\n\nVERDICT: I would need more detailed information on the above points before proceeding, particularly regarding costs and support."
+  },
+  {
+   "role": "Procurement",
+   "seconds": 883,
+   "answer": "1. What are the specific support terms and conditions?\n2. How is the integrity of the passport ensured during transmission?\n3. Are there any costs associated with using the tool beyond the initial setup?\n4. What level of support does AI Native Solutions provide?\n5. How does the tool handle large-scale deployments and multiple users?\n6. Are there any legal or compliance issues related to using the tool?\n7. Can the tool be integrated with existing enterprise systems?\n8. What is the process for resolving issues or disputes related to the tool's usage?\n\nVERDICT: Need more details on support, costs, and integration before proceeding."
+  }
+ ]
+}

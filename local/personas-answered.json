@@ -1,0 +1,16 @@
+{
+ "walk": "local/personas.json (qwen2.5:7b, five buyer personas, the live page read cold)",
+ "answered": [
+  { "gap": "implementation status; case studies", "where": "Start here, Status today: in use on Kar's own memory, every number from those runs (no testimonials invented)" },
+  { "gap": "costs beyond set-up; what it takes to run", "where": "FAQ, What does it take to run, and to keep running? (no licence fee, own machines, one config file and two commands)" },
+  { "gap": "support level and terms", "where": "FAQ, What support comes with it? and Supplier, support and ownership (agreed per deployment, runs without us)" },
+  { "gap": "what SYMBEYOND AI LLC is", "where": "FAQ, Who is SYMBEYOND AI LLC? (credited protocol author, not the supplier)" },
+  { "gap": "where the drift check is enforced; unknown leaks; inference; work outside the rules; sensitive work; regulation", "where": "For your business, Security questions, answered" },
+  { "gap": "signing key security", "where": "Security, The signing key" },
+  { "gap": "the exact process; teams; compatibility; sizes; many projects", "where": "How you make passports on your own machine (steps, tested models, sizes, one memory per team)" },
+  { "gap": "model misreads; disputes", "where": "FAQ, What happens when a model misreads a passport? and How are problems or disputes resolved?" },
+  { "gap": "long passports; models without SYMB-FER", "where": "FAQ, What if the AI cannot take a long passport? and Does the AI I paste it into need to understand SYMB-FER?" },
+  { "gap": "integration with existing systems", "where": "FAQ, Can it plug into our existing systems?" },
+  { "gap": "several people; limits on slices and versions", "where": "FAQ, Several people, one company? and Are there limits on slices or versions?" }
+ ]
+}
