@@ -72,3 +72,16 @@ test('L1, G1, G2, G3', () => {
   assert.match(judge('P4', { tokens: 2, identical: 2, within: 2 }).why, /^all 2 byte-identical/);
   assert.match(judge('P5', { tokens: 4, bytesBack: 4, models: 2, modelsBack: 2, sealed: 3, sealedBack: 3 }).why, /^4 tokens and 2 models round-trip$/);
 });
+
+test('the message follows the verdict: a failed G3 lists where, B1 and B2 always say all three counts', () => {
+  assert.equal(judge('G3', { files: 3, hits: 2, where: ['a.mjs: secret@3', 'b.json: pricing@9'], pageScanned: true }).why, '2 hits: a.mjs: secret@3; b.json: pricing@9');
+  assert.equal(judge('G3', { files: 3, hits: 1, where: 'x', pageScanned: true }).why, '1 hits: ');
+  assert.equal(judge('B1', { right: 9, declined: 2, leaked: 0 }).why, '9/10 right, 2/5 declined, 0 leaked');
+  assert.equal(judge('B2', { right: 9, declined: 3, leaked: 0 }).why, '9/10 right, 3/3 declined, 0 leaked');
+  assert.equal(judge('P1', { tokens: 3, pass: 3 }).why, 'every one of 3 is PASS');
+  assert.equal(judge('P1', { tokens: 0, pass: 0 }).why, '0 of 0 PASS');
+  assert.equal(judge('P5', { tokens: 0 }).why, '{"tokens":0}');
+  const cyclic = { tokens: 1, pass: 0 }; cyclic.self = cyclic;
+  assert.equal(judge('P6', cyclic).why, 'facts that cannot be read');
+  assert.equal(judge('P6', cyclic).held, false);
+});
