@@ -2,14 +2,70 @@
  "claim": "G1",
  "witness": "sjgant80-hub/witness v0.6, uncapped, --timeout 120000, every test file of src/ run against each mutant",
  "modules": [
-  { "name": "src/symbfer.mjs", "killed": 114, "total": 114, "clean": true, "capped": false, "also": "CI run 40754253072 on GitHub's runner: 114/114" },
-  { "name": "src/render.mjs", "killed": 103, "total": 103, "clean": true, "capped": false, "also": "CI run 40754253072: 103/103" },
-  { "name": "src/seal.mjs", "killed": 17, "total": 17, "clean": true, "capped": false, "also": "CI run 40754253072: 17/17" },
-  { "name": "src/leak.mjs", "killed": 26, "total": 26, "clean": true, "capped": false, "also": "CI run 40754253072: 26/26" },
-  { "name": "src/slice.mjs", "killed": 116, "total": 116, "clean": true, "capped": false, "also": "CI run 40754253072: 116/116" },
-  { "name": "src/drift.mjs", "killed": 80, "total": 80, "clean": true, "capped": false, "also": "CI run 40754253072: 80/80" },
-  { "name": "src/boot.mjs", "killed": 43, "total": 43, "clean": true, "capped": false, "also": "CI run 40754253072: 43/43" },
-  { "name": "src/judge.mjs", "killed": 86, "total": 86, "clean": true, "capped": false, "also": "after its fix (ce6dd09): the first run had 50 survivors, all in messages that repeated each rule's condition; CI re-gates it on every push" }
+  {
+   "name": "src/symbfer.mjs",
+   "killed": 114,
+   "total": 114,
+   "clean": true,
+   "capped": false,
+   "also": "CI run 40754253072 on GitHub's runner: 114/114; re-gated after the tier-list change (54bf285): 114/114"
+  },
+  {
+   "name": "src/render.mjs",
+   "killed": 103,
+   "total": 103,
+   "clean": true,
+   "capped": false,
+   "also": "CI run 40754253072: 103/103; re-gated after the tier-list change (54bf285): 103/103"
+  },
+  {
+   "name": "src/seal.mjs",
+   "killed": 17,
+   "total": 17,
+   "clean": true,
+   "capped": false,
+   "also": "CI run 40754253072: 17/17"
+  },
+  {
+   "name": "src/leak.mjs",
+   "killed": 26,
+   "total": 26,
+   "clean": true,
+   "capped": false,
+   "also": "CI run 40754253072: 26/26"
+  },
+  {
+   "name": "src/slice.mjs",
+   "killed": 116,
+   "total": 116,
+   "clean": true,
+   "capped": false,
+   "also": "CI run 40754253072: 116/116"
+  },
+  {
+   "name": "src/drift.mjs",
+   "killed": 80,
+   "total": 80,
+   "clean": true,
+   "capped": false,
+   "also": "CI run 40754253072: 80/80"
+  },
+  {
+   "name": "src/boot.mjs",
+   "killed": 43,
+   "total": 43,
+   "clean": true,
+   "capped": false,
+   "also": "CI run 40754253072: 43/43"
+  },
+  {
+   "name": "src/judge.mjs",
+   "killed": 86,
+   "total": 86,
+   "clean": true,
+   "capped": false,
+   "also": "after its fix (ce6dd09): the first run had 50 survivors, all in messages that repeated each rule's condition; CI re-gates it on every push"
+  }
  ],
  "history": "First pass: symbfer 20 survivors, render 54, seal 4, leak 2, slice 32, drift 16, boot 2, judge 50. Each one was killed by a test or written without the operator where the outcome could not differ. None was baselined."
 }
