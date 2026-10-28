@@ -210,7 +210,7 @@ async function refusals(text, trustList) {
 // G3: every committed file but vendor/, fixtures, claims.json and the gate's own lists; the live page's text (local/g2.json)
 {
   const tracked = execFileSync('git', ['ls-files'], { cwd: ROOT }).toString().split('\n').filter(Boolean)
-    .filter((f) => !/^(vendor|fixtures)\//.test(f) && !['claims.json', 'src/leak.mjs', 'src/leak.test.mjs', 'src/template62.mjs'].includes(f) && !/\.test\.mjs$/.test(f) && !/^local\//.test(f) && !/^receipts\//.test(f));
+    .filter((f) => !/^(vendor|fixtures)\//.test(f) && !['claims.json', 'src/leak.mjs', 'src/leak.test.mjs'].includes(f));
   const L = { privateNames: [], surnames: [], firstNames: [], canaries: [] };
   let hits = 0; const where = [];
   for (const f of tracked) { const h = scan(rd(f), L, 'shareable', protocolLines()).hits; hits += h.length; if (h.length) where.push(f + ': ' + h.map((x) => x.cls + '@' + x.n).join(',')); }

@@ -98,7 +98,7 @@ save('p7.json', { claim: 'P7', token: shaOf(sent), drifted, refusedNamed, bySect
 
 // G3: the private and personal-name classes over every committed file
 const files = execFileSync('git', ['ls-files'], { cwd: REPO }).toString().split('\n').filter(Boolean)
-  .filter((f) => !/^(vendor|fixtures)\//.test(f) && !['claims.json', 'src/leak.mjs', 'src/leak.test.mjs', 'src/template62.mjs'].includes(f) && !/\.test\.mjs$/.test(f));
+  .filter((f) => !/^(vendor|fixtures)\//.test(f) && !['claims.json', 'src/leak.mjs', 'src/leak.test.mjs'].includes(f));
 let g3 = 0; const g3where = [];
 for (const f of files) {
   const r = scan(readFileSync(join(REPO, f), 'utf8'), { privateNames: lists.privateNames, surnames: lists.surnames, firstNames: lists.firstNames, canaries: [] }, 'public', protocolLines());
