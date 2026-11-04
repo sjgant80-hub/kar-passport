@@ -1,0 +1,26 @@
+{
+ "kind": "kar-passport.claims.timecase",
+ "v": 1,
+ "title": "The time case on Kar's passport page: what re-briefing a fresh AI by hand costs a team, computed by a gated kernel from sourced figures",
+ "sealed": "Before any code: this file is the only file of the commit that adds it, and no code that measures it exists yet. The rules below do not change once the first number is measured. A claim that fails is kept failed, with its numbers. This file does not change claims.json, the passport's sixteen sealed claims, or any of their rules.",
+ "why": "The page's For your business section counted the time a team spends re-typing context to AI with figures typed into the page script: a typing speed, a count of working weeks and a count of typists. The estate's rule for a cost case is a small tested kernel that reads every external figure from a sourced basis, the reader's own inputs for everything else, and nothing left in that has no source.",
+ "basis": {
+  "estate": "vendor/basis/basis.json: a byte-for-byte copy of the estate's sourced basis as liveware vendors it (sjgant80-hub/liveware at commit ee580e4, path vendor/ai-first-company/vendor/sovereign-enterprise/data/basis.json), pinned by SHA-256 in vendor/SOURCES.json and re-fetched from that commit by tools/vendor.mjs --check in CI. The case reads two of its entries: wageMedianHourly (ONS ASHE 2025, the value of an hour when the reader gives none; on-costs left out, so a floor) and cpi (UK CPI, applied to each year after the first).",
+  "typing": "data/typing-basis.json: the average typing speed of the participants and the five-character word it is counted in (Dhakal, Feit, Kristensson and Oulasvirta, Observations on Typing from 136 Million Keystrokes, CHI 2018, doi 10.1145/3173574.3174220), the statutory paid leave in weeks (gov.uk, holiday entitlement) and the weeks in a year, each entry with its source."
+ },
+ "method": "The brief is what Kar's committed public passport carries in SYMBEYOND's STATE tier (tokens/public.state.txt), taken from the text before its seal: its list items (without the two-character list mark) and its vocabulary lines, the lines of memory a person would otherwise type, counted in characters. Minutes for one re-brief = characters / characters per word / words per minute. That is a transcription speed, and writing a brief from scratch is slower, so the minutes are a floor. Hours a year = people x new chats a week that need the context x working weeks x minutes / 60. Working weeks default to the weeks in a year less the statutory leave. The value of those hours uses the reader's own hourly cost, or the UK median hourly wage when they give none; each later year rises by CPI. No figure of ours, and no figure without a source, enters the case.",
+ "claims": [
+  {
+   "id": "T1",
+   "claim": "Every external figure in the time case comes from a sourced basis, the brief is read from the committed passport, and no figure is typed into the page or the kernel.",
+   "measure": "(a) vendor/basis/basis.json against its pin in vendor/SOURCES.json and against the file at the pinned commit (tools/vendor.mjs --check, CI); (b) every entry the kernel reads from data/typing-basis.json names a source URL; (c) for each figure the kernel reads, the case is computed once with that one figure changed and once with the bases as they are, with the page's default inputs; (d) page.mjs, index.html and src/timecase.mjs are searched for each figure written with a decimal point as it is written in its basis, for the default working weeks it implies, and for the participant count; (e) the brief's characters are re-derived from tokens/public.state.txt in CI.",
+   "rule": "(a) byte-identical to the pin and to the source; (b) every one; (c) the result differs for every figure; (d) 0 found; (e) the receipt's count reproduces"
+  },
+  {
+   "id": "T2",
+   "claim": "The time case kernel is gated.",
+   "measure": "witness v0.6 mutate on src/timecase.mjs with its own tests (src/timecase.test.mjs), on this machine and again on GitHub's runner on every push; and 2,000 garbage inputs to every exported function, each call taking up to four arguments drawn from a fixed hostile list.",
+   "rule": "clean, not capped, nothing baselined; 0 throws"
+  }
+ ]
+}
