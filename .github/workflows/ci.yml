@@ -26,6 +26,8 @@ jobs:
         run: node tools/oracle-corpus.mjs --check
       - name: the receipt reproduces (every claim re-derived here; the local records re-judged)
         run: node measure.mjs --check
+      - name: the time case receipt reproduces (claims-timecase.json T1 and T2, re-derived here)
+        run: node tools/timecase-measure.mjs --check
 
   witness:
     runs-on: ubuntu-latest
@@ -42,3 +44,9 @@ jobs:
             grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in src/$k.mjs"; exit 1; }
             grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on src/$k.mjs was capped"; exit 1; }
           done
+      - name: mutation gate (witness v0.6) on the time case kernel, with its own tests (claims-timecase.json T2)
+        run: |
+          node .witness6/witness.mjs mutate src/timecase.mjs --timeout 120000 --cap 1000 --test timeout -k 5 110 node --test src/timecase.test.mjs | tee /tmp/w.txt
+          grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in src/timecase.mjs"; exit 1; }
+          grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on src/timecase.mjs was capped"; exit 1; }
+          grep -q '"ignored": \[\]' /tmp/w.txt || { echo "::error::a survivor in src/timecase.mjs was baselined"; exit 1; }

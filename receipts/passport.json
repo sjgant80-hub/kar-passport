@@ -177,7 +177,7 @@
    "syntheticVerified": true
   },
   "G3": {
-   "files": 58,
+   "files": 66,
    "hits": 54,
    "where": [
     "kar/boot-local.mjs: economy@44",
@@ -203,7 +203,7 @@
     "tools/vendor.mjs: economy@8"
    ],
    "pageScanned": true,
-   "privateClassesOnKarsMachine": 57,
+   "privateClassesOnKarsMachine": 66,
    "excluded": [
     "receipts/passport.json (this measure's own output)"
    ]

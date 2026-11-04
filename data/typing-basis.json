@@ -1,0 +1,37 @@
+{
+ "about": "The figures the time case (src/timecase.mjs, claims-timecase.json) takes from outside the estate's basis, each with its source. Read 2026-11-04 from the primary sources named.",
+ "wordsPerMinute": {
+  "value": 51.56,
+  "unit": "words per minute",
+  "what": "Average typing speed of the participants (SD 20.2), transcribing given sentences on their own keyboards in an online typing test",
+  "source": "https://doi.org/10.1145/3173574.3174220",
+  "also": "https://userinterfaces.aalto.fi/136Mkeystrokes/",
+  "cite": "Dhakal, Feit, Kristensson and Oulasvirta, Observations on Typing from 136 Million Keystrokes, CHI 2018 (Words per minute, Results)"
+ },
+ "charsPerWord": {
+  "value": 5,
+  "unit": "characters per word",
+  "what": "The word the speed is counted in: any five characters, the standard definition in text-entry research, as the same paper states it",
+  "source": "https://doi.org/10.1145/3173574.3174220",
+  "cite": "Dhakal, Feit, Kristensson and Oulasvirta, CHI 2018 (Method, computed measures)"
+ },
+ "participants": {
+  "value": 168960,
+  "unit": "participants",
+  "what": "The participants in the final dataset the average speed is taken over (136,857,600 keystrokes)",
+  "source": "https://doi.org/10.1145/3173574.3174220",
+  "cite": "Dhakal, Feit, Kristensson and Oulasvirta, CHI 2018 (Results)"
+ },
+ "leaveWeeks": {
+  "value": 5.6,
+  "unit": "weeks a year",
+  "what": "Statutory paid holiday: almost all workers in the UK are legally entitled to 5.6 weeks' paid holiday a year",
+  "source": "https://www.gov.uk/holiday-entitlement-rights"
+ },
+ "weeksInYear": {
+  "value": 52,
+  "unit": "weeks",
+  "what": "The weeks in a year the statutory holiday is set against: a worker's total working weeks in a year is 46.4 (52 weeks in a year minus 5.6 weeks of leave)",
+  "source": "https://www.gov.uk/government/publications/simplifying-holiday-entitlement-and-holiday-pay-calculations/holiday-pay-and-entitlement-reforms-from-1-january-2024"
+ }
+}

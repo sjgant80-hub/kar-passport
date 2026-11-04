@@ -17,7 +17,9 @@ teslasolar's fork (teslasolar/SYMB-FER, forked before v6.0). Powered by the Kono
   `node measure.mjs --check` re-derives them in CI on every push.
 - The judges are SYMBEYOND's and teslasolar's own Python (`vendor/symbfer/`, pinned by SHA-256 to their commits;
   `tools/oracle.py` runs it unchanged).
-- Mutation gate: witness v0.6 on every module of `src/`.
+- Mutation gate: witness v0.6 on every module of `src/`, on GitHub's runner on every push; nothing baselined.
+- The page's time case has its own claims, `claims-timecase.json`, sealed before its code; `receipts/timecase.json`,
+  re-derived in CI by `node tools/timecase-measure.mjs --check`.
 
 ## Layout
 
@@ -31,8 +33,12 @@ teslasolar's fork (teslasolar/SYMB-FER, forked before v6.0). Powered by the Kono
 | `src/drift.mjs` | the drift check and the ingest plan |
 | `src/boot.mjs` | booting a cold model from a token, and judging it |
 | `src/judge.mjs` | the sealed rules |
+| `src/timecase.mjs` | the page's time case: what re-typing a brief by hand costs a team, from sourced figures and the reader's own |
+| `vendor/basis/basis.json` | the estate's sourced basis, byte for byte (pinned in `vendor/SOURCES.json`) |
+| `data/typing-basis.json` | the typing speed, the word it is counted in, and the UK statutory leave, each with its source |
 | `kar/` | the CLI and the I/O on Kar's machine (paths come from `~/.kar-passport/config.json`, never committed) |
 | `tokens/` | Kar's public slice, in five shapes, sealed |
+| `local/` | the records measured on Kar's machine (counts and hashes only), and the buyer walkthroughs |
 
 ## Use
 

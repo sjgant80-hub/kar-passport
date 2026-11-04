@@ -12,6 +12,8 @@ const ORIGINS = [
   { dir: 'vendor/symbfer/symbeyond', repo: 'SYMBEYOND/SYMB-FER', commit: '7370e7debfba410dd21f99f046dbdcc93070175d', prefix: '' },
   { dir: 'vendor/symbfer/teslasolar', repo: 'teslasolar/SYMB-FER', commit: '67054648fb642cf76c0cbf656a1244899658ce44', prefix: '' },
   { dir: 'vendor/fall-kit-core', repo: 'sjgant80-hub/fall-kit', commit: '9244d6128c7be0094c9d800acac0a9ee70ecdd97', prefix: 'core/' },
+  // the estate's sourced basis (claims-timecase.json T1), as liveware vendors it from sovereign-enterprise
+  { dir: 'vendor/basis', repo: 'sjgant80-hub/liveware', commit: 'ee580e4bebeeb1ddbf2fb30817a471572a414c80', prefix: 'vendor/ai-first-company/vendor/sovereign-enterprise/data/' },
 ];
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });

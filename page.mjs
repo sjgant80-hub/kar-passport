@@ -1,5 +1,5 @@
 // page.mjs: the live page. Every check here is the tool's own gated code (src/), run in the tab. Nothing typed here leaves it.
-import { parse, formatOf, validate62 } from './src/symbfer.mjs';
+import { parse, formatOf, validate62, REQUIRED62, TIER_LIMITS } from './src/symbfer.mjs';
 import { render62, dot } from './src/render.mjs';
 import { seal, verify, parseToken, shaOf } from './src/seal.mjs';
 import { scan, protocolLines, CLASSES } from './src/leak.mjs';
@@ -9,15 +9,18 @@ import { makeIdentity } from './vendor/fall-kit-core/identity.mjs';
 import { syntheticModel } from './fixtures/synthetic-model.mjs';
 import { honestUpdate, driftedCases } from './fixtures/drift-cases.mjs';
 import { fixtureInputs, lists as fixtureLists } from './fixtures/memory-fixture.mjs';
+import { briefOf, timeCase, sourcesOf, DEFAULTS } from './src/timecase.mjs';
 
 window.__kpStarted = true;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>\x22\x27]/g, (c) => '&#' + c.charCodeAt(0) + ';');
 const say = (el, ok, text) => { el.className = 'verdict ' + (ok ? 'ok' : 'bad'); el.textContent = text; };
 const get = async (p) => { const r = await fetch(p, { cache: 'no-cache' }); if (!r.ok) throw new Error(p + ' ' + r.status); return r.text(); };
+const getJson = async (p) => { try { return JSON.parse(await get(p)); } catch { return null; } };
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const fill = (sel, text) => { for (const el of document.querySelectorAll(sel)) el.textContent = text; };
 const SHAPES = [['v6.2', 'v6.2 living token'], ['v3.0', 'v3.0 (teslasolar fork)'], ['nano', 'NANO tier'], ['core', 'CORE tier'], ['state', 'STATE tier']];
 const NO_LISTS = { privateNames: [], surnames: [], firstNames: [], canaries: [] };
-const WPM = 51.56;   // average typing speed of 168,000 volunteers: Dhakal, Feit, Kristensson and Oulasvirta, CHI 2018
 
 const state = { trust: [], tokens: {}, shape: 'v6.2', shown: '', made: '', tabKey: null };
 
@@ -33,6 +36,10 @@ async function loadPublic() {
     tabs.appendChild(b);
   }
   show('v6.2');
+  const g = /^GENERATED: (\d{4})-(\d{2})-(\d{2})_/m.exec(state.tokens['v6.2']);
+  if (g) { state.madeOn = Number(g[3]) + ' ' + MONTHS[Number(g[2]) - 1] + ' ' + g[1]; fill('.made-on', state.madeOn); }
+  for (const t of ['nano', 'core', 'state']) fill('.tier-' + t, TIER_LIMITS[t].toLocaleString('en-GB'));
+  fill('.sections62', String(REQUIRED62.length));
 }
 function show(s) {
   state.shape = s; state.shown = state.tokens[s];
@@ -130,9 +137,8 @@ async function trace() {
   const d = parse(t), r = scan(t, NO_LISTS, 'public', protocolLines()), v = await verify(t, { trust: state.trust });
   let receipt = null; try { receipt = JSON.parse(await get('receipts/passport.json')); } catch {}
   const f = receipt ? receipt.facts : {};
-  const words = (state.tokens.state.split('\n\n§SIG·BEGIN')[0].match(/\S+/g) || []).length;
   const steps = [
-    'Kar\'s memory: ' + (f.K1 ? f.K1.tokens + ' tokens were made from it today (three slices, five shapes each)' : 'the memory index, its topic files and the brain\'s working memory') + '.',
+    'Kar\'s memory: ' + (f.K1 ? f.K1.tokens + ' tokens were made from it' + (state.madeOn ? ' on ' + state.madeOn : '') + ' (three slices, five shapes each)' : 'the memory index, its topic files and the brain\'s working memory') + '.',
     'The slicer picked the public slice: only facts already public. The operator became REF-P-001.',
     'The leak gate read the ' + r.scanned + ' lines Kar\'s memory added (the ' + r.exempt + ' lines of the protocol\'s own text are exempt) and found <span class="num">' + r.hits.length + '</span> leaks of the kinds this page can check' +
       (f.K2 ? ', and on Kar\'s machine, with the private lists, <span class="num">' + f.K2.hits + '</span> across all ' + f.K2.tokens + ' public and shareable tokens' : '') + '.',
@@ -143,25 +149,86 @@ async function trace() {
     f.L1 ? 'The hand-back closed the loop: a fresh session returned an update, accepted with no drift, merged, carried into the next passport, and undone byte for byte.' : 'A fresh session hands back an update; it is checked and merged.',
   ];
   $('trace').innerHTML = steps.map((s) => '<li>' + s + '</li>').join('');
-  calc(words);
   if (receipt) renderReceipt(receipt);
   else $('receipt').textContent = 'The receipt is not published yet.';
+  const [basis, typing, tc, k1, walked, walk] = await Promise.all(['vendor/basis/basis.json', 'data/typing-basis.json', 'receipts/timecase.json', 'local/k1.json', 'local/personas-answered.json', 'local/walk-2026-11-04.json'].map(getJson));
+  state.basis = basis; state.typing = typing; state.brief = briefOf(state.tokens.state);
+  setupCalc();
+  renderGates(receipt, tc);
+  renderReceiptTc(tc);
+  renderWalks(walked, walk);
+  renderSizes(k1);
 }
 function renderReceipt(rc) {
   $('receipt').innerHTML = '<p><b>' + rc.held + ' of ' + rc.of + ' claims held.</b> <a href="receipts/passport.json">The receipt</a> · <a href="claims.json">the sealed claims</a></p><table><thead><tr><th>Claim</th><th>Verdict</th><th>What was measured</th></tr></thead><tbody>' +
-    rc.verdicts.map((v) => '<tr><td>' + esc(v.id) + '</td><td class="' + (v.held ? 'held">HELD' : 'failed">FAILED') + '</td><td>' + esc(v.why) + '</td></tr>').join('') + '</tbody></table>';
+    rc.verdicts.map((v) => '<tr><td>' + esc(v.id) + '</td><td class="' + (v.held ? 'held">HELD' : 'failed">FAILED') + '</td><td class="why">' + esc(v.why) + '</td></tr>').join('') + '</tbody></table>';
 }
 
-// ── the time case: the buyer's numbers, one sourced rate ────────────
-function calc(words) {
-  const n = (id) => Math.max(0, Number($(id).value) || 0);
-  const minutes = words / WPM;
-  const hours = n('c-people') * n('c-sessions') * n('c-weeks') * minutes / 60;
-  const cost = n('c-cost');
-  $('c-out').innerHTML = 'About <span class="num">' + Math.round(hours).toLocaleString() + ' hours a year</span> of re-typing context' + (cost ? ', worth <span class="num">' + Math.round(hours * cost).toLocaleString() + '</span> in your own currency' : '') + '.';
-  $('c-basis').textContent = 'How it is counted: re-briefing a fresh AI with what Kar\'s STATE-tier passport carries means typing about ' + words + ' words, which takes about ' + minutes.toFixed(1) +
-    ' minutes at the average measured typing speed of ' + WPM + ' words a minute (Dhakal, Feit, Kristensson and Oulasvirta, CHI 2018, 168,000 typists). That is multiplied by your people, their new chats a week and your working weeks (46.4 = 52 less the 5.6 weeks of UK statutory leave, gov.uk). Your own figures replace every default.';
-  for (const id of ['c-people', 'c-sessions', 'c-weeks', 'c-cost']) $(id).oninput = () => calc(words);
+// ── the time case: the buyer's numbers, the kernel's arithmetic (src/timecase.mjs), the sourced bases ─
+const money = (x) => '£' + Number(x).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+function setupCalc() {
+  const base = timeCase(state.basis, state.typing, { chars: state.brief.chars });
+  if (!base.ok) { $('c-out').textContent = 'The case cannot be computed here: ' + (base.why || 'the sourced basis did not load') + '.'; return; }
+  $('c-people').value = DEFAULTS.people; $('c-sessions').value = DEFAULTS.chatsPerWeek; $('c-years').value = DEFAULTS.years;
+  $('c-weeks').value = base.inputs.weeks;
+  $('c-cost').placeholder = 'blank: ' + base.inputs.hourly + ', the UK median wage';
+  for (const id of ['c-people', 'c-sessions', 'c-weeks', 'c-cost', 'c-years']) $(id).oninput = calc;
+  const USE = { wageMedianHourly: 'the value of an hour when you give no cost of your own', cpi: 'the rise in pay each year after the first', wordsPerMinute: 'the typing speed',
+    charsPerWord: 'the word that speed is counted in', leaveWeeks: 'taken off the year for the default working weeks', weeksInYear: 'the year the leave is taken from' };
+  $('c-sources').innerHTML = sourcesOf(state.basis, state.typing).map((x) => '<li><b>' + esc(x.value) + '</b>, ' + esc(USE[x.key] || x.key) + '. The basis says: ' + esc(x.what) + (x.source ? ' · <a href="' + esc(x.source) + '">source</a>' : '') + '</li>').join('') +
+    '<li>The estate\'s basis is <a href="vendor/basis/basis.json">vendor/basis/basis.json</a>, a byte-for-byte copy pinned by SHA-256; the typing figures are <a href="data/typing-basis.json">data/typing-basis.json</a>.</li>';
+  calc();
+}
+function calc() {
+  const num = (id) => { const v = $(id).value.trim(); return v === '' ? undefined : Number(v); };
+  const r = timeCase(state.basis, state.typing, { chars: state.brief.chars, people: num('c-people'), chatsPerWeek: num('c-sessions'), weeks: num('c-weeks'), hourly: num('c-cost'), years: num('c-years') });
+  if (!r.ok) { $('c-out').textContent = 'Check the figures: ' + r.why + '.'; return; }
+  const t = state.typing, i = r.inputs;
+  $('c-out').innerHTML = 'About <span class="num">' + Math.round(r.hoursPerYear).toLocaleString('en-GB') + ' hours a year</span> of re-typing context, worth <span class="num">' + money(r.valuePerYear) + ' a year</span>' +
+    (r.ownHourly ? ' at your hourly cost' : ' at the UK median wage') + ', and <span class="num">' + money(r.valueOver) + '</span> over ' + i.years + (i.years === 1 ? ' year' : ' years') + (i.years > 1 ? ' as pay rises with CPI' : '') + '.';
+  $('c-basis').textContent = 'How it is counted: one re-brief is the ' + state.brief.chars.toLocaleString('en-GB') + ' characters of memory in ' + state.brief.lines + ' lines that Kar\'s STATE-tier passport carries (its list items and vocabulary), which is ' +
+    (state.brief.chars / t.charsPerWord.value).toFixed(0) + ' words of ' + t.charsPerWord.value + ' characters, and takes about ' + r.minutesPerBrief + ' minutes at the average measured typing speed of ' + t.wordsPerMinute.value + ' words a minute (' +
+    t.participants.value.toLocaleString('en-GB') + ' typists; Dhakal, Feit, Kristensson and Oulasvirta, CHI 2018). That is a copying speed, and writing a brief from scratch is slower, so the minutes are a floor. It is multiplied by ' + i.people + ' people, ' + i.chatsPerWeek +
+    ' new chats a week each and ' + i.weeks + ' working weeks (' + t.weeksInYear.value + ' weeks less the ' + t.leaveWeeks.value + ' weeks of UK statutory paid leave). With no hourly cost of yours, an hour is valued at the UK median hourly wage, on-costs left out. Your own figures replace every default.';
+}
+
+// ── the gate record: every organ's mutation gate, from the receipts ──
+const ROLES = { 'src/symbfer.mjs': 'the codec: v6.2 and v3.0 readers, the tier writer', 'src/render.mjs': 'the writers, from the template\'s own lines', 'src/seal.mjs': 'the seal and verify-before-parse',
+  'src/leak.mjs': 'the leak gate', 'src/slice.mjs': 'the slicer', 'src/drift.mjs': 'the drift check and the ingest plan', 'src/boot.mjs': 'the boot of a cold model', 'src/judge.mjs': 'the sealed rules', 'src/timecase.mjs': 'the time case' };
+function renderGates(rc, tc) {
+  const mods = rc && rc.facts && rc.facts.G1 ? rc.facts.G1.modules.map((m) => ({ ...m, claim: 'G1' })) : [];
+  const w = tc && tc.facts && tc.facts.gate ? tc.facts.gate.witness : null;
+  if (w) mods.push({ name: w.module, killed: w.killed, total: w.total, clean: w.clean, capped: w.capped, claim: 'T2' });
+  if (!mods.length) { $('gates').textContent = 'The gate record is not published yet.'; return; }
+  const g1 = rc && rc.facts ? rc.facts.G1 : null, g2 = tc && tc.facts ? tc.facts.gate : null;
+  $('gates').innerHTML = '<div class="scroll"><table><thead><tr><th>Organ</th><th class="hide-narrow">What it does</th><th>Mutants caught</th><th>Gate</th><th>Claim</th></tr></thead><tbody>' +
+    mods.map((m) => '<tr><td><code>' + esc(m.name.replace(/^src\//, '')) + '</code></td><td class="hide-narrow">' + esc(ROLES[m.name] || '') + '</td><td class="num">' + m.killed + ' of ' + m.total + '</td><td class="' + (m.clean && !m.capped ? 'held">CLEAN' : 'failed">NOT CLEAN') + '</td><td>' + m.claim + '</td></tr>').join('') +
+    '</tbody></table></div><p class="muted">Every organ is in <code>src/</code>. Fuzz: ' + (g1 ? g1.fuzzInputs.toLocaleString('en-GB') + ' garbage inputs to the ' + g1.fuzzFunctions + ' functions of the first eight organs, ' + g1.fuzzThrows + ' throws' : 'see the receipts') +
+    (g2 ? '; ' + g2.fuzzInputs.toLocaleString('en-GB') + ' to the ' + g2.fuzzFunctions + ' of the time case, ' + g2.fuzzThrows + ' throws' : '') + '. The tests of every organ, the page and the receipts run on every push in <a href="https://github.com/sjgant80-hub/kar-passport/actions">CI</a>.</p>';
+}
+function renderReceiptTc(tc) {
+  if (!tc) { $('receipt-tc').textContent = 'The time case receipt is not published yet.'; return; }
+  $('receipt-tc').innerHTML = '<p><b>' + tc.held + ' of ' + tc.of + ' claims held.</b> <a href="receipts/timecase.json">The receipt</a> · <a href="claims-timecase.json">the sealed claims</a></p><table><thead><tr><th>Claim</th><th>Verdict</th><th>What was measured</th></tr></thead><tbody>' +
+    tc.verdicts.map((v) => '<tr><td>' + esc(v.id) + '</td><td class="' + (v.held ? 'held">HELD' : 'failed">FAILED') + '</td><td class="why">' + esc(v.why) + '</td></tr>').join('') + '</tbody></table>';
+}
+
+// ── the buyer walkthroughs, from their records ──────────────────────
+function renderWalks(walked, walk) {
+  const parts = [];
+  if (walk && Array.isArray(walk.walks)) {
+    parts.push('<p><b>' + esc(walk.when) + ' · ' + esc(walk.by) + '</b>: the served page read cold as ' + walk.walks.map((w) => esc(w.role)).join(', ') + '.</p><table><thead><tr><th>Buyer</th><th>What the page left open</th><th>Where it is answered now</th></tr></thead><tbody>' +
+      walk.walks.flatMap((w) => w.gaps.map((g) => '<tr><td>' + esc(w.role) + '</td><td>' + esc(g.gap) + '</td><td>' + esc(g.answered) + '</td></tr>')).join('') + '</tbody></table>' +
+      (walk.open && walk.open.length ? '<p class="muted">Open, and why: ' + walk.open.map((o) => esc(o)).join(' · ') + '</p>' : ''));
+  }
+  if (walked && Array.isArray(walked.answered)) {
+    parts.push('<p><b>Earlier</b>: ' + esc(walked.walk) + '.</p><table><thead><tr><th>What they asked</th><th>Where it is answered</th></tr></thead><tbody>' +
+      walked.answered.map((a) => '<tr><td>' + esc(a.gap) + '</td><td>' + esc(a.where) + '</td></tr>').join('') + '</tbody></table>');
+  }
+  $('walks').innerHTML = parts.length ? parts.join('') : 'The walkthrough records are not published yet.';
+}
+function renderSizes(k1) {
+  const b = k1 && Array.isArray(k1.tokens) ? k1.tokens.filter((t) => t.shape === 'v6.2').map((t) => t.bytes) : [];
+  if (b.length) $('sizes').textContent = 'Kar\'s three v6.2 passports are ' + (Math.min(...b) / 1000).toFixed(1) + ' to ' + (Math.max(...b) / 1000).toFixed(1) + ' KB (' + REQUIRED62.length + ' sections)';
 }
 
 // ── where the protocol is silent (from the sealed claims) ───────────

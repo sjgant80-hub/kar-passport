@@ -21,4 +21,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 The SYMB-FER protocol is SYMBEYOND AI LLC's (MIT): cite as "SYMB-FER, SYMBEYOND AI LLC, 2026."
-Its files under vendor/symbfer/ keep their own licence (vendor/symbfer/LICENSE-SYMBEYOND).
+Its files under vendor/symbfer/ keep their own licence (vendor/symbfer/symbeyond/LICENSE and vendor/symbfer/teslasolar/source/LICENSE: MIT, with SYMBEYOND's Echo Clause).

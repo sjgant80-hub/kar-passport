@@ -1,0 +1,14 @@
+{
+ "claim": "T2",
+ "witness": {
+  "module": "src/timecase.mjs",
+  "version": "v0.6",
+  "test": "node --test src/timecase.test.mjs",
+  "where": "Kar's machine, Node v25.7.0, 2026-11-04 (GitHub's runner re-gates it on every push: the witness job in .github/workflows/ci.yml)",
+  "killed": 31,
+  "total": 31,
+  "clean": true,
+  "capped": false,
+  "baselined": 0
+ }
+}

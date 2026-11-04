@@ -1,0 +1,50 @@
+{
+ "kind": "kar-passport.walk",
+ "url": "https://sjgant80-hub.github.io/kar-passport/",
+ "when": "4 November 2026",
+ "by": "Kar (Claude Opus 5.5), the builder, simulating four buyers",
+ "how": "The served page (HTTP 200, byte-identical to index.html at 348f5ef apart from line endings) read cold from the top as each buyer in turn, every section, button and number, listing what it left a buyer unable to answer. Each gap was then answered on the page from the repository's own code, records and sourced figures, or is listed as open.",
+ "walks": [
+  {
+   "role": "CFO",
+   "gaps": [
+    { "gap": "The cost section's typing speed, working weeks and typist count were typed into the page script, and nothing beside the result said where each came from.", "answered": "For your business, The time it gives back: computed by src/timecase.mjs from vendor/basis/basis.json and data/typing-basis.json, every figure listed with its source under the result (claims-timecase.json T1)." },
+    { "gap": "With no hourly cost entered, the case gave hours but no money figure.", "answered": "The same section: a blank hourly cost is valued at the UK median hourly wage (ONS ASHE 2025, on-costs left out), and the result says so." },
+    { "gap": "No figure over a budget period.", "answered": "The same section: years to count, each later year rising by UK CPI." },
+    { "gap": "Does pasting a passport add to the AI bill?", "answered": "The same section, the note under the sources: input text on a per-token AI, nothing extra on a chat subscription, tiers when length matters." },
+    { "gap": "The page said the passports were made today, which stopped being true the next day.", "answered": "Start here, Status, and Try it: the date is read from the passport's own header." }
+   ]
+  },
+  {
+   "role": "CTO/CISO",
+   "gaps": [
+    { "gap": "The blueprint named the files but not whether each one is gated.", "answered": "Blueprint, Gate status organ by organ: each organ's mutants caught and its gate, read from the receipts." },
+    { "gap": "Third-party code and the supply chain were not addressed.", "answered": "Security, No third-party packages." },
+    { "gap": "What happens when a signing key is lost or exposed?", "answered": "Security questions, What if a signing key is lost or exposed?" },
+    { "gap": "Does the page itself send anything anywhere?", "answered": "Security, No server, no telemetry: only its own files, no other request." },
+    { "gap": "The diagram's labels were too small to read on a phone.", "answered": "How it works: on a narrow screen the diagram keeps a readable size and scrolls sideways." }
+   ]
+  },
+  {
+   "role": "COO",
+   "gaps": [
+    { "gap": "Who runs this day to day?", "answered": "Deployment and roll-out, week 3 onward: one owner per memory runs the end-of-session command and reviews each hand-back plan." },
+    { "gap": "How long does one re-brief take, and what is that across a team like ours?", "answered": "The time it gives back: minutes per re-brief, and hours a year from your own figures." },
+    { "gap": "Passport sizes were stated without saying where they came from.", "answered": "How you make passports on your own machine, Sizes: read from the records of Kar's passports and the codec's own tier limits." }
+   ]
+  },
+  {
+   "role": "Procurement",
+   "gaps": [
+    { "gap": "Liability and warranty were not stated.", "answered": "Supplier, support and ownership: as is under MIT; warranty and liability agreed per deployment." },
+    { "gap": "There was no exit statement.", "answered": "Supplier, support and ownership, Exit." },
+    { "gap": "The licences of the parts inside, including SYMB-FER's Echo Clause, were not set out.", "answered": "Supplier, support and ownership, What is inside, and its licences." },
+    { "gap": "Whether the supplier receives our data.", "answered": "Supplier, support and ownership, Your data." },
+    { "gap": "No record that buyers had reviewed the page.", "answered": "For your business, Buyer walkthroughs: these records, marked as simulations." }
+   ]
+  }
+ ],
+ "open": [
+  "A live run against Grok waits on an xAI API key being set on Kar's machine; the public slice is built for it and has been booted on a local model instead."
+ ]
+}

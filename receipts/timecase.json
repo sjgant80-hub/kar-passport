@@ -1,0 +1,98 @@
+{
+ "kind": "kar-passport.receipt.timecase",
+ "claims": "claims-timecase.json",
+ "facts": {
+  "basis": {
+   "pinned": true,
+   "atSource": true,
+   "repo": "sjgant80-hub/liveware",
+   "commit": "ee580e4",
+   "path": "vendor/ai-first-company/vendor/sovereign-enterprise/data/basis.json"
+  },
+  "typingSourced": {
+   "entries": 4,
+   "sourced": 4
+  },
+  "brief": {
+   "from": "tokens/public.state.txt",
+   "ok": true,
+   "lines": 12,
+   "chars": 629
+  },
+  "moved": {
+   "figures": 6,
+   "moved": 6,
+   "which": [
+    "wageMedianHourly",
+    "cpi",
+    "wordsPerMinute",
+    "charsPerWord",
+    "leaveWeeks",
+    "weeksInYear"
+   ]
+  },
+  "literals": {
+   "searched": [
+    "19.67",
+    "0.031",
+    "51.56",
+    "5.6",
+    "46.4",
+    "168960",
+    "168,960",
+    "168,000"
+   ],
+   "files": [
+    "page.mjs",
+    "index.html",
+    "src/timecase.mjs"
+   ],
+   "found": []
+  },
+  "defaultCase": {
+   "inputs": {
+    "chars": 629,
+    "people": 10,
+    "chatsPerWeek": 10,
+    "weeks": 46.4,
+    "hourly": 19.67,
+    "years": 3
+   },
+   "minutesPerBrief": 2.44,
+   "hoursPerYear": 188.68,
+   "valuePerYear": 3711.41,
+   "valueOver": 11482.95
+  },
+  "gate": {
+   "fuzzFunctions": 5,
+   "fuzzPerFunction": 2000,
+   "fuzzInputs": 10000,
+   "fuzzThrows": 0,
+   "witness": {
+    "module": "src/timecase.mjs",
+    "version": "v0.6",
+    "test": "node --test src/timecase.test.mjs",
+    "where": "Kar's machine, Node v25.7.0, 2026-11-04 (GitHub's runner re-gates it on every push: the witness job in .github/workflows/ci.yml)",
+    "killed": 31,
+    "total": 31,
+    "clean": true,
+    "capped": false,
+    "baselined": 0
+   }
+  }
+ },
+ "verdicts": [
+  {
+   "id": "T1",
+   "held": true,
+   "why": "basis byte-identical to its pin and its source; 4 of 4 typing figures sourced; 6 of 6 figures move the result; 0 typed in; brief 629 characters in 12 lines"
+  },
+  {
+   "id": "T2",
+   "held": true,
+   "why": "witness 31/31 clean, 0 baselined; 10000 fuzz inputs to 5 functions, 0 throws"
+  }
+ ],
+ "held": 2,
+ "of": 2
+}

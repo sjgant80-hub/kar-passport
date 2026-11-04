@@ -183,6 +183,13 @@
    "commit": "9244d6128c7be0094c9d800acac0a9ee70ecdd97",
    "path": "core/vendor/light/sha256.mjs",
    "sha256": "cf60afffd36df071b277da214ed61a7b3f4923e443bfadb06656bb7da4756bc1"
+  },
+  {
+   "local": "vendor/basis/basis.json",
+   "repo": "sjgant80-hub/liveware",
+   "commit": "ee580e4bebeeb1ddbf2fb30817a471572a414c80",
+   "path": "vendor/ai-first-company/vendor/sovereign-enterprise/data/basis.json",
+   "sha256": "83e9c2effa2f81596dcfa7110f030940032c1910cdf928d27d628ae59d73bb42"
   }
  ]
 }
