@@ -90,6 +90,8 @@ try {
       public: notes.filter((n) => n.public && holds('public', n)).length, publicOf: notes.filter((n) => n.public).length,
       otherInPublic: notes.filter((n) => !n.public && holds('public', n)).length,
       planted: planted.length, kinds: [...new Set(planted.map((p) => p.kind))].length, plantedFound: found,
+      // the positive control: the same search finds the planted values in the full slice, which keeps them (it never leaves)
+      plantedInFull: planted.filter((p) => rd('full', 'v6.2').includes(p.value) || rd('full', 'v6.2').includes(dot(p.value))).length,
     };
   }
   // (7) the hand-back: an honest update of the full v6.2 token in, apply, notes again, undo; then one drifted return in
