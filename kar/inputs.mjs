@@ -9,14 +9,22 @@ import { homedir, userInfo } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { readLog, mergedOf } from '../src/drift.mjs';
 import { noteOf, ordered } from '../src/notes.mjs';
+import { textOf, jsonOf } from './text.mjs';
 
-const read = (p, fb = '') => { try { return readFileSync(p, 'utf8'); } catch { return fb; } };
+// Every file is read through kar/text.mjs: a byte-order mark (Windows PowerShell's `>`, some Windows editors) is read,
+// never a reason to throw.
+const read = (p, fb = '') => { try { return textOf(readFileSync(p)); } catch { return fb; } };
 
 // This machine's paths live in ~/.kar-passport/config.json (never committed): where the memory, the brain and its CLI
 // are, and the full slice's private retrieval lines. The passport's own state (the key seed, the REF lookup, the tokens
 // it made, the ingest plans) lives beside it.
 export const HOME_DIR = process.env.KAR_PASSPORT_DIR || join(homedir(), '.kar-passport');
-export const CONFIG = JSON.parse(read(join(HOME_DIR, 'config.json'), '{}'));
+export const CONFIG_FILE = join(HOME_DIR, 'config.json');
+const config = jsonOf(read(CONFIG_FILE, '{}'));
+/** Why config.json could not be read as an object ('' when it could, or when there is none): the command says so plainly. */
+export const CONFIG_PROBLEM = !config.ok ? config.why + (read(CONFIG_FILE).includes('\\') ? ' (in JSON a backslash starts an escape: write each backslash of a Windows path as a forward slash)' : '')
+  : config.value === null || typeof config.value !== 'object' || Array.isArray(config.value) ? 'it is not a JSON object' : '';
+export const CONFIG = CONFIG_PROBLEM ? {} : config.value;
 export const PATHS = { memory: CONFIG.memory || '', brain: CONFIG.brain || '', brainCli: CONFIG.brainCli || '', keys: HOME_DIR };
 
 /** A topic file's frontmatter: name, description, type (and the body, for the retrospectives). */

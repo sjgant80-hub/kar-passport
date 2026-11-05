@@ -27,25 +27,28 @@ import { buildSlice } from '../src/slice.mjs';
 import { notesSlice, listsOf } from '../src/notes.mjs';
 import { scan, protocolLines } from '../src/leak.mjs';
 import { driftCheck, ingestPlan, readLog } from '../src/drift.mjs';
-import { readInputs, readLists, teamInput, PATHS, CONFIG } from './inputs.mjs';
+import { readInputs, readLists, teamInput, PATHS, CONFIG, CONFIG_FILE, CONFIG_PROBLEM } from './inputs.mjs';
+import { textOf, jsonOf } from './text.mjs';
 
 const REPO = join(import.meta.dirname, '..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const stampNow = () => { const d = new Date(), p = (n) => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()) + 'H'; };
-const rd = (p, fb) => { try { return readFileSync(p, 'utf8'); } catch { return fb; } };
+const rd = (p, fb) => { try { return textOf(readFileSync(p)); } catch { return fb; } };
 export const SHAPES = ['v6.2', 'v3.0', 'nano', 'core', 'state'];
 
 export async function karKey(create = false) {
   const p = join(PATHS.keys, 'kar.seed');
   if (!existsSync(p)) {
-    if (!create) throw new Error('no passport key: run `node kar/passport.mjs key` once');
+    if (!create) throw new Error('no passport key: run `node kar/passport.mjs key > keys/kar.json` once');
     mkdirSync(PATHS.keys, { recursive: true });
     writeFileSync(p, hex(randomBytes(32)) + '\n', { mode: 0o600 });
   }
-  return makeIdentity(unhex(readFileSync(p, 'utf8').trim()));
+  return makeIdentity(unhex(rd(p, '').trim()));
 }
 
-export const trustList = () => [JSON.parse(rd(join(REPO, 'keys', 'kar.json'), '{}')).id].filter(Boolean);
+/** The keys this clone trusts: the one keys/kar.json pins (none when the file is missing or not JSON). */
+export const trustList = () => { const k = jsonOf(rd(join(REPO, 'keys', 'kar.json'), '{}')); return k.ok && k.value ? [k.value.id].filter((x) => typeof x === 'string' && x) : []; };
+const NO_PIN = 'keys/kar.json pins no key: run `node kar/passport.mjs key > keys/kar.json` once';
 
 /** Every shape of one slice, sealed. */
 export async function tokensOf(slice, id, now) {
@@ -58,9 +61,12 @@ export async function tokensOf(slice, id, now) {
 }
 
 async function generate(team = false) {
+  if (CONFIG_PROBLEM) { console.error('REFUSED: ' + CONFIG_FILE + ' could not be read: ' + CONFIG_PROBLEM); process.exitCode = 1; return; }
   const now = arg('--now', stampNow());
   const id = await karKey();
-  const mem = arg('--memory', PATHS.memory), base = readLists();
+  const mem = arg('--memory', PATHS.memory);
+  if (!mem || !existsSync(mem)) { console.error('REFUSED: no notes folder ' + (mem ? 'at ' + mem : 'named') + ': set "memory" in ' + CONFIG_FILE + ' to your notes folder'); process.exitCode = 1; return; }
+  const base = readLists();
   const lists = team ? listsOf(CONFIG.about, base, CONFIG.private) : base;
   if (!lists) { console.error('REFUSED: the leak gate lists could not be read from config.json'); process.exitCode = 1; return; }
   const input = team ? teamInput(now, mem) : readInputs(now, mem);
@@ -93,6 +99,7 @@ async function generate(team = false) {
 }
 
 async function cmdVerify(file) {
+  if (!trustList().length) { console.log('REFUSED: ' + NO_PIN); process.exitCode = 1; return; }
   const p = await parseToken(rd(file, ''), { trust: trustList() });
   if (!p.ok) { console.log('REFUSED: ' + p.refused); process.exitCode = 1; return; }
   console.log('VERIFIED ' + p.context.format + ' · signed by ' + p.context.key.slice(0, 16) + '… · sha256 ' + p.context.sha);
@@ -103,6 +110,7 @@ function planDir() { return join(PATHS.keys, 'plans'); }
 
 async function cmdIn(sentFile, backFile) {
   const sent = rd(sentFile, ''), back = rd(backFile, '');
+  if (!trustList().length) { console.log('REFUSED: ' + NO_PIN); process.exitCode = 1; return; }
   const v = await verify(sent, { trust: trustList() });
   if (!v.ok) { console.log('REFUSED: the sent token does not verify against keys/kar.json: ' + v.why); process.exitCode = 1; return; }
   const d = driftCheck(sent, back);
@@ -159,15 +167,17 @@ async function cmdPublish(file) {
 
 if (process.argv[1] && import.meta.filename === process.argv[1]) {
   const [cmd, a, b] = process.argv.slice(2);
-  if (cmd === 'key') {
-    const id = await karKey(true);
-    console.log(JSON.stringify({ kind: 'kar-passport.key', id: id.id, note: 'A passport key: the public half. Its seed stays on the machine that made it; every passport it seals verifies against this.' }, null, 1));
-  } else if (cmd === 'generate') await generate();
-  else if (cmd === 'notes') await generate(true);
-  else if (cmd === 'verify') await cmdVerify(a);
-  else if (cmd === 'publish') await cmdPublish(a);
-  else if (cmd === 'in') await cmdIn(a, b);
-  else if (cmd === 'apply') cmdApply(a);
-  else if (cmd === 'undo') cmdUndo(a);
-  else { console.error('usage: node kar/passport.mjs key | generate [--target t] | notes [--target t] | publish <file> | verify <file> | in <sent> <returned> | apply <id> | undo <id>'); process.exitCode = 2; }
+  try {
+    if (cmd === 'key') {
+      const id = await karKey(true);
+      console.log(JSON.stringify({ kind: 'kar-passport.key', id: id.id, note: 'A passport key: the public half. Its seed stays on the machine that made it; every passport it seals verifies against this.' }, null, 1));
+    } else if (cmd === 'generate') await generate();
+    else if (cmd === 'notes') await generate(true);
+    else if (cmd === 'verify') await cmdVerify(a);
+    else if (cmd === 'publish') await cmdPublish(a);
+    else if (cmd === 'in') await cmdIn(a, b);
+    else if (cmd === 'apply') cmdApply(a);
+    else if (cmd === 'undo') cmdUndo(a);
+    else { console.error('usage: node kar/passport.mjs key | generate [--target t] | notes [--target t] | publish <file> | verify <file> | in <sent> <returned> | apply <id> | undo <id>'); process.exitCode = 2; }
+  } catch (e) { console.error('REFUSED: ' + (e && e.message ? e.message : String(e))); process.exitCode = 1; }
 }

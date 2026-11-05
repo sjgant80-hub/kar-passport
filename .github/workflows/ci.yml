@@ -16,8 +16,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: the kernels' tests and the page gate
-        run: node --test src/*.test.mjs page.test.mjs
+      - name: the kernels' tests, the command line's text reader and the page gate
+        run: node --test src/*.test.mjs page.test.mjs kar/*.test.mjs
       - name: the vendored oracles are byte-identical to SYMBEYOND/SYMB-FER, teslasolar/SYMB-FER and fall-kit at their pinned commits
         run: node tools/vendor.mjs --check
       - name: the template module is the vendored v6.2 template
@@ -59,3 +59,49 @@ jobs:
           grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in src/notes.mjs"; exit 1; }
           grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on src/notes.mjs was capped"; exit 1; }
           grep -q '"ignored": \[\]' /tmp/w.txt || { echo "::error::a survivor in src/notes.mjs was baselined"; exit 1; }
+      - name: mutation gate (witness v0.6) on the command line's text reader, with its own tests
+        run: |
+          node .witness6/witness.mjs mutate kar/text.mjs --timeout 120000 --cap 1000 --test timeout -k 5 110 node --test kar/text.test.mjs | tee /tmp/w.txt
+          grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in kar/text.mjs"; exit 1; }
+          grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on kar/text.mjs was capped"; exit 1; }
+          grep -q '"ignored": \[\]' /tmp/w.txt || { echo "::error::a survivor in kar/text.mjs was baselined"; exit 1; }
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: check out with the repository's own line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: the command line's text reader, on Windows
+        run: node --test kar/text.test.mjs
+      - name: the page's steps 2 to 4 (How you make passports on your own machine), typed in Windows PowerShell as written; its > writes keys/kar.json with a byte-order mark
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          'Windows PowerShell ' + $PSVersionTable.PSVersion.ToString()
+          $env:KAR_PASSPORT_DIR = Join-Path $env:RUNNER_TEMP 'kp-home'
+          New-Item -ItemType Directory -Force $env:KAR_PASSPORT_DIR | Out-Null
+          $notes = Join-Path $env:RUNNER_TEMP 'notes'
+          Copy-Item -Recurse fixtures/team-notes $notes
+          $cfg = Get-Content (Join-Path $notes 'config.json') -Raw | ConvertFrom-Json
+          $cfg | Add-Member -NotePropertyName memory -NotePropertyValue ($notes.Replace([char]92, [char]47))
+          $cfg | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $env:KAR_PASSPORT_DIR 'config.json')
+          node kar/passport.mjs key > keys/kar.json
+          $b = [System.IO.File]::ReadAllBytes((Resolve-Path keys/kar.json).Path)
+          'keys/kar.json opens with the bytes ' + (($b[0..2] | ForEach-Object { '{0:X2}' -f $_ }) -join ' ')
+          if (-not (($b[0] -eq 0xFF -and $b[1] -eq 0xFE) -or ($b[0] -eq 0xEF -and $b[1] -eq 0xBB))) { throw 'keys/kar.json has no byte-order mark, so this run did not test the case' }
+          node kar/passport.mjs notes
+          if ($LASTEXITCODE -ne 0) { throw 'the notes command failed' }
+          $toks = @(Get-ChildItem -Recurse (Join-Path $env:KAR_PASSPORT_DIR 'tokens') -Filter *.txt)
+          $ok = 0
+          foreach ($t in $toks) { $o = node kar/passport.mjs verify $t.FullName; if ($LASTEXITCODE -eq 0 -and (($o -join ' ') -match '^VERIFIED')) { $ok++ } }
+          'verified with the key the step pinned: ' + $ok + ' of ' + $toks.Count
+          if ($toks.Count -ne 15 -or $ok -ne 15) { throw 'not every passport was written and verified' }
+      - name: the team-notes receipt reproduces on Windows too (claims-notes.json N1 and N2, re-derived)
+        run: node tools/notes-measure.mjs --check
