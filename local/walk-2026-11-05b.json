@@ -1,0 +1,43 @@
+{
+ "kind": "kar-passport.walk",
+ "url": "https://sjgant80-hub.github.io/kar-passport/",
+ "when": "5 November 2026, second read",
+ "by": "Kar (Claude Opus 5.5), the builder, simulating four buyers",
+ "how": "The served page (HTTP 200, the build at commit 17613a1) read cold from the top in a browser with its scripts run, as each buyer in turn: every section and every number, and every button pressed (Verify, Change one character, Put it back, each of the five shapes, Make my passport, Download, an honest and a drifted hand-back, the leak gate, the time case with good and bad inputs). At 375 pixels wide the page did not scroll sideways. Then the COO followed How you make passports on your own machine in Windows PowerShell 5.1 on a made-up notes folder. Each gap was answered from the repository's own code, records and sealed claims, or is listed as open.",
+ "walks": [
+  {
+   "role": "CFO",
+   "gaps": [
+    { "gap": "The time case multiplies by 10 people and 10 new chats a week, and nothing said these two are the form's starting example rather than measured figures.", "answered": "The time it gives back: while the form holds its starting example, the line under the result says it is an example, not a measured figure, and to put in your own." }
+   ]
+  },
+  {
+   "role": "CTO/CISO",
+   "gaps": [
+    { "gap": "The page said the receiving AI checks a signature before reading. A chat AI cannot check one: the check runs on the sender's side (the command line's verify, this page, the tool's own boot). The CTO card, the opening lines, Integrity, the white paper and the FAQ all overstated it.", "answered": "Each now says where the check runs and that a chat AI does not do it: check before you paste, and in checks your sent copy before it reads what came back." },
+    { "gap": "Can a passport or a hand-back carry instructions into our AI?", "answered": "Security questions, answered: nothing in a passport is run, only passports under a key you pinned are read, and a hand-back reaches memory only through a printed plan, in the parts the protocol lets a session change, applied by the memory's owner and undoable." },
+    { "gap": "The signing key's seed was said to be readable by your user only. That holds on Linux and macOS (mode 600); on Windows that mode is not applied, and the user profile's own permissions are what protect it.", "answered": "Security, The signing key: said system by system." },
+    { "gap": "Has it had an independent security review?", "answered": "Risks, answered straight: no outside audit or penetration test yet, and what a security team or a reviewer of their choosing can re-run instead." }
+   ]
+  },
+  {
+   "role": "COO",
+   "gaps": [
+    { "gap": "Following step 3 in Windows PowerShell, its > wrote keys/kar.json with a byte-order mark (UTF-16 by default), and every verify then stopped with a JSON error. The steps did not work on Windows.", "answered": "The command line reads every file through kar/text.mjs (its own tests, and its own mutation gate in CI), and step 3 says so. A CI job on GitHub's Windows runner types steps 2 to 4 in Windows PowerShell on every push, checks that the mark was written, verifies every passport with the key it pinned, and re-derives N1 there." },
+    { "gap": "A Windows path written the usual way in config.json, with backslashes, is not valid JSON, and the command stopped with a stack trace. So did a missing key or a missing notes folder.", "answered": "Step 2 says to write each backslash as a forward slash. The command now refuses with the reason: config.json unreadable and why, no key and the command that makes one, no notes folder and where to name it." }
+   ]
+  },
+  {
+   "role": "Procurement",
+   "gaps": [
+    { "gap": "How are updates delivered, and how do we know an update is sound?", "answered": "Supplier, support and ownership, Updates: a commit to the public repository, every one re-proved on GitHub's runners in the open, taken when you choose and re-runnable on your own machine first." },
+    { "gap": "Does running it make the supplier a processor of our data?", "answered": "Supplier, support and ownership, Your data: the tool sends AI Native Solutions nothing, so running it makes them no processor; support work that would touch your data is set out in the deployment's agreement." }
+   ]
+  }
+ ],
+ "open": [
+  "A live Grok run waits on its API key, which only the operator can set.",
+  "No independent security review has been done; commissioning one is the operator's decision.",
+  "These walks are simulations by the builder and a local model. No real buyer has read this page yet."
+ ]
+}

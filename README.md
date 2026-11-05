@@ -4,7 +4,7 @@
 
 Kar's memory holds the estate's context. The passport carries a slice of it to a fresh AI session (a new Kar, Grok,
 a collaborator's AI, any model) as a pasteable [SYMB-FER](https://github.com/SYMBEYOND/SYMB-FER) v6.2 token. It is sealed
-(SHA-256 and Ed25519) and verified before anything reads it. It comes in three slices (full, shareable, public), and a
+(SHA-256 and Ed25519) and verified on your side before any model is given it (a chat AI cannot check a signature itself). It comes in three slices (full, shareable, public), and a
 leak gate keeps private things out of the two that leave. When a session hands back an updated token, the drift check
 enforces the protocol's own rules, and the hand-over merges into memory through a reviewed plan that can be undone.
 It reads Kar's own memory (`generate`) or a team's own notes folder in the layout Claude Code's memory uses (`notes`).
@@ -18,7 +18,11 @@ teslasolar's fork (teslasolar/SYMB-FER, forked before v6.0). Powered by the Kono
   `node measure.mjs --check` re-derives them in CI on every push.
 - The judges are SYMBEYOND's and teslasolar's own Python (`vendor/symbfer/`, pinned by SHA-256 to their commits;
   `tools/oracle.py` runs it unchanged).
-- Mutation gate: witness v0.6 on every module of `src/`, on GitHub's runner on every push; nothing baselined.
+- Mutation gate: witness v0.6 on every module of `src/` and on the command line's text reader (`kar/text.mjs`), on
+  GitHub's runner on every push; nothing baselined.
+- Windows: CI types the steps below in Windows PowerShell on GitHub's Windows runner on every push (its `>` writes
+  `keys/kar.json` with a byte-order mark, which the command line reads), verifies every passport with the key it pinned,
+  and re-derives the team-notes receipt there.
 - The page's time case has its own claims, `claims-timecase.json`, sealed before its code; `receipts/timecase.json`,
   re-derived in CI by `node tools/timecase-measure.mjs --check`.
 - A team's own notes have theirs, `claims-notes.json`, sealed before their code: the page's own steps, run as written
@@ -41,14 +45,14 @@ teslasolar's fork (teslasolar/SYMB-FER, forked before v6.0). Powered by the Kono
 | `src/timecase.mjs` | the page's time case: what re-typing a brief by hand costs a team, from sourced figures and the reader's own |
 | `vendor/basis/basis.json` | the estate's sourced basis, byte for byte (pinned in `vendor/SOURCES.json`) |
 | `data/typing-basis.json` | the typing speed, the word it is counted in, and the UK statutory leave, each with its source |
-| `kar/` | the CLI and the I/O on Kar's machine (paths come from `~/.kar-passport/config.json`, never committed) |
+| `kar/` | the CLI and the I/O on Kar's machine (paths come from `~/.kar-passport/config.json`, never committed); `kar/text.mjs` reads a file's bytes as text whichever editor or shell wrote them |
 | `tokens/` | Kar's public slice, in five shapes, sealed |
 | `local/` | the records measured on Kar's machine (counts and hashes only), and the buyer walkthroughs |
 
 ## Use
 
 `~/.kar-passport/config.json` names the notes folder: `{ "memory": "/path/to/notes", "about": { "name": "...", "org": "...",
-"site": "..." }, "private": ["names that must never leave"] }` (only `memory` is required).
+"site": "..." }, "private": ["names that must never leave"] }` (only `memory` is required; on Windows, write each backslash of a path as a forward slash).
 
 ```
 node kar/passport.mjs key > keys/kar.json       # once: your passport key, its public half pinned (the seed stays on the machine)

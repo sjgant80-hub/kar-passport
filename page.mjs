@@ -152,14 +152,14 @@ async function trace() {
   $('trace').innerHTML = steps.map((s) => '<li>' + s + '</li>').join('');
   if (receipt) renderReceipt(receipt);
   else $('receipt').textContent = 'The receipt is not published yet.';
-  const [basis, typing, tc, k1, walked, walk, walk3, nr] = await Promise.all(['vendor/basis/basis.json', 'data/typing-basis.json', 'receipts/timecase.json', 'local/k1.json',
-    'local/personas-answered.json', 'local/walk-2026-11-04.json', 'local/walk-2026-11-05.json', 'receipts/notes.json'].map(getJson));
+  const [basis, typing, tc, k1, walked, walk, walk3, nr, walk4] = await Promise.all(['vendor/basis/basis.json', 'data/typing-basis.json', 'receipts/timecase.json', 'local/k1.json',
+    'local/personas-answered.json', 'local/walk-2026-11-04.json', 'local/walk-2026-11-05.json', 'receipts/notes.json', 'local/walk-2026-11-05b.json'].map(getJson));
   state.basis = basis; state.typing = typing; state.brief = briefOf(state.tokens.state);
   setupCalc();
   renderGates(receipt, tc, nr);
   renderReceiptTc(tc);
   renderReceiptNotes(nr);
-  renderWalks(walked, [walk3, walk]);
+  renderWalks(walked, [walk4, walk3, walk]);
   renderSizes(k1);
   if (f.P2 && f.P3) fill('.corpus', (f.P2.corpus + f.P3.corpus).toLocaleString('en-GB') + ' tokens (' + f.P2.corpus.toLocaleString('en-GB') + ' v6.2 and ' + f.P3.corpus.toLocaleString('en-GB') + ' v3.0)');
 }
@@ -235,7 +235,7 @@ function calc() {
   $('c-basis').textContent = 'How it is counted: one re-brief is ' + (own === undefined ? 'the ' + chars.toLocaleString('en-GB') + ' characters of memory in ' + state.brief.lines + ' lines that Kar\'s STATE-tier passport carries (its list items and vocabulary)' : 'your own brief of ' + chars.toLocaleString('en-GB') + ' characters') + ', which is ' +
     (chars / t.charsPerWord.value).toFixed(0) + ' words of ' + t.charsPerWord.value + ' characters, and takes about ' + r.minutesPerBrief + ' minutes at the average measured typing speed of ' + t.wordsPerMinute.value + ' words a minute (' +
     t.participants.value.toLocaleString('en-GB') + ' typists; Dhakal, Feit, Kristensson and Oulasvirta, CHI 2018). That is a copying speed, and writing a brief from scratch is slower, so the minutes are a floor. It is multiplied by ' + i.people + ' people, ' + i.chatsPerWeek +
-    ' new chats a week each and ' + i.weeks + ' working weeks (' + t.weeksInYear.value + ' weeks less the ' + t.leaveWeeks.value + ' weeks of UK statutory paid leave). With no hourly cost of yours, an hour is valued at the UK median hourly wage, on-costs left out. Your own figures replace every default.';
+    ' new chats a week each' + (i.people === DEFAULTS.people && i.chatsPerWeek === DEFAULTS.chatsPerWeek ? ' (the example the form starts with, not a measured figure: put in your own)' : '') + ' and ' + i.weeks + ' working weeks (' + t.weeksInYear.value + ' weeks less the ' + t.leaveWeeks.value + ' weeks of UK statutory paid leave). With no hourly cost of yours, an hour is valued at the UK median hourly wage, on-costs left out. Your own figures replace every default.';
 }
 
 // ── the gate record: every organ's mutation gate, from the receipts ──
