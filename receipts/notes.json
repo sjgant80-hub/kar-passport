@@ -1,0 +1,81 @@
+{
+ "kind": "kar-passport.receipt.notes",
+ "claims": "claims-notes.json",
+ "facts": {
+  "copy": {
+   "fromHead": true,
+   "keyPinned": true,
+   "notesExit": 0
+  },
+  "written": {
+   "tokens": 15,
+   "withheld": 0,
+   "why": []
+  },
+  "verify": {
+   "verified": 15,
+   "refusedByKar": 15
+  },
+  "oracle": {
+   "v62": 3,
+   "v30": 3,
+   "of": 3
+  },
+  "content": {
+   "notes": 15,
+   "full": 15,
+   "shareable": 14,
+   "shareableOf": 14,
+   "userInShareable": 0,
+   "public": 11,
+   "publicOf": 11,
+   "otherInPublic": 0,
+   "planted": 9,
+   "kinds": 8,
+   "plantedFound": [],
+   "plantedInFull": 9
+  },
+  "handback": {
+   "plan": true,
+   "applied": true,
+   "logWritten": true,
+   "carried": true,
+   "undone": true,
+   "identical": true,
+   "logGone": true,
+   "driftRefused": true,
+   "driftPlans": 0
+  },
+  "gate": {
+   "fuzzFunctions": 4,
+   "fuzzPerFunction": 2000,
+   "fuzzInputs": 8000,
+   "fuzzThrows": 0,
+   "witness": {
+    "module": "src/notes.mjs",
+    "version": "v0.6",
+    "test": "node --test src/notes.test.mjs",
+    "where": "Kar's machine, Node v25.7.0, 2026-11-05 (GitHub's runner re-gates it on every push: the witness job in .github/workflows/ci.yml)",
+    "killed": 43,
+    "total": 43,
+    "clean": true,
+    "capped": false,
+    "baselined": 0
+   }
+  }
+ },
+ "verdicts": [
+  {
+   "id": "N1",
+   "held": true,
+   "why": "15 of 15 written (0 withheld); 15 verified with the pinned key, 15 refused against Kar's; SYMBEYOND's validator 3/3 and teslasolar's engine 3/3 PASS; notes held: full 15/15, shareable 14/14, public 11/11 and 0 others; 0 of 9 planted values found in a token that leaves; hand-back planned, applied, carried into the next passport and undone byte for byte; the drifted return refused, no plan"
+  },
+  {
+   "id": "N2",
+   "held": true,
+   "why": "witness 43/43 clean, 0 baselined; 8000 fuzz inputs to 4 functions, 0 throws"
+  }
+ ],
+ "held": 2,
+ "of": 2
+}

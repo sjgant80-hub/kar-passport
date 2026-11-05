@@ -1,0 +1,14 @@
+{
+ "claim": "N2",
+ "witness": {
+  "module": "src/notes.mjs",
+  "version": "v0.6",
+  "test": "node --test src/notes.test.mjs",
+  "where": "Kar's machine, Node v25.7.0, 2026-11-05 (GitHub's runner re-gates it on every push: the witness job in .github/workflows/ci.yml)",
+  "killed": 43,
+  "total": 43,
+  "clean": true,
+  "capped": false,
+  "baselined": 0
+ }
+}

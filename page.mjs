@@ -10,6 +10,7 @@ import { syntheticModel } from './fixtures/synthetic-model.mjs';
 import { honestUpdate, driftedCases } from './fixtures/drift-cases.mjs';
 import { fixtureInputs, lists as fixtureLists } from './fixtures/memory-fixture.mjs';
 import { briefOf, timeCase, sourcesOf, DEFAULTS } from './src/timecase.mjs';
+import { declines, NOT_IN_PUBLIC } from './src/boot.mjs';
 
 window.__kpStarted = true;
 const $ = (id) => document.getElementById(id);
@@ -151,15 +152,58 @@ async function trace() {
   $('trace').innerHTML = steps.map((s) => '<li>' + s + '</li>').join('');
   if (receipt) renderReceipt(receipt);
   else $('receipt').textContent = 'The receipt is not published yet.';
-  const [basis, typing, tc, k1, walked, walk] = await Promise.all(['vendor/basis/basis.json', 'data/typing-basis.json', 'receipts/timecase.json', 'local/k1.json', 'local/personas-answered.json', 'local/walk-2026-11-04.json'].map(getJson));
+  const [basis, typing, tc, k1, walked, walk, walk3, nr] = await Promise.all(['vendor/basis/basis.json', 'data/typing-basis.json', 'receipts/timecase.json', 'local/k1.json',
+    'local/personas-answered.json', 'local/walk-2026-11-04.json', 'local/walk-2026-11-05.json', 'receipts/notes.json'].map(getJson));
   state.basis = basis; state.typing = typing; state.brief = briefOf(state.tokens.state);
   setupCalc();
-  renderGates(receipt, tc);
+  renderGates(receipt, tc, nr);
   renderReceiptTc(tc);
-  renderWalks(walked, walk);
+  renderReceiptNotes(nr);
+  renderWalks(walked, [walk3, walk]);
   renderSizes(k1);
+  if (f.P2 && f.P3) fill('.corpus', (f.P2.corpus + f.P3.corpus).toLocaleString('en-GB') + ' tokens (' + f.P2.corpus.toLocaleString('en-GB') + ' v6.2 and ' + f.P3.corpus.toLocaleString('en-GB') + ' v3.0)');
+}
+// G3's matches, kind by kind, as Kar read every one of them (5 November 2026), in the order of the leak gate's CLASSES: each
+// kind's plain label (the leak section's own words) and the reading. The counts are the receipt's. page.test.mjs fails if a
+// kind the receipt names has no reading here.
+const G3_READ = [
+  ['private names', 'a name on the private lists (the committed-file scan runs without them; local/g3.json runs them on Kar\'s machine)'],
+  ['keys and secrets', 'SHA-256 hashes and Kar\'s public key in the records: 64 hexadecimal characters each, the shape of a secret key'],
+  ['secret phrases', 'the test question about the living seed\'s owner words, which a model must decline'],
+  ['personal details', 'SYMBEYOND\'s own published contact line, in their template, and made-up addresses at example.com planted in the team-notes organ\'s tests, which check that the gate drops them'],
+  ['what we charge', 'a dollar sign then a digit in two text-cleaning regular expressions (a back-reference), the test question about the estate\'s rule on charging with its answer key and tests, and in the team-notes organ\'s tests a made-up amount planted for the gate to drop, with the name of the kind it is counted under'],
+  ['internal economy terms', 'imports of the platform\'s cryptography module, the test question about the estate\'s internal unit (and the model\'s answer that it is not recorded), and the list of withheld values a boot checks a model did not repeat'],
+  ['private jargon', 'symbols from SYMBEYOND\'s own generator and template, ported byte for byte, and a test that a slice carries none of them'],
+  ['machine plumbing', 'a made-up home folder in a test, for the fictional operator'],
+];
+function g3Kinds(where) {
+  const by = {};
+  for (const w of Array.isArray(where) ? where : []) for (const h of String(w).replace(/^[^:]*:\s*/, '').split(',')) { const k = h.split('@')[0]; if (k) by[k] = (by[k] || 0) + 1; }
+  return by;
+}
+async function failures(rc) {
+  const f = rc.facts, held = (id) => (rc.verdicts.find((v) => v.id === id) || {}).held;
+  const parts = [];
+  if (f.B1 && held('B1') === false) {
+    const b1 = await getJson('local/b1.json');
+    const withheld = b1 && Array.isArray(b1.answers) ? b1.answers.slice(-NOT_IN_PUBLIC.length).map(String) : [];
+    const other = withheld.filter((a) => !declines(a)), own = other.filter((a) => /not recorded in this slice/i.test(a)), rest = other.filter((a) => !/not recorded in this slice/i.test(a));
+    parts.push('<b>B1</b> failed by its own rule. The cold model got ' + f.B1.right + ' of 10 right and leaked ' + f.B1.leaked + ' of the withheld values, but declined only ' + f.B1.declined +
+      ' of the ' + NOT_IN_PUBLIC.length + ' it could not know in the sealed phrases.' + (withheld.length ? ' Of the other ' + other.length + ', ' + own.length + ' declined in the passport\'s own words ("not recorded in this slice"), which the phrase list, sealed before the run, does not hold' +
+      (rest.length ? ', and the model\'s answer to the rest was: ' + rest.map((a) => '"' + esc(a) + '"').join(', ') + ' (no name given)' : '') + '.' : '') + ' The rule was not changed afterwards. <a href="local/b1.json">The answers</a>.');
+  }
+  if (f.G3 && held('G3') === false) {
+    const by = g3Kinds(f.G3.where);
+    parts.push('<b>G3</b> failed by its own rule. The scan for anything shaped like a leak found ' + f.G3.hits + ' matches across ' + f.G3.files + ' committed files, and Kar read each one. By kind: ' +
+      CLASSES.filter((k) => by[k]).map((k) => { const [label, read] = G3_READ[CLASSES.indexOf(k)]; return esc(label) + ' ' + by[k] + ', ' + esc(read); }).join('; ') + '. None is a private value.' +
+      (f.G3.privateClassesOnKarsMachine ? ' On Kar\'s machine, the private names and the operator\'s names were checked across ' + f.G3.privateClassesOnKarsMachine + ' committed files as well, and ' +
+        ((n) => (n ? n + ' matched' : 'none matched'))(f.G3.hits - Object.values(by).reduce((a, b) => a + b, 0)) + ' (<a href="local/g3.json">the record</a>).' : '') +
+      ' The scan was not narrowed to make it pass.');
+  }
+  $('failures').innerHTML = parts.length ? 'The failures, in plain words. ' + parts.join(' ') : '';
 }
 function renderReceipt(rc) {
+  failures(rc).catch(() => {});
   $('receipt').innerHTML = '<p><b>' + rc.held + ' of ' + rc.of + ' claims held.</b> <a href="receipts/passport.json">The receipt</a> · <a href="claims.json">the sealed claims</a></p><table><thead><tr><th>Claim</th><th>Verdict</th><th>What was measured</th></tr></thead><tbody>' +
     rc.verdicts.map((v) => '<tr><td>' + esc(v.id) + '</td><td class="' + (v.held ? 'held">HELD' : 'failed">FAILED') + '</td><td class="why">' + esc(v.why) + '</td></tr>').join('') + '</tbody></table>';
 }
@@ -172,7 +216,8 @@ function setupCalc() {
   $('c-people').value = DEFAULTS.people; $('c-sessions').value = DEFAULTS.chatsPerWeek; $('c-years').value = DEFAULTS.years;
   $('c-weeks').value = base.inputs.weeks;
   $('c-cost').placeholder = 'blank: ' + base.inputs.hourly + ', the UK median wage';
-  for (const id of ['c-people', 'c-sessions', 'c-weeks', 'c-cost', 'c-years']) $(id).oninput = calc;
+  $('c-chars').placeholder = 'blank: ' + state.brief.chars + ', Kar\'s STATE passport';
+  for (const id of ['c-people', 'c-sessions', 'c-weeks', 'c-cost', 'c-years', 'c-chars']) $(id).oninput = calc;
   const USE = { wageMedianHourly: 'the value of an hour when you give no cost of your own', cpi: 'the rise in pay each year after the first', wordsPerMinute: 'the typing speed',
     charsPerWord: 'the word that speed is counted in', leaveWeeks: 'taken off the year for the default working weeks', weeksInYear: 'the year the leave is taken from' };
   $('c-sources').innerHTML = sourcesOf(state.basis, state.typing).map((x) => '<li><b>' + esc(x.value) + '</b>, ' + esc(USE[x.key] || x.key) + '. The basis says: ' + esc(x.what) + (x.source ? ' · <a href="' + esc(x.source) + '">source</a>' : '') + '</li>').join('') +
@@ -181,30 +226,34 @@ function setupCalc() {
 }
 function calc() {
   const num = (id) => { const v = $(id).value.trim(); return v === '' ? undefined : Number(v); };
-  const r = timeCase(state.basis, state.typing, { chars: state.brief.chars, people: num('c-people'), chatsPerWeek: num('c-sessions'), weeks: num('c-weeks'), hourly: num('c-cost'), years: num('c-years') });
+  const own = num('c-chars'), chars = own === undefined ? state.brief.chars : own;
+  const r = timeCase(state.basis, state.typing, { chars, people: num('c-people'), chatsPerWeek: num('c-sessions'), weeks: num('c-weeks'), hourly: num('c-cost'), years: num('c-years') });
   if (!r.ok) { $('c-out').textContent = 'Check the figures: ' + r.why + '.'; return; }
   const t = state.typing, i = r.inputs;
   $('c-out').innerHTML = 'About <span class="num">' + Math.round(r.hoursPerYear).toLocaleString('en-GB') + ' hours a year</span> of re-typing context, worth <span class="num">' + money(r.valuePerYear) + ' a year</span>' +
     (r.ownHourly ? ' at your hourly cost' : ' at the UK median wage') + ', and <span class="num">' + money(r.valueOver) + '</span> over ' + i.years + (i.years === 1 ? ' year' : ' years') + (i.years > 1 ? ' as pay rises with CPI' : '') + '.';
-  $('c-basis').textContent = 'How it is counted: one re-brief is the ' + state.brief.chars.toLocaleString('en-GB') + ' characters of memory in ' + state.brief.lines + ' lines that Kar\'s STATE-tier passport carries (its list items and vocabulary), which is ' +
-    (state.brief.chars / t.charsPerWord.value).toFixed(0) + ' words of ' + t.charsPerWord.value + ' characters, and takes about ' + r.minutesPerBrief + ' minutes at the average measured typing speed of ' + t.wordsPerMinute.value + ' words a minute (' +
+  $('c-basis').textContent = 'How it is counted: one re-brief is ' + (own === undefined ? 'the ' + chars.toLocaleString('en-GB') + ' characters of memory in ' + state.brief.lines + ' lines that Kar\'s STATE-tier passport carries (its list items and vocabulary)' : 'your own brief of ' + chars.toLocaleString('en-GB') + ' characters') + ', which is ' +
+    (chars / t.charsPerWord.value).toFixed(0) + ' words of ' + t.charsPerWord.value + ' characters, and takes about ' + r.minutesPerBrief + ' minutes at the average measured typing speed of ' + t.wordsPerMinute.value + ' words a minute (' +
     t.participants.value.toLocaleString('en-GB') + ' typists; Dhakal, Feit, Kristensson and Oulasvirta, CHI 2018). That is a copying speed, and writing a brief from scratch is slower, so the minutes are a floor. It is multiplied by ' + i.people + ' people, ' + i.chatsPerWeek +
     ' new chats a week each and ' + i.weeks + ' working weeks (' + t.weeksInYear.value + ' weeks less the ' + t.leaveWeeks.value + ' weeks of UK statutory paid leave). With no hourly cost of yours, an hour is valued at the UK median hourly wage, on-costs left out. Your own figures replace every default.';
 }
 
 // ── the gate record: every organ's mutation gate, from the receipts ──
 const ROLES = { 'src/symbfer.mjs': 'the codec: v6.2 and v3.0 readers, the tier writer', 'src/render.mjs': 'the writers, from the template\'s own lines', 'src/seal.mjs': 'the seal and verify-before-parse',
-  'src/leak.mjs': 'the leak gate', 'src/slice.mjs': 'the slicer', 'src/drift.mjs': 'the drift check and the ingest plan', 'src/boot.mjs': 'the boot of a cold model', 'src/judge.mjs': 'the sealed rules', 'src/timecase.mjs': 'the time case' };
-function renderGates(rc, tc) {
+  'src/leak.mjs': 'the leak gate', 'src/slice.mjs': 'the slicer', 'src/drift.mjs': 'the drift check and the ingest plan', 'src/boot.mjs': 'the boot of a cold model', 'src/judge.mjs': 'the sealed rules', 'src/timecase.mjs': 'the time case', 'src/notes.mjs': 'a team\'s own notes into a slice' };
+function renderGates(rc, tc, nr) {
   const mods = rc && rc.facts && rc.facts.G1 ? rc.facts.G1.modules.map((m) => ({ ...m, claim: 'G1' })) : [];
-  const w = tc && tc.facts && tc.facts.gate ? tc.facts.gate.witness : null;
-  if (w) mods.push({ name: w.module, killed: w.killed, total: w.total, clean: w.clean, capped: w.capped, claim: 'T2' });
+  for (const [r, claim] of [[tc, 'T2'], [nr, 'N2']]) {
+    const w = r && r.facts && r.facts.gate ? r.facts.gate.witness : null;
+    if (w) mods.push({ name: w.module, killed: w.killed, total: w.total, clean: w.clean, capped: w.capped, claim });
+  }
   if (!mods.length) { $('gates').textContent = 'The gate record is not published yet.'; return; }
-  const g1 = rc && rc.facts ? rc.facts.G1 : null, g2 = tc && tc.facts ? tc.facts.gate : null;
+  const g1 = rc && rc.facts ? rc.facts.G1 : null, g2 = tc && tc.facts ? tc.facts.gate : null, g8 = nr && nr.facts ? nr.facts.gate : null;
   $('gates').innerHTML = '<div class="scroll"><table><thead><tr><th>Organ</th><th class="hide-narrow">What it does</th><th>Mutants caught</th><th>Gate</th><th>Claim</th></tr></thead><tbody>' +
     mods.map((m) => '<tr><td><code>' + esc(m.name.replace(/^src\//, '')) + '</code></td><td class="hide-narrow">' + esc(ROLES[m.name] || '') + '</td><td class="num">' + m.killed + ' of ' + m.total + '</td><td class="' + (m.clean && !m.capped ? 'held">CLEAN' : 'failed">NOT CLEAN') + '</td><td>' + m.claim + '</td></tr>').join('') +
     '</tbody></table></div><p class="muted">Every organ is in <code>src/</code>. Fuzz: ' + (g1 ? g1.fuzzInputs.toLocaleString('en-GB') + ' garbage inputs to the ' + g1.fuzzFunctions + ' functions of the first eight organs, ' + g1.fuzzThrows + ' throws' : 'see the receipts') +
-    (g2 ? '; ' + g2.fuzzInputs.toLocaleString('en-GB') + ' to the ' + g2.fuzzFunctions + ' of the time case, ' + g2.fuzzThrows + ' throws' : '') + '. The tests of every organ, the page and the receipts run on every push in <a href="https://github.com/sjgant80-hub/kar-passport/actions">CI</a>.</p>';
+    (g2 ? '; ' + g2.fuzzInputs.toLocaleString('en-GB') + ' to the ' + g2.fuzzFunctions + ' of the time case, ' + g2.fuzzThrows + ' throws' : '') +
+    (g8 ? '; ' + g8.fuzzInputs.toLocaleString('en-GB') + ' to the ' + g8.fuzzFunctions + ' of the team-notes organ, ' + g8.fuzzThrows + ' throws' : '') + '. The tests of every organ, the page and the receipts run on every push in <a href="https://github.com/sjgant80-hub/kar-passport/actions">CI</a>.</p>';
 }
 function renderReceiptTc(tc) {
   if (!tc) { $('receipt-tc').textContent = 'The time case receipt is not published yet.'; return; }
@@ -212,10 +261,18 @@ function renderReceiptTc(tc) {
     tc.verdicts.map((v) => '<tr><td>' + esc(v.id) + '</td><td class="' + (v.held ? 'held">HELD' : 'failed">FAILED') + '</td><td class="why">' + esc(v.why) + '</td></tr>').join('') + '</tbody></table>';
 }
 
+function renderReceiptNotes(nr) {
+  if (!nr) { $('receipt-notes').textContent = 'The team-notes receipt is not published yet.'; return; }
+  $('receipt-notes').innerHTML = '<p><b>' + nr.held + ' of ' + nr.of + ' claims held.</b> <a href="receipts/notes.json">The receipt</a> · <a href="claims-notes.json">the sealed claims</a> · <a href="https://github.com/sjgant80-hub/kar-passport/tree/main/fixtures/team-notes">the made-up notes</a></p><table><thead><tr><th>Claim</th><th>Verdict</th><th>What was measured</th></tr></thead><tbody>' +
+    nr.verdicts.map((v) => '<tr><td>' + esc(v.id) + '</td><td class="' + (v.held ? 'held">HELD' : 'failed">FAILED') + '</td><td class="why">' + esc(v.why) + '</td></tr>').join('') + '</tbody></table>';
+  const n1 = nr.verdicts.find((v) => v.id === 'N1');
+  if (n1) for (const id of ['notes-status', 'notes-run']) $(id).textContent = (n1.held ? 'HELD' : 'FAILED') + ', ' + n1.why;
+}
+
 // ── the buyer walkthroughs, from their records ──────────────────────
-function renderWalks(walked, walk) {
+function renderWalks(walked, walks) {
   const parts = [];
-  if (walk && Array.isArray(walk.walks)) {
+  for (const walk of walks.filter((w) => w && Array.isArray(w.walks))) {
     parts.push('<p><b>' + esc(walk.when) + ' · ' + esc(walk.by) + '</b>: the served page read cold as ' + walk.walks.map((w) => esc(w.role)).join(', ') + '.</p><table><thead><tr><th>Buyer</th><th>What the page left open</th><th>Where it is answered now</th></tr></thead><tbody>' +
       walk.walks.flatMap((w) => w.gaps.map((g) => '<tr><td>' + esc(w.role) + '</td><td>' + esc(g.gap) + '</td><td>' + esc(g.answered) + '</td></tr>')).join('') + '</tbody></table>' +
       (walk.open && walk.open.length ? '<p class="muted">Open, and why: ' + walk.open.map((o) => esc(o)).join(' · ') + '</p>' : ''));

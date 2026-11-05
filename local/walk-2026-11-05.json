@@ -1,0 +1,44 @@
+{
+ "kind": "kar-passport.walk",
+ "url": "https://sjgant80-hub.github.io/kar-passport/",
+ "when": "5 November 2026",
+ "by": "Kar (Claude Opus 5.5), the builder, simulating four buyers",
+ "how": "The served page (HTTP 200, the build at commit 9279910) read cold from the top in a browser with its scripts run, as each buyer in turn: every section, button and number. Then the COO followed How you make passports on your own machine step by step on a made-up notes folder. Each gap was answered from the repository's own code, records and sealed claims, or is listed as open.",
+ "walks": [
+  {
+   "role": "CFO",
+   "gaps": [
+    { "gap": "The role cards were titled Finance and Operations, so a CFO or COO had to guess which card was theirs.", "answered": "For your business: the cards are CEO or owner, CFO and finance, COO and operations, CTO / CISO, Procurement and the teams." },
+    { "gap": "The cost case assumes a team can make passports from its own notes, and the page's steps gave no way to do that (the COO's gaps below).", "answered": "How you make passports on your own machine: the notes command, run as written on every push (claims-notes.json N1)." }
+   ]
+  },
+  {
+   "role": "CTO/CISO",
+   "gaps": [
+    { "gap": "The case for the board says every claim is re-checked by an open test anyone can run, and the page never said how to run it.", "answered": "The proof, Check the proof yourself: the commands, with each receipt re-derived on your own machine." },
+    { "gap": "The G3 FAILED row lists its matches as file, kind and line, with no plain reading of what they are.", "answered": "The proof, The failures in plain words: each kind of match counted from the receipt and read; a page test fails if a kind has no reading." },
+    { "gap": "The blueprint said the codec was compared on a thousand tokens; the receipt gives the exact count.", "answered": "Blueprint, The codec: the count is read from the receipt (P2 and P3)." },
+    { "gap": "The page says nothing is baselined, and the CI file enforced that only on the time case's gate.", "answered": "CI: every organ's gate now fails the build on a baselined survivor." }
+   ]
+  },
+  {
+   "role": "COO",
+   "gaps": [
+    { "gap": "Following How you make passports on your own machine, verify refused my own passports: the clone trusts Kar's pinned public key, and the steps never said to pin your own.", "answered": "Step 3: node kar/passport.mjs key > keys/kar.json makes your key and pins it. The key's own note and the hand-back's refusal no longer say Kar." },
+    { "gap": "With every step followed, none of the notes reached any slice, not even the full one: the slicer reads Kar's own memory (its digest, its working memory and the sections of its index), so the roll-out's week 1 could not be done.", "answered": "A new organ, src/notes.mjs, and the notes command, sealed in claims-notes.json before the code: N1, the steps run as written on a made-up team's notes in a fresh copy of the repository, and N2, the organ witness-clean. Both re-derived in CI." },
+    { "gap": "What must our notes look like?", "answered": "How you make passports on your own machine, What your notes look like: the layout Claude Code's memory folder uses, and the two optional lines." }
+   ]
+  },
+  {
+   "role": "Procurement",
+   "gaps": [
+    { "gap": "No card for procurement among the roles.", "answered": "For your business, Procurement." },
+    { "gap": "Sub-processors were not stated.", "answered": "Security, Sub-processors: none of ours; the only processor is the AI you paste into." }
+   ]
+  }
+ ],
+ "open": [
+  "A live Grok run waits on its API key, which only the operator can set.",
+  "These walks are simulations by the builder and a local model. No real buyer has read this page yet."
+ ]
+}
