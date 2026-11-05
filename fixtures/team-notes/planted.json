@@ -1,0 +1,14 @@
+{
+ "about": "One planted value of each kind the leak gate knows, each as the Next: line of a note of its own (claims-notes.json N1). The full slice may carry them: it is private and never leaves. No shareable or public passport may.",
+ "planted": [
+  { "kind": "private", "note": "planted-private", "value": "hushbox-ledger" },
+  { "kind": "secret", "note": "planted-secret", "value": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08" },
+  { "kind": "phrase", "note": "planted-phrase", "value": "owner·phrase" },
+  { "kind": "personal", "note": "planted-email", "value": "rowan@example.com" },
+  { "kind": "pricing", "note": "planted-money", "value": "£40" },
+  { "kind": "economy", "note": "planted-economy", "value": "coins" },
+  { "kind": "cosmology", "note": "planted-jargon", "value": "wisp" },
+  { "kind": "plumbing", "note": "planted-path", "value": "C:/jobs" },
+  { "kind": "personal", "note": "planted-surname", "value": "Vale" }
+ ]
+}

@@ -28,6 +28,8 @@ jobs:
         run: node measure.mjs --check
       - name: the time case receipt reproduces (claims-timecase.json T1 and T2, re-derived here)
         run: node tools/timecase-measure.mjs --check
+      - name: a team's own notes make passports by the page's steps, run here as a stranger would (claims-notes.json N1 and N2, re-derived)
+        run: node tools/notes-measure.mjs --check
 
   witness:
     runs-on: ubuntu-latest
@@ -36,13 +38,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: mutation gate (witness v0.6) on every module of src/; a survivor is killed, or baselined with a written reason in witness.baseline.json
+      - name: mutation gate (witness v0.6) on every module of src/; a survivor fails the build (nothing is baselined)
         run: |
           git clone --depth 1 --branch v0.6 https://github.com/sjgant80-hub/witness.git .witness6
           for k in symbfer render seal leak slice drift boot judge; do
             node .witness6/witness.mjs mutate src/$k.mjs --timeout 120000 --cap 1000 --test timeout -k 5 110 node --test src/symbfer.test.mjs src/render.test.mjs src/seal.test.mjs src/leak.test.mjs src/slice.test.mjs src/drift.test.mjs src/boot.test.mjs src/judge.test.mjs | tee /tmp/w.txt
             grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in src/$k.mjs"; exit 1; }
             grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on src/$k.mjs was capped"; exit 1; }
+            grep -q '"ignored": \[\]' /tmp/w.txt || { echo "::error::a survivor in src/$k.mjs was baselined"; exit 1; }
           done
       - name: mutation gate (witness v0.6) on the time case kernel, with its own tests (claims-timecase.json T2)
         run: |
@@ -50,3 +53,9 @@ jobs:
           grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in src/timecase.mjs"; exit 1; }
           grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on src/timecase.mjs was capped"; exit 1; }
           grep -q '"ignored": \[\]' /tmp/w.txt || { echo "::error::a survivor in src/timecase.mjs was baselined"; exit 1; }
+      - name: mutation gate (witness v0.6) on the team-notes organ, with its own tests (claims-notes.json N2)
+        run: |
+          node .witness6/witness.mjs mutate src/notes.mjs --timeout 120000 --cap 1000 --test timeout -k 5 110 node --test src/notes.test.mjs | tee /tmp/w.txt
+          grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in src/notes.mjs"; exit 1; }
+          grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on src/notes.mjs was capped"; exit 1; }
+          grep -q '"ignored": \[\]' /tmp/w.txt || { echo "::error::a survivor in src/notes.mjs was baselined"; exit 1; }

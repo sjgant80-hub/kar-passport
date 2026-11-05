@@ -1,0 +1,4 @@
+{
+ "about": { "name": "Rowan Vale", "org": "Oak and Ash Joinery Ltd", "site": "https://example.com/oak-and-ash" },
+ "private": ["hushbox-ledger"]
+}

@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { homedir, userInfo } from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { readLog, mergedOf } from '../src/drift.mjs';
+import { noteOf, ordered } from '../src/notes.mjs';
 
 const read = (p, fb = '') => { try { return readFileSync(p, 'utf8'); } catch { return fb; } };
 
@@ -61,6 +62,14 @@ export function readLists() {
     firstNames: parts.slice(0, 1),
     canaries: [],
   };
+}
+
+/** A team's own notes folder (src/notes.mjs): every note but the hand-over log, in MEMORY.md's order, and that log merged. */
+export function teamInput(now, dir = PATHS.memory) {
+  const files = readdirSync(dir).filter((f) => f.endsWith('.md') && f !== 'MEMORY.md').sort();
+  const notes = files.map((f) => noteOf(read(join(dir, f)))).filter((n) => n && n.name !== 'symbfer-handoff-log');
+  const log = topicOf('symbfer-handoff-log.md', read(join(dir, 'symbfer-handoff-log.md')));
+  return { now, about: CONFIG.about || {}, notes: ordered(read(join(dir, 'MEMORY.md')), notes), handoff: log.body.trim() ? mergedOf(readLog(log.body)) : {} };
 }
 
 export const exists = existsSync;

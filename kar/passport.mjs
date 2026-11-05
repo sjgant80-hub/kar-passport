@@ -7,6 +7,9 @@
 //                                                     the slice(s) from Kar's memory, in every shape, sealed. Default out:
 //                                                     ~/.kar-passport/tokens/<now>/. A public or shareable token that
 //                                                     the leak gate flags is NOT written.
+//   node kar/passport.mjs notes [--target t] [--out dir] [--now YYYY-MM-DD_HHMMH]
+//                                                     the same, from a team's own notes folder (src/notes.mjs): the folder
+//                                                     config.json names as memory, with its about and private fields
 //   node kar/passport.mjs publish <public.v6.2.txt>   copy a public token into the repo's tokens/ after re-running the gate
 //   node kar/passport.mjs verify <file>               verify-before-parse against keys/kar.json; print the boot order
 //   node kar/passport.mjs in <sent> <returned> [--memory dir]
@@ -21,9 +24,10 @@ import { seal, verify, parseToken, shaOf } from '../src/seal.mjs';
 import { render62, render30, tierFit } from '../src/render.mjs';
 import { TIER_SIG } from '../src/symbfer.mjs';
 import { buildSlice } from '../src/slice.mjs';
+import { notesSlice, listsOf } from '../src/notes.mjs';
 import { scan, protocolLines } from '../src/leak.mjs';
 import { driftCheck, ingestPlan, readLog } from '../src/drift.mjs';
-import { readInputs, readLists, PATHS } from './inputs.mjs';
+import { readInputs, readLists, teamInput, PATHS, CONFIG } from './inputs.mjs';
 
 const REPO = join(import.meta.dirname, '..');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -53,10 +57,14 @@ export async function tokensOf(slice, id, now) {
   return out;
 }
 
-async function generate() {
+async function generate(team = false) {
   const now = arg('--now', stampNow());
   const id = await karKey();
-  const inputs = readInputs(now, arg('--memory', PATHS.memory)), lists = readLists();
+  const mem = arg('--memory', PATHS.memory), base = readLists();
+  const lists = team ? listsOf(CONFIG.about, base, CONFIG.private) : base;
+  if (!lists) { console.error('REFUSED: the leak gate lists could not be read from config.json'); process.exitCode = 1; return; }
+  const input = team ? teamInput(now, mem) : readInputs(now, mem);
+  const make = team ? (target, refs) => notesSlice(input, lists, target, refs) : (target, refs) => buildSlice(input, lists, target, refs);
   const refsPath = join(PATHS.keys, 'refs.json');
   let refs = JSON.parse(rd(refsPath, '{}'));
   const out = arg('--out', join(PATHS.keys, 'tokens', now));
@@ -64,7 +72,7 @@ async function generate() {
   const targets = arg('--target') ? [arg('--target')] : ['full', 'shareable', 'public'];
   const summary = [];
   for (const target of targets) {
-    const s = buildSlice(inputs, lists, target, refs);
+    const s = make(target, refs);
     if (!s.ok) { console.error(target + ': ' + s.why); process.exitCode = 1; continue; }
     if (target !== 'full') refs = { ...refs, ...s.refs };
     const toks = await tokensOf(s, id, now);
@@ -96,7 +104,7 @@ function planDir() { return join(PATHS.keys, 'plans'); }
 async function cmdIn(sentFile, backFile) {
   const sent = rd(sentFile, ''), back = rd(backFile, '');
   const v = await verify(sent, { trust: trustList() });
-  if (!v.ok) { console.log('REFUSED: the sent token does not verify as Kar\'s: ' + v.why); process.exitCode = 1; return; }
+  if (!v.ok) { console.log('REFUSED: the sent token does not verify against keys/kar.json: ' + v.why); process.exitCode = 1; return; }
   const d = driftCheck(sent, back);
   if (!d.ok) { console.log('REFUSED: drift\n' + d.drift.map((x) => '  §' + x.section + ': ' + x.detail + ' (' + x.rule + ')').join('\n')); process.exitCode = 1; return; }
   const mem = arg('--memory', PATHS.memory);
@@ -153,12 +161,13 @@ if (process.argv[1] && import.meta.filename === process.argv[1]) {
   const [cmd, a, b] = process.argv.slice(2);
   if (cmd === 'key') {
     const id = await karKey(true);
-    console.log(JSON.stringify({ kind: 'kar-passport.key', id: id.id, note: 'Kar\'s passport key: the public half. The seed stays on Kar\'s machine; every token Kar seals verifies against this.' }, null, 1));
+    console.log(JSON.stringify({ kind: 'kar-passport.key', id: id.id, note: 'A passport key: the public half. Its seed stays on the machine that made it; every passport it seals verifies against this.' }, null, 1));
   } else if (cmd === 'generate') await generate();
+  else if (cmd === 'notes') await generate(true);
   else if (cmd === 'verify') await cmdVerify(a);
   else if (cmd === 'publish') await cmdPublish(a);
   else if (cmd === 'in') await cmdIn(a, b);
   else if (cmd === 'apply') cmdApply(a);
   else if (cmd === 'undo') cmdUndo(a);
-  else { console.error('usage: node kar/passport.mjs key | generate [--target t] | publish <file> | verify <file> | in <sent> <returned> | apply <id> | undo <id>'); process.exitCode = 2; }
+  else { console.error('usage: node kar/passport.mjs key | generate [--target t] | notes [--target t] | publish <file> | verify <file> | in <sent> <returned> | apply <id> | undo <id>'); process.exitCode = 2; }
 }
