@@ -177,11 +177,11 @@
    "syntheticVerified": true
   },
   "G3": {
-   "files": 73,
+   "files": 76,
    "hits": 60,
    "where": [
     "kar/boot-local.mjs: economy@44",
-    "kar/inputs.mjs: pricing@26",
+    "kar/inputs.mjs: pricing@34",
     "kar/loop.mjs: economy@8",
     "kar/passport.mjs: economy@21",
     "keys/kar.json: secret@3",
@@ -204,7 +204,7 @@
     "tools/vendor.mjs: economy@8"
    ],
    "pageScanned": true,
-   "privateClassesOnKarsMachine": 73,
+   "privateClassesOnKarsMachine": 76,
    "excluded": [
     "receipts/passport.json (this measure's own output)"
    ]
@@ -289,7 +289,7 @@
   {
    "id": "G3",
    "held": false,
-   "why": "60 hits: kar/boot-local.mjs: economy@44; kar/inputs.mjs: pricing@26; kar/loop.mjs: economy@8; kar/passport.mjs: economy@21; keys/kar.json: secret@3; local/b1.json: secret@11,secret@12,pricing@20,economy@30,economy@104,economy@106; local/b2.json: secret@11,secret@12,pricing@20,phrase@27; local/g2.json: secret@13; local/k1.json: secret@3,secret@9,secret@21,secret@33,secret@47,secret@61,secret@75,secret@87,secret@99,secret@113,secret@127,secret@141,secret@153,secret@165,secret@179,secret@193; local/l1.json: secret@3,secret@4; local/p7.json: secret@3; src/boot.mjs: pricing@21,economy@25,phrase@26,pricing@41,pricing@47; src/boot.test.mjs: pricing@24,pricing@26; src/judge.test.mjs: pricing@77; src/notes.test.mjs: personal@17,personal@65,personal@86,personal@96,pricing@96,pricing@97; src/render.mjs: pricing@30,pricing@31; src/slice.test.mjs: plumbing@76,cosmology@210; src/symbfer.mjs: cosmology@268,cosmology@268; src/symbfer.test.mjs: economy@6; src/template62.mjs: personal@46,cosmology@515; tools/oracle-corpus.mjs: economy@9; tools/vendor.mjs: economy@8"
+   "why": "60 hits: kar/boot-local.mjs: economy@44; kar/inputs.mjs: pricing@34; kar/loop.mjs: economy@8; kar/passport.mjs: economy@21; keys/kar.json: secret@3; local/b1.json: secret@11,secret@12,pricing@20,economy@30,economy@104,economy@106; local/b2.json: secret@11,secret@12,pricing@20,phrase@27; local/g2.json: secret@13; local/k1.json: secret@3,secret@9,secret@21,secret@33,secret@47,secret@61,secret@75,secret@87,secret@99,secret@113,secret@127,secret@141,secret@153,secret@165,secret@179,secret@193; local/l1.json: secret@3,secret@4; local/p7.json: secret@3; src/boot.mjs: pricing@21,economy@25,phrase@26,pricing@41,pricing@47; src/boot.test.mjs: pricing@24,pricing@26; src/judge.test.mjs: pricing@77; src/notes.test.mjs: personal@17,personal@65,personal@86,personal@96,pricing@96,pricing@97; src/render.mjs: pricing@30,pricing@31; src/slice.test.mjs: plumbing@76,cosmology@210; src/symbfer.mjs: cosmology@268,cosmology@268; src/symbfer.test.mjs: economy@6; src/template62.mjs: personal@46,cosmology@515; tools/oracle-corpus.mjs: economy@9; tools/vendor.mjs: economy@8"
   }
  ],
  "held": 14,
