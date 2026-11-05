@@ -1,0 +1,23 @@
+{
+ "kind": "kar-passport.claims.notes",
+ "v": 1,
+ "title": "A team's own notes make passports: the page's steps, run as written on a made-up team's notes folder",
+ "sealed": "Before any code: this file is the only file of the commit that adds it, and no code that measures it exists yet. The rules below do not change once the first number is measured. A claim that fails is kept failed, with its numbers. This file does not change claims.json, claims-timecase.json, or any of their rules.",
+ "why": "A cold read of the served page on 5 November 2026, as a COO, followed its section How you make passports on your own machine with a made-up notes folder. Two things broke. The clone trusts Kar's pinned public key, and the steps never said to pin your own, so verify refused your own passports. And the slicer (src/slice.mjs) is written for Kar's memory: its brain digest, its working memory and the sections of its index, so a team's own notes reached none of the three slices, not even the full one. The page's roll-out (week 1: one person makes a passport from their own notes) could not be done. These claims say how the fix, a new organ for a team's own notes and one more command, is measured.",
+ "layout": "The notes are the layout Claude Code's memory folder uses: one Markdown file per topic, opening with a header between two lines of three hyphens that gives name, description and type (user, feedback, project or reference), and an index, MEMORY.md, that links them. One optional header line is ours: public: true marks a note as already public. A line of a note's body that starts Next: is a next action. The command reads the folder named by memory in ~/.kar-passport/config.json, and from the same file, optionally, about (name, org, site) and private (names the leak gate must keep out).",
+ "fixture": "fixtures/team-notes/: a made-up joinery workshop's notes (no real person, firm or memory), with one planted value of each kind the leak gate knows, each in a note of its own, listed with its kind in fixtures/team-notes/planted.json.",
+ "claims": [
+  {
+   "id": "N1",
+   "claim": "A team's own notes folder makes passports end to end by the page's own steps, and the hand-back loop closes on it.",
+   "measure": "tools/notes-measure.mjs, in a fresh copy of the committed repository (git archive of HEAD) with a fresh home folder (KAR_PASSPORT_DIR), on a copy of fixtures/team-notes/: (1) config.json written with memory, about and private from the fixture; (2) node kar/passport.mjs key, its output written to keys/kar.json; (3) node kar/passport.mjs notes; (4) node kar/passport.mjs verify on every token written, and the same tokens checked against the repository's own keys/kar.json (Kar's key); (5) SYMBEYOND's v6.2 validator and teslasolar's v3.0 engine, through tools/oracle.py unchanged, on every v6.2 and v3.0 token; (6) the content: the full v6.2 token holds every note's description, the shareable holds the description of every note that is not of type user and carries no planted value, the public holds the description of exactly the notes marked public (and of no other note) and carries no planted value, each description as the dot text the writer makes of it; (7) the hand-back: an honest update of the full v6.2 token (fixtures/drift-cases.mjs honestUpdate, the page's own simulation) through node kar/passport.mjs in, then apply; node kar/passport.mjs notes again; then undo; and one drifted return (the first of fixtures/drift-cases.mjs driftedCases) through in.",
+   "rule": "(a) 15 tokens written (3 slices x 5 shapes), none withheld by the leak gate; (b) every one VERIFIED against the pinned key and every one refused against Kar's key; (c) every v6.2 token PASS by SYMBEYOND's validator and every v3.0 token PASS by teslasolar's engine; (d) the content rules of (6) hold for every note and every planted value; (e) in makes a plan, apply writes the hand-over log, the next full v6.2 token holds the session the update handed back, and undo returns every file of the notes folder to its bytes before apply, with the hand-over log gone; (f) the drifted return is refused and no plan is written for it"
+  },
+  {
+   "id": "N2",
+   "claim": "The team-notes organ is gated.",
+   "measure": "witness v0.6 mutate on src/notes.mjs with its own tests (src/notes.test.mjs), on this machine and again on GitHub's runner on every push; and 2,000 garbage inputs to every exported function, each call taking up to four arguments drawn from a fixed hostile list.",
+   "rule": "clean, not capped, nothing baselined; 0 throws"
+  }
+ ]
+}
