@@ -106,4 +106,5 @@ for (const f of files) {
   g3 += mine.length; if (mine.length) g3where.push(f + ': ' + mine.map((h) => h.what.replace(/./g, '*') + '@' + h.n).join(','));
 }
 const prev = (() => { try { return JSON.parse(readFileSync(join(REPO, 'local', 'g3.json'), 'utf8')); } catch { return {}; } })();
-save('g3.json', { claim: 'G3', files: files.length, hits: g3, where: g3where, pageScanned: prev.pageScanned === true, pageHits: prev.pageHits || 0 });
+// the page's fields are kar/page-scan.mjs's (the live page's own text); they are kept as they are
+save('g3.json', { claim: 'G3', files: files.length, hits: g3, where: g3where, pageScanned: prev.pageScanned === true, pageHits: prev.pageHits || 0, pageWhere: prev.pageWhere || '', ...(prev.page ? { page: prev.page } : {}) });

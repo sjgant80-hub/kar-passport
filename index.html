@@ -2,71 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kar's passport · carry your AI's context to any AI, checked</title>
 <meta name="description" content="Your AI's memory stays home. The passport carries a slice of it to any other AI as one pasteable, signed SYMB-FER token, checked on your side before any model is given it, with private things kept out. Built on SYMB-FER by SYMBEYOND AI LLC.">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#14532d">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<style>
-:root{--bg:#fbfaf7;--fg:#1c1b19;--muted:#5d5a53;--line:#e2ded5;--card:#ffffff;--accent:#14532d;--accent-2:#166534;--ok:#15803d;--bad:#b91c1c;--warn:#a16207;--code:#f3f1ec;--chip:#ecfdf3}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121411;--fg:#ecebe7;--muted:#a8a59c;--line:#2c2f2a;--card:#1a1d19;--accent:#4ade80;--accent-2:#86efac;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--code:#1f231e;--chip:#163220}}
-:root[data-theme="dark"]{--bg:#121411;--fg:#ecebe7;--muted:#a8a59c;--line:#2c2f2a;--card:#1a1d19;--accent:#4ade80;--accent-2:#86efac;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--code:#1f231e;--chip:#163220}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-a{color:var(--accent-2)}
-header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
-nav{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:14px}
-nav b{font-size:16px;margin-right:auto}
-nav a{text-decoration:none;color:var(--muted)}
-nav a:hover{color:var(--fg)}
-main{max-width:1080px;margin:0 auto;padding:0 16px 64px}
-section{padding:36px 0;border-bottom:1px solid var(--line)}
-h1{font-size:clamp(28px,5vw,44px);line-height:1.15;margin:28px 0 12px}
-h2{font-size:clamp(22px,3.4vw,30px);margin:0 0 12px}
-h3{font-size:18px;margin:22px 0 8px}
-.lede{font-size:clamp(17px,2.2vw,20px);color:var(--fg);max-width:780px}
-.muted{color:var(--muted)}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
-.card h3{margin-top:0}
-.btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-button{font:inherit;font-size:15px;padding:9px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}
-button.ghost{background:transparent;color:var(--accent-2)}
-button:disabled{opacity:.5;cursor:default}
-label{display:block;font-size:14px;color:var(--muted);margin:10px 0 4px}
-input,textarea{width:100%;font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
-textarea{min-height:120px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
-pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;max-height:420px;font-size:12.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-.tabs button{background:transparent;color:var(--fg);border-color:var(--line);padding:6px 10px;font-size:14px}
-.tabs button[aria-selected="true"]{border-color:var(--accent);color:var(--accent-2);font-weight:600}
-.verdict{padding:10px 12px;border-radius:8px;border:1px solid var(--line);margin:10px 0;font-weight:600}
-.verdict.ok{border-color:var(--ok);color:var(--ok)}
-.verdict.bad{border-color:var(--bad);color:var(--bad)}
-.chip{display:inline-block;background:var(--chip);border-radius:999px;padding:2px 10px;font-size:13px;margin:2px 4px 2px 0}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th,td{text-align:left;border-bottom:1px solid var(--line);padding:8px 6px;vertical-align:top;overflow-wrap:break-word}
-td.why{overflow-wrap:anywhere}
-.scroll{overflow-x:auto}
-@media (max-width:600px){.hide-narrow{display:none}nav{flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;scrollbar-width:none}nav b{margin-right:10px}}
-.held{color:var(--ok);font-weight:700}.failed{color:var(--bad);font-weight:700}
-ol.steps li{margin:6px 0}
-svg text{fill:var(--fg);font:13px system-ui,sans-serif}
-svg .box{fill:var(--card);stroke:var(--accent);stroke-width:1.5}
-svg .home{fill:var(--chip);stroke:var(--accent);stroke-width:1.5}
-svg .arrow{stroke:var(--muted);stroke-width:1.5;fill:none;marker-end:url(#arr)}
-svg .stop{fill:none;stroke:var(--bad);stroke-width:1.5;stroke-dasharray:4 3}
-.num{font-variant-numeric:tabular-nums;font-weight:700}
-footer{max-width:1080px;margin:0 auto;padding:24px 16px 48px;color:var(--muted);font-size:14px}
-#boot-note{display:none;margin:12px 0;padding:10px;border:1px solid var(--warn);border-radius:8px;color:var(--warn)}
-.diagram{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.diagram svg{min-width:720px}
-.two{display:grid;gap:16px;grid-template-columns:1fr}
-@media (min-width:860px){.two{grid-template-columns:1fr 1fr}}
-details summary{cursor:pointer;color:var(--accent-2)}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top"><nav aria-label="Sections">
@@ -79,7 +22,7 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <h1>Your AI's memory stays home. Its passport travels.</h1>
 <p class="lede">Every new AI session starts cold. This tool takes the context your own AI holds and writes a slice of it as one block of plain text: a <b>passport</b>. You paste it into any AI, whether a fresh session, Grok, a colleague's assistant or a local model, and that AI starts up knowing what you are working on. The passport is <b>signed</b>, and it is <b>checked on your side before any model is given it</b>, so a changed or forged one is refused. It comes in <b>three slices</b>: private, shareable and public. Private things never travel in the two that leave.</p>
 <p class="muted">The passport follows <a href="https://github.com/SYMBEYOND/SYMB-FER">SYMB-FER</a>, the open context-continuity protocol by SYMBEYOND AI LLC (v6.2, MIT). This page runs the same tested code the tool runs, in your browser, offline once loaded. Nothing you type here leaves this tab.</p>
-<div class="btns"><button onclick="location.hash='#try'">Check Kar's real passport</button><button class="ghost" onclick="location.hash='#make'">Make one for yourself</button></div>
+<div class="btns"><a class="button" href="#try">Check Kar's real passport</a><a class="button ghost" href="#make">Make one for yourself</a></div>
 <div id="boot-note">The page's scripts did not start. Reload the page; if that does not help, your browser may not support the signing it uses (Ed25519 in WebCrypto: Chrome 137+, Safari 17+, Firefox 129+).</div>
 </section>
 
@@ -142,7 +85,7 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <h2>Nothing private travels: watch the gate work</h2>
 <p>The slicer reads a memory, then a gate checks every line of a public or shareable passport against eight kinds of leak: private repository names, keys and secrets, secret phrases, personal details (emails, phone numbers, names), what we charge, internal economy terms, private jargon, and machine plumbing (local paths and internal tool names). Press the button to plant one of each kind in every place a made-up memory is read from, then slice it.</p>
 <div class="btns"><button id="b-leak">Plant leaks and slice</button></div>
-<div id="l-out"></div>
+<div id="l-out" aria-live="polite"></div>
 </section>
 
 <section id="how">
@@ -184,8 +127,8 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <div class="card"><h3>6 · The sealed rules</h3><p>One judge turns each claim's measured facts into HELD or FAILED by the rule written in claims.json before any code. A verdict's wording is chosen by the verdict, never by a second copy of its condition.</p><p class="muted">src/judge.mjs</p></div>
 <div class="card"><h3>7 · The time case</h3><p>What re-typing a brief by hand costs a team, from the lines of memory Kar's STATE passport carries, a measured typing speed and the reader's own figures. Every outside figure is read from a sourced basis, byte for byte.</p><p class="muted">src/timecase.mjs · vendor/basis/basis.json · data/typing-basis.json</p></div>
 <div class="card"><h3>8 · Team notes</h3><p>Your team's own notes, in the layout Claude Code's memory folder uses, into the same three slices: full (every note), shareable (every note but those about a person) and public (only the notes you mark public). Every value that leaves passes the leak gate first, and what a session handed back comes back in.</p><p class="muted">src/notes.mjs · <code>node kar/passport.mjs notes</code></p></div>
-<div class="card"><h3>The command line</h3><p>The thin input and output on your own machine: it reads your memory notes and writes the passports, the plans and the log. It decides nothing itself; every decision it runs is made by one of the gated organs above. Its one piece of logic of its own, reading a file's bytes as text whichever editor or shell wrote them, has its own tests and its own mutation gate on every push, and CI runs the commands on Windows as well as Linux.</p><p class="muted">kar/passport.mjs · kar/inputs.mjs · kar/text.mjs</p></div>
-<div class="card"><h3>The proof</h3><p>Claims written and committed before any code; a receipt that CI re-derives on every push, with SYMBEYOND's and teslasolar's own Python as the judges; a mutation gate (witness) over every organ.</p><p class="muted">claims.json · claims-timecase.json · claims-notes.json · measure.mjs · tools/timecase-measure.mjs · tools/notes-measure.mjs · receipts/</p></div>
+<div class="card"><h3>The command line</h3><p>The thin input and output on your own machine: it reads your memory notes and writes the passports, the plans and the log. Every decision about a passport is made by one of the gated organs above. Its two pieces of logic of its own each have their own tests and their own mutation gate on every push: reading a file's bytes as text whichever editor or shell wrote them, and the trust organ, which decides which keys a check accepts (your own, and each colleague's you pinned with <code>trust</code>). CI runs the commands on Windows as well as Linux.</p><p class="muted">kar/passport.mjs · kar/inputs.mjs · kar/text.mjs · kar/trust.mjs</p></div>
+<div class="card"><h3>The proof</h3><p>Claims written and committed before any code; a receipt that CI re-derives on every push, with SYMBEYOND's and teslasolar's own Python as the judges; a mutation gate (witness) over every organ.</p><p class="muted">claims.json · claims-timecase.json · claims-notes.json · claims-trust.json · measure.mjs · tools/timecase-measure.mjs · tools/notes-measure.mjs · tools/trust-measure.mjs · receipts/</p></div>
 </div>
 <h3>Gate status, organ by organ, as the receipts record it</h3>
 <p>A mutation gate (witness v0.6) changes an organ's code one operator at a time and runs its tests. A change the tests do not catch is a survivor: a place a real bug could hide. Every organ below is re-gated on GitHub's runner on every push, and the build fails on a single survivor. Nothing is baselined.</p>
@@ -203,11 +146,14 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <h3>A team's own notes</h3>
 <p>The steps under <a href="#own-machine">How you make passports on your own machine</a> have two claims of their own, sealed in <a href="claims-notes.json">claims-notes.json</a> before their code: those steps, run as written by the command line on a made-up team's notes, make passports end to end (N1), and the organ that reads the notes is gated (N2). CI runs the steps again, in a fresh copy of the repository, on every push.</p>
 <div id="receipt-notes">Loading the receipt…</div>
+<h3>A colleague's passport</h3>
+<p>The handover between two people has two claims of its own, sealed in <a href="claims-trust.json">claims-trust.json</a> before its code: three people, each with the command line in a fresh copy of the repository, run it as <a href="#own-machine">the steps</a> give it, and the receiver's check accepts the sender's passports only while the sender's key is pinned (R1); the organ that decides which keys a check accepts is gated (R2). CI runs the handover again, on Linux and on Windows, on every push.</p>
+<div id="receipt-trust">Loading the receipt…</div>
 <h3>Check the proof yourself</h3>
 <ol class="steps">
 <li><code>git clone https://github.com/sjgant80-hub/kar-passport</code>, then <code>cd kar-passport</code>. You need Node.js 22 or later, and Python 3 for SYMBEYOND's and teslasolar's own validators.</li>
 <li><code>node --test src/*.test.mjs page.test.mjs kar/*.test.mjs</code> runs every organ's tests, the page's and the command line's.</li>
-<li><code>node measure.mjs --check</code>, <code>node tools/timecase-measure.mjs --check</code> and <code>node tools/notes-measure.mjs --check</code> re-derive each receipt on your machine. Any difference fails.</li>
+<li><code>node measure.mjs --check</code>, <code>node tools/timecase-measure.mjs --check</code>, <code>node tools/notes-measure.mjs --check</code> and <code>node tools/trust-measure.mjs --check</code> re-derive each receipt on your machine. Any difference fails.</li>
 <li>For the mutation gate, clone witness at v0.6 (<code>git clone --depth 1 --branch v0.6 https://github.com/sjgant80-hub/witness.git .witness6</code>) and run it on any organ the way <a href="https://github.com/sjgant80-hub/kar-passport/blob/main/.github/workflows/ci.yml">the CI file</a> does.</li>
 </ol>
 </section>
@@ -248,8 +194,8 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <ul>
 <li><b>Data minimisation (UK GDPR Article 5(1)(c)).</b> Each target gets only its slice. The public slice holds only facts that are already public, and personal data becomes reference codes whose lookup stays on your machine.</li>
 <li><b>Hosted AI is a processor.</b> Pasting a passport into a hosted AI sends its contents to that provider; SYMBEYOND's own security notes say the same. Send hosted AIs only the public or shareable slice, and keep the full slice for your own sessions.</li>
-<li><b>Integrity.</b> SHA-256 over every line outside the seal, plus an Ed25519 signature. The check (the command line's <code>verify</code>, this page, and the tool's own boot) refuses a token that was changed, or signed by a key you do not trust. It runs on your side: a chat AI cannot check a signature itself, so you check before you paste, and <code>in</code> checks your sent copy before it reads what came back.</li>
-<li><b>No server, no telemetry.</b> This page and the tool run locally. Signing keys never leave the device that made them. The page loads only its own files from this site and makes no other request; its offline cache holds only those files.</li>
+<li><b>Integrity.</b> SHA-256 over every line outside the seal, plus an Ed25519 signature. The check (the command line's <code>verify</code>, this page, and the tool's own boot) refuses a token that was changed, or signed by a key you have not pinned: your own, and each colleague's you pinned with <code>trust</code>. It runs on your side: a chat AI cannot check a signature itself, so you check before you paste, and <code>in</code> checks your sent copy before it reads what came back.</li>
+<li><b>No server, no telemetry.</b> This page and the tool run locally. Signing keys never leave the device that made them. The page loads only its own files from this site and makes no other request, and your browser enforces that: the page's content security policy allows scripts, styles, requests and workers from this site only, with no inline script and no inline style, so not even an injected script could send what you type anywhere. Its offline cache holds only those files, all of them from the first visit.</li>
 <li><b>No third-party packages.</b> The tool has no package dependencies (its package.json lists none). The few files it carries from elsewhere (SYMBEYOND's template, validator and generator, teslasolar's engine, two fall-kit modules and the cost basis) are pinned by SHA-256. CI re-fetches each one from its source at its commit and compares it on every push.</li>
 <li><b>The signing key.</b> Its seed is one file on your machine, in <code>~/.kar-passport/</code>. On Linux and macOS it is written readable by your user only (mode 600); on Windows it sits in your user profile, which Windows opens only to you and the machine's administrators. It is never in the code, a passport, or any page. Your checks trust only the public half you pin. The key this page makes for you lives in the tab's memory and is gone when you close it.</li>
 <li><b>Audit.</b> Every hand-back is written to a log that only grows, with the before-bytes kept so it can be undone.</li>
@@ -262,8 +208,8 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <li><b>Can a model infer what is not in the passport?</b> It can guess, but it cannot learn private facts from a slice that does not hold them. In the cold boots, the model was asked for an email address, a private repository and a person's name that were withheld. None of them appeared in any answer.</li>
 <li><b>What if a session does work the protocol does not cover?</b> The session records it where the protocol says: in the new §CURRENT·REALITY and an appended §SESSION·LOG block. Any change anywhere else is drift and is refused, however the session did its work and whatever tools it used.</li>
 <li><b>Can a passport or a hand-back carry instructions into our AI?</b> A passport is text, and nothing in it is run. Your tools read only passports signed by a key you pinned, so a stranger's text is refused before a model sees it, and every passport carries SYMB-FER's own instruction to treat it as provided context, not established fact. A hand-back is text an AI wrote. It reaches your memory only through a plan the command line prints line by line, only in the parts the protocol lets a session change (the session log, milestones, lessons, resolved items, closed threads and the current reality), and only when the memory's owner applies it, with undo kept. Read a plan as you would read any AI's output before you keep it.</li>
-<li><b>Which cryptography signs and checks a passport?</b> Ed25519 signing and verifying run in the platform's own WebCrypto, in Node and in the browser, not in code of ours. SHA-256 is a small pure function from the estate's fall-kit, pinned by its hash. The Proof's tampering claim (P6) is that check at work: every changed copy refused.</li>
-<li><b>What if a signing key is lost or exposed?</b> Replace it. Move the old seed file aside, run <code>node kar/passport.mjs key</code> to make a new one, and pin its public half in place of the old one. Every passport the old key sealed is then refused by your checks, and you make fresh ones at the next session end. Nothing else depends on the key.</li>
+<li><b>Which cryptography signs and checks a passport?</b> Ed25519 signing and verifying run in the platform's own WebCrypto, in Node and in the browser, not in code of ours. SHA-256 is a small pure function from the estate's fall-kit, pinned by its hash, so the page and the command line hash the same bytes the same way. A test checks it against Node's own SHA-256, from OpenSSL, on every push: the standard test messages of FIPS 180-2, every length from 0 to 300 bytes, random bytes, and every committed passport (<a href="https://github.com/sjgant80-hub/kar-passport/blob/main/src/sha256.test.mjs">src/sha256.test.mjs</a>). The Proof's tampering claim (P6) is that check at work: every changed copy refused.</li>
+<li><b>What if a signing key is lost or exposed?</b> Replace it. Move the old seed file aside, run <code>node kar/passport.mjs key</code> to make a new one, and pin its public half in place of the old one. Every passport the old key sealed is then refused by your checks, and you make fresh ones at the next session end. Each colleague who pinned your old key runs <code>node kar/passport.mjs untrust &lt;name&gt;</code> and pins the new one; until they do, they refuse your new passports and still accept the old key's. Nothing else depends on the key.</li>
 <li><b>What if a session's work holds sensitive data?</b> The hand-back is merged into your private memory, which never travels. The next public or shareable passport is sliced and gated again from scratch.</li>
 <li><b>Regulation.</b> The passport is a document you control. When you paste it into a hosted AI, that provider processes it under your agreement with them. Choose the slice for the recipient as you would for any document.</li>
 </ul>
@@ -275,14 +221,15 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <li>Run <code>node kar/passport.mjs key &gt; keys/kar.json</code> once. It makes your signing key and pins its public half, the only key your checks then trust. The seed stays in <code>~/.kar-passport/</code>. The clone arrives with Kar's public key in that file, and this replaces it with yours. In Windows PowerShell the <code>&gt;</code> writes the file with a byte-order mark; the tool reads it either way.</li>
 <li>At the end of a session, run <code>node kar/passport.mjs notes</code>. It makes the full, shareable and public slices, each in five shapes, all sealed, in <code>~/.kar-passport/tokens/</code>. A shareable or public one that the leak gate flags is not written. Check any of them with <code>node kar/passport.mjs verify &lt;file&gt;</code>.</li>
 <li>Paste a slice into the AI you are using. The full slice is for your own sessions. Hosted AIs get the public or shareable slice.</li>
+<li>To check a colleague's passport before you paste it, pin their key once. They send you the file their step 3 wrote (their <code>keys/kar.json</code>: a public key, safe to send), and you run <code>node kar/passport.mjs trust &lt;their file&gt; &lt;a name&gt;</code>. From then on <code>verify</code> accepts their passports and says whose key sealed each one; your own still verify. <code>node kar/passport.mjs untrust &lt;the name&gt;</code> removes it again, and their passports are refused. A file that is not a key, a name already used, your own key or a name that is not a plain file name is refused, and nothing changes.</li>
 <li>When the session hands back an updated passport, run <code>node kar/passport.mjs in &lt;sent&gt; &lt;returned&gt;</code> to see the plan, then <code>apply</code> it (and <code>undo</code> if you change your mind). The next <code>notes</code> run carries the session's work.</li>
 </ol>
-<p class="muted">These steps are what <a href="#proof">The proof</a>'s claim N1 runs, as written, on every push: <span id="notes-run">the receipt says how it went</span>. On Windows too: on every push, <a href="https://github.com/sjgant80-hub/kar-passport/blob/main/.github/workflows/ci.yml">CI</a> types steps 2 to 4 in Windows PowerShell on GitHub's Windows runner, checks that its <code>&gt;</code> wrote the byte-order mark, verifies every passport with the key it pinned, and re-derives N1 there. Kar's own memory has more parts than a notes folder (a working memory and a digest), so Kar runs <code>node kar/passport.mjs generate</code> instead of <code>notes</code>. Everything else is the same.</p>
+<p class="muted">Steps 1 to 4 and 7 are what <a href="#proof">The proof</a>'s claim N1 runs, as written, on every push: <span id="notes-run">the receipt says how it went</span>. Step 6, the handover, is what claim R1 runs, with three people: <span id="trust-run">the receipt says how it went</span>. On Windows too: on every push, <a href="https://github.com/sjgant80-hub/kar-passport/blob/main/.github/workflows/ci.yml">CI</a> types steps 2 to 4 in Windows PowerShell on GitHub's Windows runner, checks that its <code>&gt;</code> wrote the byte-order mark, verifies every passport with the key it pinned, and re-derives N1 and R1 there. Kar's own memory has more parts than a notes folder (a working memory and a digest), so Kar runs <code>node kar/passport.mjs generate</code> instead of <code>notes</code>. Everything else is the same.</p>
 <p class="muted">Tested with: a cold local qwen2.5:7b (two boots, scored in The proof) and a fresh Claude session (the hand-back loop). Any model that reads plain text can take it. A live Grok run waits on its API key. Sizes: <span id="sizes">Kar's v6.2 passports, as their records give them</span>; the NANO, CORE and STATE tiers are at most <span class="tier-nano">their limit</span>, <span class="tier-core">their limit</span> and <span class="tier-state">their limit</span> characters. One memory per team or project gives each its own passports and its own key.</p>
 <h3>Deployment and roll-out</h3>
 <ol class="steps">
 <li>Week 1: one person runs <code>notes</code> on their own notes folder. Paste the passport into the AI you already use and compare the first answer with a cold start.</li>
-<li>Week 2: use the shareable slice for one handover between two people or two tools, and the hand-back for one session's update.</li>
+<li>Week 2: use the shareable slice for one handover between two people (the receiver pins the sender's key once, step 6 above, and checks the passport before pasting it) or two tools, and the hand-back for one session's update.</li>
 <li>Week 3 onward: the team keeps its context in its notes folder; passports are made at session end and checked at session start. Each memory has one owner, who runs the end-of-session command and reviews every hand-back plan before it is applied.</li>
 </ol>
 <h3>Supplier, support and ownership</h3>
@@ -302,7 +249,7 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <li><b>Grok:</b> the public slice is built for it. A live run against Grok waits on its API key being set on this machine.</li>
 </ul>
 <h3>Buyer walkthroughs: what buyers asked, and where this page answers</h3>
-<p>Before this page was called finished, simulated buyers read the live page cold, from the top, and listed every question it left open: first a local model (qwen2.5:7b) playing five buyers, then Kar playing four, three times. Each gap was answered on the page, or is named here as open. The records are in the repository (<a href="local/personas.json">the first walk</a>, <a href="local/personas-answered.json">its answers</a>, <a href="local/walk-2026-11-04.json">the second</a>, <a href="local/walk-2026-11-05.json">the third</a>, <a href="local/walk-2026-11-05b.json">the fourth</a>). They are simulations, not customer references.</p>
+<p>Before this page was called finished, simulated buyers read the live page cold, from the top, and listed every question it left open: first a local model (qwen2.5:7b) playing five buyers, then Kar playing four, four times. Each gap was answered on the page, or is named here as open. The records are in the repository (<a href="local/personas.json">the first walk</a>, <a href="local/personas-answered.json">its answers</a>, <a href="local/walk-2026-11-04.json">the second</a>, <a href="local/walk-2026-11-05.json">the third</a>, <a href="local/walk-2026-11-05b.json">the fourth</a>, <a href="local/walk-2026-11-06.json">the fifth</a>). They are simulations, not customer references.</p>
 <div id="walks">Loading the walkthrough records…</div>
 <h3>The case for the board</h3>
 <p>AI use is spreading faster than anyone's context can follow it. A passport makes context a company asset: written once, owned, portable across vendors, checked on arrival and merged back after use. It needs one config file and one command to set up, no subscription, and it reads the notes folder a team already keeps. Its cost case is computed from sourced figures and your own, and every claim made for it is re-checked by an open test anyone can run.</p>
@@ -337,7 +284,8 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <details><summary>What does it take to run, and to keep running?</summary><p>No licence fee: it is MIT-licensed. It runs on the machines you already have: Node.js for the command line, and any modern browser for this page. Setting up is one config file that says where your notes live, plus one command to make a key. After that, one command at the end of a session makes the passport, and one at the start checks it. Support terms, if you want any, are agreed per deployment.</p></details>
 <details><summary>What happens when a model misreads a passport?</summary><p>A passport is provided context, not established fact: its own §SAFETY·INTERPRETATION section says so. The operator stays the authority, and SYMB-FER's §DRIFT·CHECK gives the operator the call on whether to continue or redirect. A correction goes into the next session, the session log keeps the record, and a model cannot quietly rewrite what it was given, because a returned passport that changes anything outside the parts the protocol lets a session change is refused.</p></details>
 <details><summary>What if the AI cannot take a long passport?</summary><p>Use a tier. The same slice also comes as SYMBEYOND's NANO, CORE and STATE tokens (at most <span class="tier-nano">their limit</span>, <span class="tier-core">their limit</span> and <span class="tier-state">their limit</span> characters), each sealed and checked the same way.</p></details>
-<details><summary>Several people, one company?</summary><p>Each person or team keeps its own memory, its own key and its own reference lookup. A shareable passport carries project context with private names replaced by codes. Trust is by key: you choose whose keys your checks accept.</p></details>
+<details><summary>Several people, one company?</summary><p>Each person or team keeps its own memory, its own key and its own reference lookup. A shareable passport carries project context with private names replaced by codes. Trust is by key: you choose whose keys your checks accept. Your own is pinned in <code>keys/kar.json</code>; each colleague's you add with <code>node kar/passport.mjs trust &lt;their key file&gt; &lt;name&gt;</code> and remove with <code>untrust &lt;name&gt;</code>, so when someone leaves, removing their key refuses every passport it sealed. <code>verify</code> says whose key sealed each passport.</p></details>
+<details><summary>Is the page accessible?</summary><p>It is plain HTML: every control is a native button, link or input with a label, the sections open with headings, results are announced to screen readers as they change, the diagram carries a text description, it follows your light or dark setting, and it works at phone width and with the keyboard alone. It has not had a formal accessibility audit.</p></details>
 <details><summary>Are there limits on slices or versions?</summary><p>No. A passport is a text file. Each session end makes a new one, and the hand-over log in memory only grows.</p></details>
 <details><summary>Does this replace AI memory?</summary><p>No. Memory holds; the passport transfers. You need both: a home to keep context in, and a passport to carry a slice of it to another session.</p></details>
 </section>
@@ -345,7 +293,7 @@ details summary{cursor:pointer;color:var(--accent-2)}
 <footer>
 Kar's passport · <a href="https://github.com/sjgant80-hub/kar-passport">source</a> (MIT) · built on <a href="https://github.com/SYMBEYOND/SYMB-FER">SYMB-FER</a> by SYMBEYOND AI LLC (MIT) · supplied by <a href="https://www.ai-nativesolutions.com">AI Native Solutions</a> · Powered by the Konomi architecture, created by Thomas Frumkin.
 </footer>
-<script>setTimeout(function(){ if(!window.__kpStarted){ var n=document.getElementById('boot-note'); if(n) n.style.display='block'; } }, 6000);</script>
+<script src="boot-note.js"></script>
 <script type="module" src="page.mjs"></script>
 </body>
 </html>

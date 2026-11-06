@@ -1,8 +1,18 @@
 {
  "claim": "G3",
- "files": 76,
+ "files": 87,
  "hits": 0,
  "where": [],
  "pageScanned": true,
- "pageHits": 0
+ "pageHits": 2,
+ "pageWhere": "the live page: pricing@702,pricing@777",
+ "page": {
+  "url": "https://sjgant80-hub.github.io/kar-passport/",
+  "at": "2026-11-06",
+  "chars": 79657,
+  "scanned": 493,
+  "exempt": 493,
+  "inSig": 5,
+  "sha256": "aab50959269a1f35776744810e441faaf88a5c51519ec949c07dae99ea06fe56"
+ }
 }

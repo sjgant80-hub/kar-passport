@@ -220,8 +220,12 @@ async function refusals(text, trustList) {
   const L = { privateNames: [], surnames: [], firstNames: [], canaries: [] };
   let hits = 0; const where = [];
   for (const f of tracked) { const h = scan(rd(f), L, 'shareable', protocolLines()).hits; hits += h.length; if (h.length) where.push(f + ': ' + h.map((x) => x.cls + '@' + x.n).join(',')); }
+  // local/g3.json: the private and personal-name classes over the same files on Kar's machine (kar/measure-local.mjs), and
+  // the live page's own text, every class (kar/page-scan.mjs); the page's matches are counted with the files' (as sealed)
   const g3 = local('g3.json');
-  facts.G3 = { files: tracked.length, hits: hits + (g3 ? g3.hits : 0), where, pageScanned: !!(g3 && g3.pageScanned), privateClassesOnKarsMachine: g3 ? g3.files : 0, excluded: [OWN + ' (this measure\'s own output)'] };
+  const pageHits = g3 && Number.isInteger(g3.pageHits) ? g3.pageHits : 0;
+  facts.G3 = { files: tracked.length, hits: hits + (g3 ? g3.hits : 0) + pageHits, where: g3 && g3.pageWhere ? [...where, g3.pageWhere] : where, pageScanned: !!(g3 && g3.pageScanned),
+    privateClassesOnKarsMachine: g3 ? g3.files : 0, ...(g3 && g3.page ? { page: { at: g3.page.at, hits: pageHits } } : {}), excluded: [OWN + ' (this measure\'s own output)'] };
 }
 
 const verdicts = CLAIM_IDS.map((id) => judge(id, facts[id]));

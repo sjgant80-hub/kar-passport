@@ -1,0 +1,37 @@
+{
+ "kind": "kar-passport.walk",
+ "url": "https://sjgant80-hub.github.io/kar-passport/",
+ "when": "6 November 2026",
+ "by": "Kar (Claude Opus 5.5), the builder, simulating four buyers",
+ "how": "The served page (HTTP 200, the build at commit 766c001) read cold from the top in a headless Chromium with its scripts run, as each buyer in turn: every section and every number, and every button pressed (each of the five shapes verified, Change one character, Put it back, Copy, Make my passport, Download, an honest and a drifted hand-back, the leak gate, the time case with good and bad inputs, the two buttons at the top). At 375 pixels wide the page did not scroll sideways. Then the same browser was taken offline and the page reloaded. Then the COO followed the roll-out's week 2 with the command line, as two people. Each gap was answered from the repository's own code, records and sealed claims, or is listed as open.",
+ "walks": [
+  { "role": "CFO", "gaps": [] },
+  {
+   "role": "CTO/CISO",
+   "gaps": [
+    { "gap": "The page says it works offline once loaded. After one visit, a reload with the network off failed: the offline cache kept only the requests made after it started, so the page itself and its scripts were cached only from a second visit.", "answered": "sw.js now caches every file the page needs when it installs, and a page test fails if the page needs a file that list lacks. In a fresh browser, one visit and then a reload with the network off shows the page with its passport, receipts and time case." },
+    { "gap": "The page says it makes no request but to its own site, and nothing in the browser enforced that.", "answered": "Security, No server, no telemetry: a content security policy allows scripts, styles, requests and workers from this site only, with no inline script or style (the two that were inline moved to style.css and boot-note.js). A page test fails if the policy widens or an inline script, style or handler comes back." },
+    { "gap": "The seal's SHA-256 is a small hand-written function. How is it known to be right?", "answered": "Security questions, Which cryptography: src/sha256.test.mjs checks it against Node's own SHA-256 (OpenSSL) on every push, on the FIPS 180-2 test messages, every length from 0 to 300 bytes, random bytes and every committed passport." },
+    { "gap": "G3's scan of the page's own text was recorded on 28 October as 0 matches. The page has changed since (the time case's results in pounds, the receipt's own list of kinds), and the record still said 0.", "answered": "The proof, G3: the page's text scanned again, every kind, with the private lists (kar/page-scan.mjs), and its matches counted in G3's facts beside the files'. G3 stays FAILED, as sealed, and the failures in plain words read the page's matches too." }
+   ]
+  },
+  {
+   "role": "COO",
+   "gaps": [
+    { "gap": "Following the roll-out's week 2 (a handover between two people), the receiver could not check the sender's passport before pasting it: verify trusted one key, the receiver's own, so every passport a colleague sealed was refused.", "answered": "A colleague's passport, sealed first in claims-trust.json: trust and untrust pin and remove a colleague's key (kar/trust.mjs, its own tests and gate). R1 runs the handover with three people in fresh copies of the repository on every push, on Linux and Windows; R2 is the organ's gate. Step 6 of How you make passports on your own machine and week 2 say how." },
+    { "gap": "When someone leaves, how are the passports they sealed stopped?", "answered": "FAQ, Several people, one company?: untrust their key, and every passport it sealed is refused. What if a signing key is lost or exposed? says what colleagues do when a key is replaced." }
+   ]
+  },
+  {
+   "role": "Procurement",
+   "gaps": [
+    { "gap": "Is the page accessible?", "answered": "FAQ, Is the page accessible?: what it does (native controls with labels, headings, results announced as they change, light and dark, phone width, keyboard), and that it has had no formal accessibility audit." }
+   ]
+  }
+ ],
+ "open": [
+  "A live Grok run waits on its API key, which only the operator can set.",
+  "No independent security review or formal accessibility audit has been done; commissioning either is the operator's decision.",
+  "These walks are simulations by the builder and a local model. No real buyer has read this page yet."
+ ]
+}

@@ -18,8 +18,8 @@ teslasolar's fork (teslasolar/SYMB-FER, forked before v6.0). Powered by the Kono
   `node measure.mjs --check` re-derives them in CI on every push.
 - The judges are SYMBEYOND's and teslasolar's own Python (`vendor/symbfer/`, pinned by SHA-256 to their commits;
   `tools/oracle.py` runs it unchanged).
-- Mutation gate: witness v0.6 on every module of `src/` and on the command line's text reader (`kar/text.mjs`), on
-  GitHub's runner on every push; nothing baselined.
+- Mutation gate: witness v0.6 on every module of `src/` and on the command line's text reader (`kar/text.mjs`) and
+  trust organ (`kar/trust.mjs`), on GitHub's runner on every push; nothing baselined.
 - Windows: CI types the steps below in Windows PowerShell on GitHub's Windows runner on every push (its `>` writes
   `keys/kar.json` with a byte-order mark, which the command line reads), verifies every passport with the key it pinned,
   and re-derives the team-notes receipt there.
@@ -28,6 +28,14 @@ teslasolar's fork (teslasolar/SYMB-FER, forked before v6.0). Powered by the Kono
 - A team's own notes have theirs, `claims-notes.json`, sealed before their code: the page's own steps, run as written
   with the command line on a made-up team's notes (`fixtures/team-notes/`) in a fresh copy of the repository (N1), and
   the organ witness-clean (N2); `receipts/notes.json`, re-derived in CI by `node tools/notes-measure.mjs --check`.
+- A colleague's passport has its own, `claims-trust.json`, sealed before its code: the handover run with the command line
+  by three people in fresh copies of the repository, the receiver's check accepting the sender's passports only while
+  the sender's key is pinned (R1), and the trust organ (`kar/trust.mjs`) witness-clean (R2); `receipts/trust.json`,
+  re-derived in CI on Linux and Windows by `node tools/trust-measure.mjs --check`.
+- The seal's SHA-256 (fall-kit's pure function) is checked against Node's own (OpenSSL) on every push:
+  `src/sha256.test.mjs`.
+- The page: a content security policy (this site's own files only, no inline script or style) and an offline cache
+  filled on the first visit; `page.test.mjs` fails if either loosens.
 
 ## Layout
 
@@ -45,7 +53,7 @@ teslasolar's fork (teslasolar/SYMB-FER, forked before v6.0). Powered by the Kono
 | `src/timecase.mjs` | the page's time case: what re-typing a brief by hand costs a team, from sourced figures and the reader's own |
 | `vendor/basis/basis.json` | the estate's sourced basis, byte for byte (pinned in `vendor/SOURCES.json`) |
 | `data/typing-basis.json` | the typing speed, the word it is counted in, and the UK statutory leave, each with its source |
-| `kar/` | the CLI and the I/O on Kar's machine (paths come from `~/.kar-passport/config.json`, never committed); `kar/text.mjs` reads a file's bytes as text whichever editor or shell wrote them |
+| `kar/` | the CLI and the I/O on Kar's machine (paths come from `~/.kar-passport/config.json`, never committed); `kar/text.mjs` reads a file's bytes as text whichever editor or shell wrote them; `kar/trust.mjs` decides which keys a check accepts (yours, and the colleagues' in `keys/trusted/`) |
 | `tokens/` | Kar's public slice, in five shapes, sealed |
 | `local/` | the records measured on Kar's machine (counts and hashes only), and the buyer walkthroughs |
 
@@ -58,7 +66,8 @@ teslasolar's fork (teslasolar/SYMB-FER, forked before v6.0). Powered by the Kono
 node kar/passport.mjs key > keys/kar.json       # once: your passport key, its public half pinned (the seed stays on the machine)
 node kar/passport.mjs notes                     # a team's notes: every slice in every shape, sealed, into ~/.kar-passport/tokens/
 node kar/passport.mjs generate                  # the same from Kar's own memory
-node kar/passport.mjs verify <token>            # verify-before-parse against keys/kar.json
+node kar/passport.mjs verify <token>            # verify-before-parse against the pinned keys; says whose key sealed it
+node kar/passport.mjs trust <their key> <name>  # pin a colleague's public key (their keys/kar.json); untrust <name> removes it
 node kar/passport.mjs in <sent> <returned>      # drift check + ingest plan (nothing written)
 node kar/passport.mjs apply <id>                # write the reviewed plan; node kar/passport.mjs undo <id> puts it back
 ```

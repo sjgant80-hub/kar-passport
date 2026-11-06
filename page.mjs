@@ -152,18 +152,20 @@ async function trace() {
   $('trace').innerHTML = steps.map((s) => '<li>' + s + '</li>').join('');
   if (receipt) renderReceipt(receipt);
   else $('receipt').textContent = 'The receipt is not published yet.';
-  const [basis, typing, tc, k1, walked, walk, walk3, nr, walk4] = await Promise.all(['vendor/basis/basis.json', 'data/typing-basis.json', 'receipts/timecase.json', 'local/k1.json',
-    'local/personas-answered.json', 'local/walk-2026-11-04.json', 'local/walk-2026-11-05.json', 'receipts/notes.json', 'local/walk-2026-11-05b.json'].map(getJson));
+  const [basis, typing, tc, k1, walked, walk, walk3, nr, walk4, tr, walk5] = await Promise.all(['vendor/basis/basis.json', 'data/typing-basis.json', 'receipts/timecase.json', 'local/k1.json',
+    'local/personas-answered.json', 'local/walk-2026-11-04.json', 'local/walk-2026-11-05.json', 'receipts/notes.json', 'local/walk-2026-11-05b.json', 'receipts/trust.json', 'local/walk-2026-11-06.json'].map(getJson));
   state.basis = basis; state.typing = typing; state.brief = briefOf(state.tokens.state);
   setupCalc();
-  renderGates(receipt, tc, nr);
+  renderGates(receipt, tc, nr, tr);
   renderReceiptTc(tc);
   renderReceiptNotes(nr);
-  renderWalks(walked, [walk4, walk3, walk]);
+  renderReceiptTrust(tr);
+  renderWalks(walked, [walk5, walk4, walk3, walk]);
   renderSizes(k1);
   if (f.P2 && f.P3) fill('.corpus', (f.P2.corpus + f.P3.corpus).toLocaleString('en-GB') + ' tokens (' + f.P2.corpus.toLocaleString('en-GB') + ' v6.2 and ' + f.P3.corpus.toLocaleString('en-GB') + ' v3.0)');
 }
-// G3's matches, kind by kind, as Kar read every one of them (5 November 2026), in the order of the leak gate's CLASSES: each
+// G3's matches, kind by kind, as Kar read every one of them (5 November 2026; the page's own text and the new files on
+// 6 November), in the order of the leak gate's CLASSES: each
 // kind's plain label (the leak section's own words) and the reading. The counts are the receipt's. page.test.mjs fails if a
 // kind the receipt names has no reading here.
 const G3_READ = [
@@ -171,7 +173,7 @@ const G3_READ = [
   ['keys and secrets', 'SHA-256 hashes and Kar\'s public key in the records: 64 hexadecimal characters each, the shape of a secret key'],
   ['secret phrases', 'the test question about the living seed\'s owner words, which a model must decline'],
   ['personal details', 'SYMBEYOND\'s own published contact line, in their template, and made-up addresses at example.com planted in the team-notes organ\'s tests, which check that the gate drops them'],
-  ['what we charge', 'a dollar sign then a digit in two text-cleaning regular expressions (a back-reference), the test question about the estate\'s rule on charging with its answer key and tests, and in the team-notes organ\'s tests a made-up amount planted for the gate to drop, with the name of the kind it is counted under'],
+  ['what we charge', 'a dollar sign then a digit in two text-cleaning regular expressions (a back-reference), the test question about the estate\'s rule on charging with its answer key and tests, and in the team-notes organ\'s tests a made-up amount planted for the gate to drop, with the name of the kind it is counted under; on this page itself, the time case\'s result in pounds (what your own time is worth, not anything anyone charges) and the receipt\'s own list of these matches, which names this kind, as the record of the page\'s scan (local/g3.json) does'],
   ['internal economy terms', 'imports of the platform\'s cryptography module, the test question about the estate\'s internal unit (and the model\'s answer that it is not recorded), and the list of withheld values a boot checks a model did not repeat'],
   ['private jargon', 'symbols from SYMBEYOND\'s own generator and template, ported byte for byte, and a test that a slice carries none of them'],
   ['machine plumbing', 'a made-up home folder in a test, for the fictional operator'],
@@ -194,7 +196,9 @@ async function failures(rc) {
   }
   if (f.G3 && held('G3') === false) {
     const by = g3Kinds(f.G3.where);
-    parts.push('<b>G3</b> failed by its own rule. The scan for anything shaped like a leak found ' + f.G3.hits + ' matches across ' + f.G3.files + ' committed files, and Kar read each one. By kind: ' +
+    const pg = f.G3.page, on = pg && /^\d{4}-\d{2}-\d{2}$/.test(pg.at) ? Number(pg.at.slice(8)) + ' ' + MONTHS[Number(pg.at.slice(5, 7)) - 1] + ' ' + pg.at.slice(0, 4) : '';
+    parts.push('<b>G3</b> failed by its own rule. The scan for anything shaped like a leak found ' + f.G3.hits + ' matches across ' + f.G3.files + ' committed files' +
+      (pg ? ' and this page\'s own text (' + pg.hits + ' of them, the page read' + (on ? ' on ' + on : '') + ' as a browser shows it)' : '') + ', and Kar read each one. By kind: ' +
       CLASSES.filter((k) => by[k]).map((k) => { const [label, read] = G3_READ[CLASSES.indexOf(k)]; return esc(label) + ' ' + by[k] + ', ' + esc(read); }).join('; ') + '. None is a private value.' +
       (f.G3.privateClassesOnKarsMachine ? ' On Kar\'s machine, the private names and the operator\'s names were checked across ' + f.G3.privateClassesOnKarsMachine + ' committed files as well, and ' +
         ((n) => (n ? n + ' matched' : 'none matched'))(f.G3.hits - Object.values(by).reduce((a, b) => a + b, 0)) + ' (<a href="local/g3.json">the record</a>).' : '') +
@@ -240,20 +244,22 @@ function calc() {
 
 // ── the gate record: every organ's mutation gate, from the receipts ──
 const ROLES = { 'src/symbfer.mjs': 'the codec: v6.2 and v3.0 readers, the tier writer', 'src/render.mjs': 'the writers, from the template\'s own lines', 'src/seal.mjs': 'the seal and verify-before-parse',
-  'src/leak.mjs': 'the leak gate', 'src/slice.mjs': 'the slicer', 'src/drift.mjs': 'the drift check and the ingest plan', 'src/boot.mjs': 'the boot of a cold model', 'src/judge.mjs': 'the sealed rules', 'src/timecase.mjs': 'the time case', 'src/notes.mjs': 'a team\'s own notes into a slice' };
-function renderGates(rc, tc, nr) {
+  'src/leak.mjs': 'the leak gate', 'src/slice.mjs': 'the slicer', 'src/drift.mjs': 'the drift check and the ingest plan', 'src/boot.mjs': 'the boot of a cold model', 'src/judge.mjs': 'the sealed rules', 'src/timecase.mjs': 'the time case', 'src/notes.mjs': 'a team\'s own notes into a slice',
+  'kar/trust.mjs': 'the keys a check accepts: yours and the colleagues\' you pinned' };
+function renderGates(rc, tc, nr, tr) {
   const mods = rc && rc.facts && rc.facts.G1 ? rc.facts.G1.modules.map((m) => ({ ...m, claim: 'G1' })) : [];
-  for (const [r, claim] of [[tc, 'T2'], [nr, 'N2']]) {
+  for (const [r, claim] of [[tc, 'T2'], [nr, 'N2'], [tr, 'R2']]) {
     const w = r && r.facts && r.facts.gate ? r.facts.gate.witness : null;
     if (w) mods.push({ name: w.module, killed: w.killed, total: w.total, clean: w.clean, capped: w.capped, claim });
   }
   if (!mods.length) { $('gates').textContent = 'The gate record is not published yet.'; return; }
-  const g1 = rc && rc.facts ? rc.facts.G1 : null, g2 = tc && tc.facts ? tc.facts.gate : null, g8 = nr && nr.facts ? nr.facts.gate : null;
+  const g1 = rc && rc.facts ? rc.facts.G1 : null, g2 = tc && tc.facts ? tc.facts.gate : null, g8 = nr && nr.facts ? nr.facts.gate : null, g9 = tr && tr.facts ? tr.facts.gate : null;
   $('gates').innerHTML = '<div class="scroll"><table><thead><tr><th>Organ</th><th class="hide-narrow">What it does</th><th>Mutants caught</th><th>Gate</th><th>Claim</th></tr></thead><tbody>' +
     mods.map((m) => '<tr><td><code>' + esc(m.name.replace(/^src\//, '')) + '</code></td><td class="hide-narrow">' + esc(ROLES[m.name] || '') + '</td><td class="num">' + m.killed + ' of ' + m.total + '</td><td class="' + (m.clean && !m.capped ? 'held">CLEAN' : 'failed">NOT CLEAN') + '</td><td>' + m.claim + '</td></tr>').join('') +
-    '</tbody></table></div><p class="muted">Every organ is in <code>src/</code>. Fuzz: ' + (g1 ? g1.fuzzInputs.toLocaleString('en-GB') + ' garbage inputs to the ' + g1.fuzzFunctions + ' functions of the first eight organs, ' + g1.fuzzThrows + ' throws' : 'see the receipts') +
+    '</tbody></table></div><p class="muted">Every organ is in <code>src/</code> but the trust organ, which is the command line\'s (<code>kar/trust.mjs</code>); the command line\'s text reader (<code>kar/text.mjs</code>) is gated on every push too. Fuzz: ' + (g1 ? g1.fuzzInputs.toLocaleString('en-GB') + ' garbage inputs to the ' + g1.fuzzFunctions + ' functions of the first eight organs, ' + g1.fuzzThrows + ' throws' : 'see the receipts') +
     (g2 ? '; ' + g2.fuzzInputs.toLocaleString('en-GB') + ' to the ' + g2.fuzzFunctions + ' of the time case, ' + g2.fuzzThrows + ' throws' : '') +
-    (g8 ? '; ' + g8.fuzzInputs.toLocaleString('en-GB') + ' to the ' + g8.fuzzFunctions + ' of the team-notes organ, ' + g8.fuzzThrows + ' throws' : '') + '. The tests of every organ, the page and the receipts run on every push in <a href="https://github.com/sjgant80-hub/kar-passport/actions">CI</a>.</p>';
+    (g8 ? '; ' + g8.fuzzInputs.toLocaleString('en-GB') + ' to the ' + g8.fuzzFunctions + ' of the team-notes organ, ' + g8.fuzzThrows + ' throws' : '') +
+    (g9 ? '; ' + g9.fuzzInputs.toLocaleString('en-GB') + ' to the ' + g9.fuzzFunctions + ' of the trust organ, ' + g9.fuzzThrows + ' throws' : '') + '. The tests of every organ, the page and the receipts run on every push in <a href="https://github.com/sjgant80-hub/kar-passport/actions">CI</a>.</p>';
 }
 function renderReceiptTc(tc) {
   if (!tc) { $('receipt-tc').textContent = 'The time case receipt is not published yet.'; return; }
@@ -267,6 +273,14 @@ function renderReceiptNotes(nr) {
     nr.verdicts.map((v) => '<tr><td>' + esc(v.id) + '</td><td class="' + (v.held ? 'held">HELD' : 'failed">FAILED') + '</td><td class="why">' + esc(v.why) + '</td></tr>').join('') + '</tbody></table>';
   const n1 = nr.verdicts.find((v) => v.id === 'N1');
   if (n1) for (const id of ['notes-status', 'notes-run']) $(id).textContent = (n1.held ? 'HELD' : 'FAILED') + ', ' + n1.why;
+}
+
+function renderReceiptTrust(tr) {
+  if (!tr) { $('receipt-trust').textContent = 'The trust receipt is not published yet.'; return; }
+  $('receipt-trust').innerHTML = '<p><b>' + tr.held + ' of ' + tr.of + ' claims held.</b> <a href="receipts/trust.json">The receipt</a> · <a href="claims-trust.json">the sealed claims</a></p><table><thead><tr><th>Claim</th><th>Verdict</th><th>What was measured</th></tr></thead><tbody>' +
+    tr.verdicts.map((v) => '<tr><td>' + esc(v.id) + '</td><td class="' + (v.held ? 'held">HELD' : 'failed">FAILED') + '</td><td class="why">' + esc(v.why) + '</td></tr>').join('') + '</tbody></table>';
+  const r1 = tr.verdicts.find((v) => v.id === 'R1');
+  if (r1) $('trust-run').textContent = (r1.held ? 'HELD' : 'FAILED') + ', ' + r1.why;
 }
 
 // ── the buyer walkthroughs, from their records ──────────────────────
