@@ -1,0 +1,23 @@
+{
+ "kind": "kar-passport.claims.trust",
+ "v": 1,
+ "title": "A colleague's passport, checked: pin their key, verify, unpin",
+ "sealed": "Before any code: this file is the only file of the commit that adds it, and no code that measures it exists yet. The rules below do not change once the first number is measured. A claim that fails is kept failed, with its numbers. This file does not change claims.json, claims-timecase.json, claims-notes.json or any of their rules.",
+ "why": "A cold read of the served page on 6 November 2026, as a COO, followed the roll-out's week 2: the shareable slice for one handover between two people. The receiver must check a passport before pasting it, because a chat AI cannot check a signature, but the command line trusts exactly one key, the one keys/kar.json pins, which is the receiver's own. Every passport a colleague sealed was refused, and the only way to accept one was to replace the receiver's own pin, which then refused the receiver's own passports. The FAQ (Several people, one company?) said you choose whose keys your checks accept. These claims say how the fix, a short list of colleagues' keys and two more commands, is measured.",
+ "layout": "A colleague's key is the file their `node kar/passport.mjs key` printed (the JSON their own keys/kar.json holds). `node kar/passport.mjs trust <their key file> <name>` pins it as keys/trusted/<name>.json; `node kar/passport.mjs untrust <name>` removes it. verify, in and publish then accept a passport sealed by the key keys/kar.json pins or by any key in keys/trusted/, and verify names whose key it was.",
+ "fixture": "fixtures/team-notes/ (the made-up joinery workshop's notes, no real person, firm or memory), used by all three people in the measure; each seals it with a key of their own.",
+ "claims": [
+  {
+   "id": "R1",
+   "claim": "Two people hand over a passport by the page's own steps: the receiver's check accepts the sender's passports once the sender's key is pinned, and refuses them before it is pinned and after it is unpinned, while the receiver's own passports verify throughout.",
+   "measure": "tools/trust-measure.mjs, in a fresh copy of the committed repository (git archive of HEAD) for each of three people, A, B and C, each with a fresh home folder (KAR_PASSPORT_DIR) and a copy of fixtures/team-notes/ as their notes: (1) each runs node kar/passport.mjs key, its output written to their own keys/kar.json, then node kar/passport.mjs notes; (2) B runs node kar/passport.mjs verify on every passport A wrote; (3) B runs node kar/passport.mjs trust with A's keys/kar.json and the name a, then verify on every passport A wrote and on every passport B wrote; (4) C's key is never pinned: B runs verify on every passport C wrote; (5) B runs trust four more times: with a file that is not a key file, with C's key under the name a (already used), with B's own keys/kar.json, and with C's key under a name that is not a plain file name; (6) B runs node kar/passport.mjs untrust a, then verify on every passport A wrote and on every passport B wrote.",
+   "rule": "(a) each of A, B and C has 15 passports written (3 slices x 5 shapes), and in (2) every one of A's is refused; (b) in (3) trust succeeds, every one of A's 15 is VERIFIED and names a as its signer, and every one of B's 15 is VERIFIED; (c) in (4) every one of C's 15 is refused; (d) in (5) each of the four is refused with a reason, exits non-zero, and leaves keys/trusted exactly as it was; (e) in (6) untrust succeeds, every one of A's 15 is refused again, and every one of B's 15 is VERIFIED"
+  },
+  {
+   "id": "R2",
+   "claim": "The trust organ is gated.",
+   "measure": "witness v0.6 mutate on kar/trust.mjs with its own tests (kar/trust.test.mjs), on this machine and again on GitHub's runner on every push; and 2,000 garbage inputs to every exported function, each call taking up to four arguments drawn from a fixed hostile list.",
+   "rule": "clean, not capped, nothing baselined; 0 throws"
+  }
+ ]
+}
