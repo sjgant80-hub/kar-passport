@@ -1,0 +1,14 @@
+{
+ "claim": "R2",
+ "witness": {
+  "module": "kar/trust.mjs",
+  "version": "v0.6",
+  "test": "node --test kar/trust.test.mjs",
+  "where": "Kar's machine, Node v25.7.0, 2026-11-06 (GitHub's runner re-gates it on every push: the witness job in .github/workflows/ci.yml)",
+  "killed": 6,
+  "total": 6,
+  "clean": true,
+  "capped": false,
+  "baselined": 0
+ }
+}

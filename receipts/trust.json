@@ -1,0 +1,117 @@
+{
+ "kind": "kar-passport.receipt.trust",
+ "claims": "claims-trust.json",
+ "facts": {
+  "copies": {
+   "fromHead": true,
+   "written": [
+    15,
+    15,
+    15
+   ]
+  },
+  "before": {
+   "of": 15,
+   "verified": 0,
+   "refused": 15,
+   "namedA": 0
+  },
+  "trust": {
+   "exit": 0,
+   "said": true,
+   "pinned": true
+  },
+  "pinnedA": {
+   "of": 15,
+   "verified": 15,
+   "refused": 0,
+   "namedA": 15
+  },
+  "ownWhilePinned": {
+   "of": 15,
+   "verified": 15,
+   "refused": 0,
+   "namedA": 0
+  },
+  "stranger": {
+   "of": 15,
+   "verified": 0,
+   "refused": 15,
+   "namedA": 0
+  },
+  "badPins": [
+   {
+    "what": "not a key file",
+    "exit": 1,
+    "reason": true,
+    "unchanged": true
+   },
+   {
+    "what": "a name already used",
+    "exit": 1,
+    "reason": true,
+    "unchanged": true
+   },
+   {
+    "what": "B's own key",
+    "exit": 1,
+    "reason": true,
+    "unchanged": true
+   },
+   {
+    "what": "not a plain file name",
+    "exit": 1,
+    "reason": true,
+    "unchanged": true
+   }
+  ],
+  "untrust": {
+   "exit": 0,
+   "said": true,
+   "gone": true
+  },
+  "afterUnpin": {
+   "of": 15,
+   "verified": 0,
+   "refused": 15,
+   "namedA": 0
+  },
+  "ownAfterUnpin": {
+   "of": 15,
+   "verified": 15,
+   "refused": 0,
+   "namedA": 0
+  },
+  "gate": {
+   "fuzzFunctions": 3,
+   "fuzzPerFunction": 2000,
+   "fuzzInputs": 6000,
+   "fuzzThrows": 0,
+   "witness": {
+    "module": "kar/trust.mjs",
+    "version": "v0.6",
+    "test": "node --test kar/trust.test.mjs",
+    "where": "Kar's machine, Node v25.7.0, 2026-11-06 (GitHub's runner re-gates it on every push: the witness job in .github/workflows/ci.yml)",
+    "killed": 6,
+    "total": 6,
+    "clean": true,
+    "capped": false,
+    "baselined": 0
+   }
+  }
+ },
+ "verdicts": [
+  {
+   "id": "R1",
+   "held": true,
+   "why": "passports written: 15, 15, 15; A's before pinning: 0 verified, 15 refused of 15; pinned as a: yes; A's then: 15 verified, 0 refused of 15, 15 naming a; B's own: 15 verified, 0 refused of 15; C's, never pinned: 0 verified, 15 refused of 15; bad pins refused with a reason and nothing changed: 4 of 4; after untrust a: A's 0 verified, 15 refused of 15, B's own 15 verified, 0 refused of 15"
+  },
+  {
+   "id": "R2",
+   "held": true,
+   "why": "witness 6/6 clean, 0 baselined; 6000 fuzz inputs to 3 functions, 0 throws"
+  }
+ ],
+ "held": 2,
+ "of": 2
+}

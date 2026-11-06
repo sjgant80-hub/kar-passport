@@ -30,6 +30,8 @@ jobs:
         run: node tools/timecase-measure.mjs --check
       - name: a team's own notes make passports by the page's steps, run here as a stranger would (claims-notes.json N1 and N2, re-derived)
         run: node tools/notes-measure.mjs --check
+      - name: a colleague's passport is checked once their key is pinned, by three people in fresh copies (claims-trust.json R1 and R2, re-derived)
+        run: node tools/trust-measure.mjs --check
 
   witness:
     runs-on: ubuntu-latest
@@ -65,6 +67,12 @@ jobs:
           grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in kar/text.mjs"; exit 1; }
           grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on kar/text.mjs was capped"; exit 1; }
           grep -q '"ignored": \[\]' /tmp/w.txt || { echo "::error::a survivor in kar/text.mjs was baselined"; exit 1; }
+      - name: mutation gate (witness v0.6) on the command line's trust organ, with its own tests (claims-trust.json R2)
+        run: |
+          node .witness6/witness.mjs mutate kar/trust.mjs --timeout 120000 --cap 1000 --test timeout -k 5 110 node --test kar/trust.test.mjs | tee /tmp/w.txt
+          grep -q '"clean": true' /tmp/w.txt || { echo "::error::mutants survived in kar/trust.mjs"; exit 1; }
+          grep -q '"capped": false' /tmp/w.txt || { echo "::error::the gate on kar/trust.mjs was capped"; exit 1; }
+          grep -q '"ignored": \[\]' /tmp/w.txt || { echo "::error::a survivor in kar/trust.mjs was baselined"; exit 1; }
 
   windows:
     runs-on: windows-latest
@@ -78,8 +86,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: the command line's text reader, on Windows
-        run: node --test kar/text.test.mjs
+      - name: the command line's text reader and trust organ, on Windows
+        run: node --test kar/text.test.mjs kar/trust.test.mjs
       - name: the page's steps 2 to 4 (How you make passports on your own machine), typed in Windows PowerShell as written; its > writes keys/kar.json with a byte-order mark
         shell: powershell
         run: |
@@ -105,3 +113,5 @@ jobs:
           if ($toks.Count -ne 15 -or $ok -ne 15) { throw 'not every passport was written and verified' }
       - name: the team-notes receipt reproduces on Windows too (claims-notes.json N1 and N2, re-derived)
         run: node tools/notes-measure.mjs --check
+      - name: the trust receipt reproduces on Windows too (claims-trust.json R1 and R2, re-derived)
+        run: node tools/trust-measure.mjs --check
